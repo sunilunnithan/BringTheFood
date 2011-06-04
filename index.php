@@ -1,3 +1,7 @@
+
+<?php
+include ('db/DB_Connector.php');
+?>
 <hmtl>
     <head>Moving Foods</head>
 
@@ -8,5 +12,10 @@
            <li>Collector</li>
            <li>Distributor</li>
         </ul>
+        <?php
+        $result=connectToMySQL();
+        echo $result;
+        
+        ?>
     </body>
 </html>
