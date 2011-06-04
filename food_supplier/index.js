@@ -29,7 +29,7 @@ Ext.setup({
 
         var nestedList = new Ext.NestedList({
             fullscreen: true,
-            title: 'src/',
+            title: 'Food Supplier',
             displayField: 'fileName',
             // add a / for folder nodes in title/back button
             getTitleTextTpl: function() {
