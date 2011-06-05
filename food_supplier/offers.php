@@ -15,7 +15,7 @@ if ($num_offers>0){
     for ($i=0;$i<$num_offers;$i++){
             $offer_ID=mysql_result($offers, $i, 'Offer_ID');
             $supplier_ID=mysql_result($offers, $i, 'supplier_ID');
-            $descrption=mysql_result($offers, $i, 'description');
+            $description=mysql_result($offers, $i, 'description');
             $avail_date=mysql_result($offers, $i, 'av_date');
             $avial_time=mysql_result($offers, $i, 'av_time');
             $exp_date=mysql_result($offers, $i, 'exp_date');
@@ -24,7 +24,12 @@ if ($num_offers>0){
             $collector_ID=mysql_result($offers, $i, 'collector_ID');
             $supp =mysql_query("SELECT name FROM supplier WHERE supplier_ID ='$supplier_ID'") or die ("Unable to fetch supplier");
             $name =mysql_result($supp,0,'name');
-            $this_offer =array('description'=>$descrption,'supplier_ID'=>$supplier_ID,'supplier_name'=>$name);
+            $this_offer =array(
+                'description'=>$description,
+                'supplier_ID'=>$supplier_ID,
+                'supplier_name'=>$name,
+                'status' => $status,
+                'offer_ID' => $offer_ID);
             array_push($offer_JSON_Array,$this_offer);
             //echo $offer_ID.','.$supplier_ID.','.$descrption.','.$avail_date.','.$avial_time.','.$exp_date.','.$exp_time.','.$status.','.$collector_ID.'<br>';
     }
@@ -32,6 +37,7 @@ if ($num_offers>0){
     //echo $offers;
     return $offers;
 }
+return json_encode(array());
 }
 
 
