@@ -49,7 +49,7 @@ Ext.setup({
                         Ext.Ajax.request({
                             url: 'bookOffer.php',
                             method: 'POST',
-                            param: {'collectorId': '1', 'offerId': '1'},
+                            params: {'collectorId': '1', 'offerId': '1'},
                             success: function(result, response) {
                                 Ext.Msg.alert('Booking', result.responseText, Ext.emptyFn);
                                 //Ext.Msg.alert('Booking', "Accepted", Ext.emptyFn);
