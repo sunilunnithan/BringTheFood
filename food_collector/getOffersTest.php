@@ -36,10 +36,10 @@
     <script type="text/javascript" src="js/offers.js"></script>
 </head>
 <body>
-    <?php
+    <!--?php
     echo "#";
     echo $offers;
     echo "#";
-    ?>
+    ?-->
 </body>
 </html>
