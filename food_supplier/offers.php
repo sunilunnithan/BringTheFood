@@ -31,7 +31,6 @@ if ($num_offers>0){
                 'status' => $status,
                 'offer_ID' => $offer_ID);
             array_push($offer_JSON_Array,$this_offer);
-            //echo $offer_ID.','.$supplier_ID.','.$descrption.','.$avail_date.','.$avial_time.','.$exp_date.','.$exp_time.','.$status.','.$collector_ID.'<br>';
     }
     $offers=json_encode($offer_JSON_Array);
     //echo $offers;
