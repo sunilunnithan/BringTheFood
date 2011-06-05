@@ -1,5 +1,5 @@
 Ext.regModel('Offers', {
-    fields: ['name', 'supplier', 'Accept']
+    fields: ['description', 'supplier', 'Accept']
 });
 
 var store = new Ext.data.JsonStore({
@@ -10,13 +10,13 @@ var store = new Ext.data.JsonStore({
     },
 
     data: [
-        {name: '2 pizzas', supplier: 'Restaurant X'},
-        {name: '1 pasta', supplier: 'Catering services Y'},
-        {name: 'tomatos', supplier: 'Catering services Y'},
-        {name: 'Mix', supplier: 'Mensa Z'},
-        {name: 'Wine', supplier: 'Mensa Z'},
-        {name: 'Bottles', supplier: 'Mensa Z'},
-        {name: 'Crates of vegetables', supplier: 'Mensa Z'}
+        {description: '2 pizzas', supplier: 'Restaurant X'},
+        {description: '1 pasta', supplier: 'Catering services Y'},
+        {description: 'tomatos', supplier: 'Catering services Y'},
+        {description: 'Mix', supplier: 'Mensa Z'},
+        {description: 'Wine', supplier: 'Mensa Z'},
+        {description: 'Bottles', supplier: 'Mensa Z'},
+        {description: 'Crates of vegetables', supplier: 'Mensa Z'}
     ]
 });
 
@@ -28,14 +28,38 @@ Ext.setup({
     onReady: function(){
         var list = new Ext.List({
             fullscreen: true,
-            itemTpl : '{name}',
+            itemTpl : '=> {description}',
             grouped : true,
             indexBar: true,
             store: store,
             listeners:
                 {
-                 itemtap: function(item)
-                    { Ext.Msg.alert('Item', 'Selected', Ext.emptyFn);} }
+                 itemtap: function (list, index) {
+                        var record = list.getStore().getAt(index);
+                        var rdescription = record.get('description');
+                        var rSupp = record.get('supplier');
+//                        Ext.Msg.confirm(
+//                            'Pick-up',
+//                            "Get " + rdescription + " from " + rSupp,
+//                            function(btn) {
+//
+//                                Ext.Msg.alert('Button Click', 'You clicked the button');}
+//                        );
+                    
+                        Ext.Ajax.request({
+                            url: 'bookOffer.php',
+                            method: 'POST',
+                            param: {'collectorId': '1', 'offerId': '1'},
+                            success: function(result, response) {
+                                Ext.Msg.alert('Booking', result.responseText, Ext.emptyFn);
+                                //Ext.Msg.alert('Booking', "Accepted", Ext.emptyFn);
+                            },
+                            failure: function(result, response) {
+                                Ext.Msg.alert('Booking', "Refused", Ext.emptyFn);
+                            }
+                        });
+                 }
+             }
         });
 
         new Ext.Panel({
