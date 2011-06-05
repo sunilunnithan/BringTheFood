@@ -3,6 +3,7 @@
 
     $collectorId = $_POST['collectorId'];
     $offerId = $_POST['offerId'];
+<<<<<<< HEAD
     $date = date('d m y');
     $time =date('h:m:s');
     $insert =  mysql_query("INSERT INTO booking (offer_ID, collecter_ID,book_date,book_time) VALUES('$offerId','$collectorId','$date','$time')") or die ('Unable to add booking');
@@ -10,4 +11,8 @@
     echo "Done";
     
    
+=======
+
+    echo "Test" . $collectorId . $offerId;
+>>>>>>> 82639029ca0eb376c918742abdca55875238a481
 ?>
