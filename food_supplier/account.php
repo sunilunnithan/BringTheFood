@@ -8,5 +8,6 @@
        <script type="text/javascript" src="js/account.js"></script>
 </head>
 <body>
+    <div id="form"></div>
 </body>
 </html>
