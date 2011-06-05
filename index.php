@@ -2,18 +2,16 @@
 include ('db/DB_Connector.php');
 ?>
 <html>
-    <head>Moving Foods</head>
+    <head>       
+        <title>Bring the Food!</title>
+        <link rel="stylesheet" href="sencha-touch-1.1.0/resources/css/sencha-touch.css" type="text/css">
+        <script type="text/javascript" src="sencha-touch-1.1.0/sencha-touch-debug.js"></script>
+       <script type="text/javascript" src="index.js"></script>
+    </head>
 
     <body>
-        <p><?php ?></p>
-        <ul>
-           <li><a href="food_supplier/index.html">Supplier</a></li>
-           <li><a href="food_collector/index.html">Collector</a></li>
-           <li><a href="food_distributor/index.html">Distributor</a></li>
-        </ul>
-        <?php
-        $result = connectToMySQL();
-        echo 'DB Connected? ' . $result;
-        ?>
+
+        <div id="index-panel"></div>
+
     </body>
 </html>

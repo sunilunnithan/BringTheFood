@@ -48,6 +48,7 @@ Ext.setup({
 
             defaultType: 'textfield',
             model: 'AccountInfo',
+            fullscreen: true,
             items: [
             {
                 label: 'Name',

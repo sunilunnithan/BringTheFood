@@ -11,8 +11,15 @@ var store = new Ext.data.JsonStore({
     },
 
     data: [
-        {name: '2 pizzas',   time: '04/06/2011 22.30'},
-        {name: '1 pasta alla carbonara',     time: '04/06/2011 23.30'}
+    {
+        name: '2 pizzas',
+        time: '04/06/2011 22.30'
+    },
+
+    {
+        name: '1 pasta alla carbonara',
+        time: '04/06/2011 23.30'
+    }
     ]
 });
 
@@ -23,24 +30,46 @@ Ext.setup({
     glossOnIcon: false,
     onReady: function(){
         var addBtn = new Ext.Button({
-            text: 'New Offer',
-            ui: 'round',
-            margin: 5,
-            padding: 10
+            text: 'Submit',
+            ui: 'confirm'
         });
 
-        var list = new Ext.List({
-            fullscreen: true,
-
-            itemTpl : '{name} {time}',
-            grouped : true,
-            indexBar: true,
-
-            store: store
+        var offerForm = new Ext.form.FormPanel({
+            defaultType: 'textfield',
+            items: [
+            {
+                label: 'Description',
+                name: 'description',
+                width: '100%',
+                labelWidth: '30%'
+            }, {
+                label: 'Available from',
+                name: 'from',
+                width: '100%',
+                labelWidth: '40%'
+            },
+            {
+                label: 'Available until',
+                name: 'until',
+                width: '100%',
+                labelWidth: '40%'
+            },
+            {
+                label: 'Remarks',
+                name: 'remarks',
+                width: '100%',
+                labelWidth: '30%'
+            },
+            {
+                label: 'Quantity',
+                name: 'pass',
+                width: '100%',
+                labelWidth: '30%'
+            }
+            ]
         });
-        list.show();
 
-        new Ext.Panel({
+        var panel = new Ext.Panel({
             fullscreen: 'true',
             layout: {
                 type : 'vbox',
@@ -52,10 +81,28 @@ Ext.setup({
                 xtype: 'toolbar',
                 title: 'Manage Your Offers'
             },
-            addBtn,
-            list
+            {
+                dock: 'bottom',
+                xtype: 'toolbar',
+                items: [
+                {
+                    xtype: 'button',
+                    text: 'My Offers'
+                },
+                {
+                    xtype: 'button',
+                    text: 'New Offer'
+                }
+                ]
+            }
+            ],
+            items: [
+            offerForm,
+            addBtn
             ]
         });
+
+        panel.render('panel');
 
     }
 });
