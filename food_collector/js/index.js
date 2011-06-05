@@ -7,37 +7,34 @@ Ext.setup({
         var offersBtn = new Ext.Button({
             text: 'Offers',
             ui: 'round',
-            handler: function(){location.href = 'offers.php'}
-        });
-
-        var adsBtn = new Ext.Button({
-            text: 'Ads',
-            ui: 'round'
+            margin: 5,
+            handler: function(){
+                location.href = 'getOffersTest.php'
+                }
         });
 
         var accountBtn = new Ext.Button({
             text: 'My Account',
-            ui: 'round'
+            ui: 'round',
+            margin: 5,
+            handler: function() {
+                location.href = 'getAccountInfoTest.php';
+            }
         });
 
         new Ext.Panel({
             fullscreen: 'true',
             layout: {
                 type : 'vbox',
-                pack : 'center',
-                align: 'stretch'
-            },
-            defaults:{
-                flex: 1
+                align : 'center'
             },
             dockedItems: [
             {
                 dock: 'top',
                 xtype: 'toolbar',
-                title: 'Food Supplier'
+                title: 'Food Collector'
             },
             offersBtn,
-            adsBtn,
             accountBtn
             ]
         });
