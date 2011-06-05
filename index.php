@@ -8,9 +8,9 @@ include ('db/DB_Connector.php');
     <body>
         <p><?php ?></p>
         <ul>
-            <li><a href="food_supplier/index.html">Supplier</a></li>
-           <li>Collector</li>
-           <li>Distributor</li>
+           <li><a href="food_supplier/index.html">Supplier</a></li>
+           <li><a href="food_collector/index.html">Collector</a></li>
+           <li><a href="food_distributor/index.html">Distributor</a></li>
         </ul>
         <?php
         $result=connectToMySQL();
