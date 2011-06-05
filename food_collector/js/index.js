@@ -32,7 +32,15 @@ Ext.setup({
             {
                 dock: 'top',
                 xtype: 'toolbar',
-                title: 'Food Collector'
+                title: 'Food Collector',
+                items: [
+                    {
+                        text: 'Back',
+                        handler: function(){
+                            location.href = '../index.php';
+                        }
+                    }
+                ]
             },
             offersBtn,
             accountBtn

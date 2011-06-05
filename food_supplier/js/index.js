@@ -38,7 +38,15 @@ Ext.setup({
             {
                 dock: 'top',
                 xtype: 'toolbar',
-                title: 'Food Supplier'
+                title: 'Food Supplier',
+                items: [
+                    {
+                        text: 'Back',
+                        handler: function(){
+                            location.href = '../index.php';
+                        }
+                    }
+                ]
             },
             offersBtn,
             adsBtn,
