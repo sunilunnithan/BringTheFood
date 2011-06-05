@@ -1,18 +1,20 @@
 Ext.regModel('Offers', {
-    fields: ['name','time']
+    fields: ['name', 'supplier', 'Accept']
 });
 
 var store = new Ext.data.JsonStore({
     model  : 'Offers',
-    sorters: 'time',
 
     getGroupString : function(record) {
-        return record.get('name')[0];
+        return record.get('supplier');
     },
 
     data: [
-        {name: '2 pizzas',   time: '04/06/2011 22.30'},
-        {name: '1 pasta alla carbonara',     time: '04/06/2011 23.30'}
+        {name: '2 pizzas', supplier: 'Restaurant X'},
+        {name: '1 pasta', supplier: 'Catering services Y'},
+        {name: 'tomatos', supplier: 'Catering services Y'},
+        {name: 'Mix', supplier: 'Mensa'},
+        {name: 'Wine', supplier: 'Mensa'}
     ]
 });
 
@@ -22,23 +24,13 @@ Ext.setup({
     phoneStartupScreen: 'phone_startup.png',
     glossOnIcon: false,
     onReady: function(){
-        var addBtn = new Ext.Button({
-            text: 'New Offer',
-            ui: 'round',
-            margin: 5,
-            padding: 10
-        });
-
         var list = new Ext.List({
             fullscreen: true,
-
-            itemTpl : '{name} {time}',
+            itemTpl : '{name}',
             grouped : true,
             indexBar: true,
-
             store: store
         });
-        list.show();
 
         new Ext.Panel({
             fullscreen: 'true',
@@ -46,16 +38,18 @@ Ext.setup({
                 type : 'vbox',
                 align : 'center'
             },
+
             dockedItems: [
             {
                 dock: 'top',
                 xtype: 'toolbar',
-                title: 'Manage Your Offers'
+                title: 'Offers Overview'
             },
-            addBtn,
             list
             ]
         });
+
+        list.show();
 
     }
 });
