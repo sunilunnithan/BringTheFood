@@ -26,7 +26,6 @@ if ($num_offers>0){
             $name =mysql_result($supp,0,'name');
             $this_offer =array('description'=>$descrption,'supplier_ID'=>$supplier_ID,'supplier_name'=>$name);
             array_push($offer_JSON_Array,$this_offer);
-            //echo $offer_ID.','.$supplier_ID.','.$descrption.','.$avail_date.','.$avial_time.','.$exp_date.','.$exp_time.','.$status.','.$collector_ID.'<br>';
     }
     $offers=json_encode($offer_JSON_Array);
     //echo $offers;
