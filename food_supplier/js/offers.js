@@ -29,10 +29,6 @@ Ext.setup({
     phoneStartupScreen: 'phone_startup.png',
     glossOnIcon: false,
     onReady: function(){
-        var addBtn = new Ext.Button({
-            text: 'Submit',
-            ui: 'confirm'
-        });
 
         var offerForm = new Ext.form.FormPanel({
             defaultType: 'textfield',
@@ -43,14 +39,26 @@ Ext.setup({
                 width: '100%',
                 labelWidth: '30%'
             }, {
-                label: 'Available from',
-                name: 'from',
+                label: 'Date from',
+                name: 'dfrom',
                 width: '100%',
                 labelWidth: '40%'
             },
             {
-                label: 'Available until',
-                name: 'until',
+                label: 'Time from',
+                name: 'tfrom',
+                width: '100%',
+                labelWidth: '40%'
+            },
+            {
+                label: 'Date until',
+                name: 'duntil',
+                width: '100%',
+                labelWidth: '40%'
+            },
+            {
+                label: 'Time until',
+                name: 'tuntil',
                 width: '100%',
                 labelWidth: '40%'
             },
@@ -62,7 +70,7 @@ Ext.setup({
             },
             {
                 label: 'Quantity',
-                name: 'pass',
+                name: 'quantity',
                 width: '100%',
                 labelWidth: '30%'
             }
@@ -98,7 +106,13 @@ Ext.setup({
             ],
             items: [
             offerForm,
-            addBtn
+            new Ext.Button({
+                text: 'Submit',
+                ui: 'confirm',
+                handler: function(){
+                    offerForm.submit('offers-submit.php');
+                }
+            })
             ]
         });
 
