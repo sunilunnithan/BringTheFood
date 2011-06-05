@@ -10,7 +10,7 @@ Ext.setup({
             margin: 5,
             handler: function(){
                 location.href = 'offers.php'
-                }
+            }
         });
 
         var adsBtn = new Ext.Button({
@@ -22,7 +22,10 @@ Ext.setup({
         var accountBtn = new Ext.Button({
             text: 'My Account',
             ui: 'round',
-            margin: 5
+            margin: 5,
+            handler: function(){
+                location.href = 'account.php'
+            }
         });
 
         new Ext.Panel({
