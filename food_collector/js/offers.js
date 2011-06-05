@@ -1,24 +1,8 @@
 Ext.regModel('Offers', {
-    fields: ['description', 'supplier', 'Accept']
+    fields: ['description', 'supplier_name', 'status', 'offer_ID']
 });
 
-var store = new Ext.data.JsonStore({
-    model  : 'Offers',
-
-    getGroupString : function(record) {
-        return record.get('supplier');
-    },
-
-    data: [
-        {description: '2 pizzas', supplier: 'Restaurant X'},
-        {description: '1 pasta', supplier: 'Catering services Y'},
-        {description: 'tomatos', supplier: 'Catering services Y'},
-        {description: 'Mix', supplier: 'Mensa Z'},
-        {description: 'Wine', supplier: 'Mensa Z'},
-        {description: 'Bottles', supplier: 'Mensa Z'},
-        {description: 'Crates of vegetables', supplier: 'Mensa Z'}
-    ]
-});
+var store = getStore();
 
 Ext.setup({
     icon: 'icon.png',
@@ -28,7 +12,7 @@ Ext.setup({
     onReady: function(){
         var list = new Ext.List({
             fullscreen: true,
-            itemTpl : '=> {description}',
+            itemTpl : '=> {description} ({status})',
             grouped : true,
             indexBar: true,
             store: store,
@@ -36,8 +20,9 @@ Ext.setup({
                 {
                  itemtap: function (list, index) {
                         var record = list.getStore().getAt(index);
-                        var rdescription = record.get('description');
-                        var rSupp = record.get('supplier');
+                        var rdesc = record.get('description');
+                        var rSupp = record.get('supplier_name');
+                        var rOffe = record.get('offer_ID');
 //                        Ext.Msg.confirm(
 //                            'Pick-up',
 //                            "Get " + rdescription + " from " + rSupp,
@@ -49,10 +34,9 @@ Ext.setup({
                         Ext.Ajax.request({
                             url: 'bookOffer.php',
                             method: 'POST',
-                            params: {'collectorId': '1', 'offerId': '1'},
+                            params: {'collectorId': '1', 'offerId': rOffe},
                             success: function(result, response) {
-                                Ext.Msg.alert('Booking', result.responseText, Ext.emptyFn);
-                                //Ext.Msg.alert('Booking', "Accepted", Ext.emptyFn);
+                                Ext.Msg.alert('Booking', "Accepted:" + result.responseText, Ext.emptyFn);
                             },
                             failure: function(result, response) {
                                 Ext.Msg.alert('Booking', "Refused", Ext.emptyFn);
