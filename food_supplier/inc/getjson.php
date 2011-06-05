@@ -1,5 +1,6 @@
 <?php
-$include('functions.php');
+include('functions.php');
+
 /*
 	Normally you would select a record from your database and then return the json data.
     The code below simulates that process.
@@ -14,37 +15,12 @@ if (!isset($_REQUEST['recordID'])) {$_REQUEST['recordID'] = 1;} //Set a url reco
 
 $recID = $_REQUEST['recordID'];
 
-if ($recID == 1) {
-    $result = '{success: true, data:{recordid:"1", first:"Jack", last:"Slocum", company:"Ext JS", email:"support@extjs.com", state:"OH", dob:"04/15/2007", fee:"50"} }';
-} else if ($recID == 2) {
+$tmpData = supplier_JSON($recID);
 
-	// December 28th, 2008: Original test removed. A sample using the slightly more realistic json_encode() added
-	//$result = "{success: true, data:{recordid:'2', first:'Murray', last:'Hopkins', company:'Murrah', email:'murray@somedomain.com.au', state:'NSW', dob:'04/26/2002', fee:'20'} }";
+$tmpData = substr($tmpData,1,strlen($tmpData)-2); // strip the [ and ]
+$tmpData = str_replace("\\/","/",'{"data": [{'.$tmpData.'}]}'); // unescape the slashes
 
-	$data[] = array(
-			'recordid' => 2,
-			'first' => 'Murray',
-			'last' => 'Hopkins',
-			'company' => 'Murrah Pty Ltd',
-			'email' => 'murray@somedomain.com.au',
-			'state' => 'NSW',
-			'dob' => '04/26/2002',
-			'fee' => '20');
+$result = $tmpData;
 
-						// Note that json_encode() wraps the data in [ ] and escapes slashes in dates, both of
-						// which will cause problems in the Ext reader unless you make your own reader
-						// The following hack is simply to demonstrate how you could get around this to return
-						// the same format as the native reader is expecting.
-						// BUT a real example will need to cope with unexpected characters such as embedded
-						// double or single quotes etc
-	$tmpData = json_encode($data);
-	$tmpData = substr($tmpData,1,strlen($tmpData)-2); // strip the [ and ]
-	$tmpData = str_replace("\\/","/",'{success:true,data:'.$tmpData.'}'); // unescape the slashes
-
-	$result = $tmpData;
-
-} else {
-    $result = '{success: false, msg: "Connected to server but encountered a database error. Record '.$recID.' not found."}';
-}
 echo $result;
 ?>

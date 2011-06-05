@@ -1,3 +1,30 @@
+Ext.regModel('AccountInfo',
+    {
+        fields: [
+
+        {
+            name: 'supplier_name',
+            type: 'string'
+        },
+        {
+            name: 'supplier_address',
+            type: 'string'
+        },
+        {
+            name: 'supplier_email',
+            type: 'string'
+        },
+        {
+            name: 'supplier_phone',
+            type: 'string'
+        },
+        {
+            name: 'password',
+            type: 'string'
+        }
+        ]
+    });
+
 Ext.setup({
     icon: 'icon.png',
     tabletStartupScreen: 'tablet_startup.png',
@@ -5,50 +32,56 @@ Ext.setup({
     glossOnIcon: false,
     onReady: function(){
 
-        var fs = new Ext.form.FormPanel({
-          
-            //title:'Account Management',
-            //labelAlign: 'center',
-            items: [
-            new Ext.form.FieldSet({
-                title: 'Contact Information',
-                defaultType: 'textfield',
-                items: [{
-                    label: 'Name',
-                    name: 'name',
-                    width: '100%',
-                    labelWidth: '30%'
-                }, {
-                    label: 'Address',
-                    name: 'address',
-                    width: '100%',
-                    labelWidth: '30%'
-                },
-                {
-                    label: 'Email',
-                    name: 'email',
-                    vtype:'email', // ie Validate as an email field
-                    width: '100%',
-                    labelWidth: '30%'
-                },
-                {
-                    label: 'Username',
-                    name: 'usern',
-                    vtype: 'username',
-                    width: '100%',
-                    labelWidth: '30%'
-                },
-                {
-                    xtype: 'passwordfield',
-                    label: 'Password',
-                    name: 'pass',
-                    vtype: 'password',
-                    width: '100%',
-                    labelWidth: '30%'
+        var store = new Ext.data.Store({
+            model: 'AccountInfo',
+            proxy: {
+                type: 'ajax',
+                url: 'inc/getjson.php?recordID=1',
+                reader:{
+                    type: 'json',
+                    root: 'data'
                 }
-                ],
-                layout: 'vbox'
-            })
+            }
+        });
+
+        var fs = new Ext.form.FormPanel({
+
+            defaultType: 'textfield',
+            model: 'AccountInfo',
+            items: [
+            {
+                label: 'Name',
+                name: 'supplier_name',
+                width: '100%',
+                labelWidth: '30%'
+            }, {
+                label: 'Address',
+                name: 'supplier_address',
+                width: '100%',
+                labelWidth: '30%'
+            },
+            {
+                label: 'Email',
+                name: 'supplier_email',
+                vtype:'email', // ie Validate as an email field
+                width: '100%',
+                labelWidth: '30%'
+            },
+            {
+                label: 'Phone',
+                name: 'supplier_phone',
+                vtype: 'phone',
+                width: '100%',
+                labelWidth: '30%'
+            },
+            {
+                xtype: 'passwordfield',
+                label: 'Password',
+                name: 'pass',
+                vtype: 'password',
+                width: '100%',
+                labelWidth: '30%'
+            }
             ],
             dockedItems: [
             {
@@ -86,18 +119,11 @@ Ext.setup({
             }]
         });
 
-        fs.load({
-           url: 'functions.php',
-           method: 'GET',
-           success: function(form, action){
-
-           },
-           failure: function(form,action){
-               
-           }
-        });
-
-        fs.render('form');
+        store = store.load(function(records, operation, success) {
+            fs.load(records[0]);
+            fs.render('form');
+        }
+        );
 
     }
 });
