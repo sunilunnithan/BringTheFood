@@ -1,8 +1,7 @@
-
 <?php
 include ('db/DB_Connector.php');
 ?>
-<hmtl>
+<html>
     <head>Moving Foods</head>
 
     <body>
@@ -13,9 +12,8 @@ include ('db/DB_Connector.php');
            <li><a href="food_distributor/index.html">Distributor</a></li>
         </ul>
         <?php
-        $result=connectToMySQL();
-        echo $result;
-        
+        $result = connectToMySQL();
+        echo 'DB Connected? ' . $result;
         ?>
     </body>
 </html>
