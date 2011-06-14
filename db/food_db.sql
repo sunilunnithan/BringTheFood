@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Jun 04, 2011 at 02:48 PM
+-- Generation Time: Jun 14, 2011 at 09:22 AM
 -- Server version: 5.1.36
 -- PHP Version: 5.3.0
 
@@ -16,45 +16,49 @@ SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 /*!40101 SET NAMES utf8 */;
 
 --
--- Database: `food`
+-- Database: `food_db`
 --
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `collector`
+-- Table structure for table `address`
 --
 
-CREATE TABLE IF NOT EXISTS `collector` (
-  `collector_ID` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(64) NOT NULL,
-  `address` varchar(512) NOT NULL,
-  `phone` varchar(16) NOT NULL,
-  `email` varchar(64) NOT NULL,
-  PRIMARY KEY (`collector_ID`)
+CREATE TABLE IF NOT EXISTS `address` (
+  `address_id` int(11) NOT NULL AUTO_INCREMENT,
+  `address_type` char(8) NOT NULL,
+  `address_type_id` int(11) NOT NULL,
+  `street` char(64) NOT NULL,
+  `city` char(32) NOT NULL,
+  `zip` int(11) NOT NULL,
+  `country` char(32) NOT NULL,
+  `phone` decimal(24,0) NOT NULL,
+  PRIMARY KEY (`address_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 --
--- Dumping data for table `collector`
+-- Dumping data for table `address`
 --
 
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `login`
+-- Table structure for table `entitiy`
 --
 
-CREATE TABLE IF NOT EXISTS `login` (
-  `login_ID` int(11) NOT NULL AUTO_INCREMENT,
-  `user` varchar(16) NOT NULL,
-  `password` varchar(16) NOT NULL,
-  `type` int(1) NOT NULL,
-  PRIMARY KEY (`login_ID`)
+CREATE TABLE IF NOT EXISTS `entitiy` (
+  `entity_id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` char(128) NOT NULL,
+  `email` char(64) NOT NULL,
+  `password` char(16) NOT NULL,
+  `role` char(16) NOT NULL,
+  PRIMARY KEY (`entity_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 --
--- Dumping data for table `login`
+-- Dumping data for table `entitiy`
 --
 
 
@@ -65,16 +69,15 @@ CREATE TABLE IF NOT EXISTS `login` (
 --
 
 CREATE TABLE IF NOT EXISTS `offer` (
-  `offer_ID` int(11) NOT NULL AUTO_INCREMENT,
-  `supplier_ID` int(11) NOT NULL,
-  `description` varchar(4096) NOT NULL,
-  `av_date` date NOT NULL,
-  `av_time` time NOT NULL,
-  `exp_date` date NOT NULL,
-  `exp_time` time NOT NULL,
-  `collector_ID` int(11) NOT NULL,
-  `status` int(1) NOT NULL,
-  PRIMARY KEY (`offer_ID`)
+  `offer_id` int(11) NOT NULL AUTO_INCREMENT,
+  `supplier_id` int(11) NOT NULL,
+  `collector_id` int(11) NOT NULL,
+  `description` varchar(1024) NOT NULL,
+  `available_date` date NOT NULL,
+  `available_time` time NOT NULL,
+  `expire_date` date NOT NULL,
+  `status` char(16) NOT NULL,
+  PRIMARY KEY (`offer_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 --
@@ -85,19 +88,17 @@ CREATE TABLE IF NOT EXISTS `offer` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `supplier`
+-- Table structure for table `supplier_type`
 --
 
-CREATE TABLE IF NOT EXISTS `supplier` (
-  `supplier_ID` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(64) NOT NULL,
-  `address` varchar(512) NOT NULL,
-  `phone` varchar(16) NOT NULL,
-  `email` varchar(64) NOT NULL,
-  PRIMARY KEY (`supplier_ID`)
+CREATE TABLE IF NOT EXISTS `supplier_type` (
+  `supplier_type_id` int(11) NOT NULL AUTO_INCREMENT,
+  `supplier_id` int(11) NOT NULL,
+  `type` char(16) NOT NULL,
+  PRIMARY KEY (`supplier_type_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 --
--- Dumping data for table `supplier`
+-- Dumping data for table `supplier_type`
 --
 

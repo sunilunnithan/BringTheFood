@@ -37,6 +37,7 @@ Ext.setup({
                             params: {'collectorId': '1', 'offerId': rOffe},
                             success: function(result, response) {
                                 Ext.Msg.alert('Booking', "Accepted:" + result.responseText, Ext.emptyFn);
+                                location.href = "./getOffersTest.php";
                             },
                             failure: function(result, response) {
                                 Ext.Msg.alert('Booking', "Refused", Ext.emptyFn);
