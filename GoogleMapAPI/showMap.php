@@ -20,17 +20,40 @@ icon0.infoShadowAnchor = new GPoint(18, 25);
 <?php
 //This value should come from the caller.
 $stak_id = 4;
+$status ="open";
 
 //Fire queries to retrive the location data for database
 $gmap_city_sql = "SELECT * FROM map_data WHERE stak_id='$stak_id'";
 $gmap_city_result = mysql_query($gmap_city_sql) or die(mysql_error());
 $row = mysql_fetch_object($gmap_city_result);
 
+//$open_offer_address_sql = "SELECT * FROM map_data";// WHERE status='$status'";
+//$open_offer_address_result = mysql_query($open_offer_address_sql) or die(mysql_error());
+//$row = mysql_fetch_object($open_offer_address_result);
+$open_offer_address_result = mysql_query("SELECT * FROM map_data") or die ("Unable to fetch map_data:".  mysql_error());
+
+//active suppliers
+if ($open_offer_address_result){
+            
+    //$PHP_directive_objects = array();
+    $num_rows = mysql_num_rows($open_offer_address_result);
+    for ($row_num = 0;$row_num<$num_rows;$row_num++) {
+        mysql_result($open_offer_address_result, $row_num, 'latitude');
+        $lat = mysql_result($open_offer_address_result, $row_num, "latitude");
+        $long = mysql_result($open_offer_address_result, $row_num, "longitude");
+        $via = mysql_result($open_offer_address_result, $row_num, "via");
+        $country = mysql_result($open_offer_address_result, $row_num, "country");
+        $province = mysql_result($open_offer_address_result, $row_num, "province");
+        $zipcode  = mysql_result($open_offer_address_result, $row_num, "zipcode");
+        //echo '"Row_data '.$row_data
+   
 
 //Set the Map Lat and Log that is retrieved from database
 $i = 0;
-echo "newpoints[{$i}] = new Array ({$row->latitude},{$row->longitude},icon0,'','<b> ".addslashes($row->via). ", {$row->zipcode} $row->province </b><br>".addslashes($row->country)."');\n";
-?>
+
+echo "newpoints[{$i}] = new Array ({$row->latitude},{$row->longitude},icon0,'','<b> ".addslashes($row->via). ", {$zipcode->zipcode} $province->province </b><br>".addslashes($country->country)."');\n";
+    //}}
+    ?>
 
     //Initilize the Map layout
     function load() {
@@ -62,5 +85,5 @@ echo "newpoints[{$i}] = new Array ({$row->latitude},{$row->longitude},icon0,'','
         });
         return marker;
     }
-
+<?php }} ?>
 </script>
