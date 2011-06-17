@@ -4,7 +4,9 @@
 	//In is not signed
 	//if($user->signed) header("Location: index.php");
 	
-	//Proccess Password change
+//Validate current password
+if ($user->validate_pass($_POST[password0])){       
+        //Proccess Password change
 	if(count($_POST)){
 		if(!$user->signed and isset($_GET['c'])){
 			//Change password with confirmation hash
@@ -24,6 +26,10 @@
 		//Refirect
 		header("Location: index.php");
 	}
+}
+ else {
+    $user->error("Current password is wrong !!");
+}
 	
 ?>
 <html>
@@ -48,6 +54,9 @@
 	</div>
 
     <form method="post" action="">
+        <label>Current Password:</label><span class="required">*</span>
+        <input name="password0" type="password">        
+        
         <label>New Password:</label><span class="required">*</span>
         <input name="password" type="password">        
         

@@ -289,6 +289,7 @@ On Failure return false
 
          //Prepare Info for SQL Insertion
         foreach($info as $index => $val){
+            if ($index=='password0')                continue;
             if  (!preg_match("/2$/", $index)) { //Skips double fields
                 if (strcmp($index, "street") == 0
                         || strcmp($index, "zip") == 0
@@ -484,6 +485,13 @@ Returns false on error
             $this->error(5);
             return false;
         }
+    }
+   
+    function validate_pass($c_pass){
+      $query = mysql_query("SELECT password FROM {$this->opt['table_name']} WHERE user_id='{$this->id}'");
+      $row = mysql_fetch_array($query);       
+      if ( $this->hash_pass($c_pass)== $row['password'] ) return true;
+       else return false;
     }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
