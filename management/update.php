@@ -1,7 +1,12 @@
 <?php
 	include("inc/config.php");
 	
-	//Proccess Update
+		$query = mysql_query("SELECT * FROM {$user->opt['table_name']} WHERE user_id='{$user->id}'");
+        $row = mysql_fetch_array($query);       
+        $query = mysql_query("SELECT * FROM address WHERE address_type_id='{$user->id}' && address_type='user'");
+        $row2 = mysql_fetch_array($query);       
+       
+        //Proccess Update
 	if(count($_POST)){
 		
 		foreach($_POST as $name=>$val){
@@ -56,30 +61,30 @@
 
       <form method="post" action="">
         <label>Name or Company Name:</label><span class="required">*</span>
-        <input name="name" type="text" value="<?=@$_POST['name']?>">
+        <input name="name" type="text" value="<?php echo $row['username'] ?>">
 
 
         <label>Password:</label><span class="required">*</span>
-        <input name="password" type="password" value="<?=@$_POST['password']?>">
+        <input name="password" type="password" value="">
 
 
         <label>Re-enter Password:</label><span class="required">*</span>
-        <input name="password2" type="password" value="<?=@$_POST['password2']?>">
+        <input name="password2" type="password" value="">
 
 
         <label>Email: </label><span class="required">*</span>
-        <input name="email" type="text" value="<?=@$_POST['email']?>">
+        <input name="email" type="text" value="<?php echo $row['email'] ?>">
 
         <label>Street Address: </label><span class="required">*</span>
-        <input name="street" type="text" value="<?=@$_POST['street']?>">
+        <input name="street" type="text" value="<?php echo $row2['street']; ?>">
         <label>City: </label><span class="required">*</span>
-        <input name="city" type="text" value="<?=@$_POST['city']?>">
+        <input name="city" type="text" value="<?php echo $row2['city']; ?>">
         <label>CAP: </label><span class="required">*</span>
-        <input name="zip" type="text" value="<?=@$_POST['zip']?>">
+        <input name="zip" type="text" value="<?php echo $row2['zip']; ?>">
         <label>County: </label><span class="required">*</span>
-        <input name="country" type="text" value="<?=@$_POST['province']?>">
+        <input name="country" type="text" value="<?php echo $row2['country']; ?>">
         <label>Phone: </label><span class="required">*</span>
-        <input name="phone" type="text" value="<?=@$_POST['phone']?>">
+        <input name="phone" type="text" value="<?php echo $row2['phone']; ?>">
 
         <label>Role: </label>
         <select name="role" value="<?=@$_POST['role']?>">
