@@ -2,10 +2,11 @@
 define("MAPS_HOST", "maps.google.com");
 define("KEY", 'ABQIAAAA0rgRviA_63qGVWEKdx8ZOxRYrjFVhF5kx3H2A1TMuRZMY43TWRR7RygmrBmV4H-NDeem5LnW9Lo_Cw');
 
-// For Support visit http://sourceforge.net/projects/uflex/support
+// 
 // ---------------------------------------------------------------------------
-// 	  uFlex - An all in one authentication system PHP class
-//    Copyright (C) 2011  Pablo Tejada
+// 	  uManagement - An all in one authentication system PHP class based on
+// 	  uFlex <http://sourceforge.net/projects/uflex/support>, by Pablo Tejada:
+//    Copyright (C) 2011  
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -21,16 +22,15 @@ define("KEY", 'ABQIAAAA0rgRviA_63qGVWEKdx8ZOxRYrjFVhF5kx3H2A1TMuRZMY43TWRR7Rygmr
 //    along with this program.  If not, see http://www.gnu.org/licenses/gpl-3.0.html.
 // ---------------------------------------------------------------------------
 
-/*Thought the Class Official name is userFlex the object is simply named uFlex*/
-class uFlex {
+class uManagement {
     //Constants
     const debug = true;   //Logs extra bits of errors for developers
-    const version = 0.61;
+    const version = 0.1;
     const salt = "ks5a4"; //IMPORTANT: Please change this value as it will make this copy unique and secured
     //End of constants\\\\
     var $id;        //Signed user ID
     var $sid;       //Current User Session ID
-    var $username;  //Signed username
+    var $name;  //Signed name
     var $pass;      //Holds the user password hash
     var $signed;    //Boolean, true = user is signed-in
     var $data;      //Holds entire user database row
@@ -46,7 +46,7 @@ class uFlex {
         "cookie_host" => false,
         "user_session" => "demo",
         "default_user" => array(
-                "username" => "Guest",
+                "name" => "Guest",
                 "user_id" => 0,
                 "password" => 0,
                 "role" => 0,
@@ -54,9 +54,9 @@ class uFlex {
                 )
         );
     var $validations = array( //Array for default field validations
-            "username" => array(
+            "name" => array(
                     "limit" => "3-15",
-                    "regEx" => "/^([a-zA-Z0-9_])+$/"
+                    "regEx" => '#^[a-z\s\.]+$#i'//"/^([a-zA-Z0-9_])+$/"
                     ),
             "password" => array(
                     "limit" => "3-15",
@@ -92,19 +92,18 @@ class uFlex {
             4   => "We don't have an account with this email", //When calling pass_reset and the given email doesn't exist in database
             5   => "Password could not be changed. The request can't be validated", //When calling new_pass, the confirmation hash did not match the one in database
             6   => "Logging with cookies failed",
-            7   => "No Username or Password provided",
+            7   => "No Email or Password provided",
             8   => "Your Account has not been Activated. Check your Email for instructions",
             9   => "Your account has been deactivated. Please contact Administrator",
-            10  => "Wrong Username or Password",
+            10  => "Either Email or Password does not match",
             11  => "Confirmation hash is invalid", //When calling check_hash with invalid hash
             12  => "Your identification could not be confirmed", //Calling check_hash hash failed database match test
             13  => "Failed to save confirmation request", //When saving hash to database fails
             14 	=> "You need to reset your password to login",
             15 	=> "New Address Registration Failed",
-            16 	=> "Email Address does not exist",
-            17  => "Address Change Could not be made", //Address Database Error while calling update functions
-            18  => "Query Faild to for the geocode, Check the SQL.",
-            19  => "There are no avaliable offers."
+            16  => "Address Change Could not be made", //Address Database Error while calling update functions
+            17  => "Query Faild to for the geocode, Check the SQL.",
+            18  => "There are no avaliable offers."
         );
         
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -142,9 +141,9 @@ Returns false on Error
             if($this->check_field('email',$info['email'],"This Email is Already in Use"))
                 return false;
 
-        //Check for username in database
-        if(isset($info['username']))
-            if($this->check_field('username',$info['username'], "This Username is not available"))
+        //Check for name in database
+        if(isset($info['name']))
+            if($this->check_field('name',$info['name'], "This Name is Already in Use"))
                 return false;
 
             
@@ -204,7 +203,7 @@ Returns false on Error
         //exit($sql);
         //Enter New user to Database
         if ($this->check_sql($sql_user)) {
-            $this->report("New User \"{$info['username']}\" has been registered");
+            $this->report("New User \"{$info['name']}\" has been registered");
             $this->id = mysql_insert_id();
 
             $user_id = $this->getUserID($info['email']);
@@ -219,7 +218,7 @@ Returns false on Error
 
             //Enter New address to Database
             if ($this->check_sql($sql_address)) {
-                $this->report("New Address for \"{$info['username']}\" has been registered");
+                $this->report("New Address for \"{$info['name']}\" has been registered");
             } else {
                 $this->error(15);
             }
@@ -274,9 +273,10 @@ On Failure return false
             if($this->check_field('email',$info['email'],"This Email is Already in Use"))
                 return false;
 
-        //Check for username in database
-        if(isset($info['username']))
-            if($this->check_field('username',$info['username'], "This username is Already in taken."))
+        //Check for name in database
+        $info['name'] = stripslashes($info['name']);
+        if(isset($info['name']))
+            if($this->check_field('name',$info['name'], "This name is Already in taken."))
                 return false;           
         
         //Check for Street Address in database
@@ -363,7 +363,7 @@ Multiple Entry:
 	Takes only the first argument
 		@name = Array Object (takes an object in the following format:
 			array(
-				"username" => array(
+				"name" => array(
 						"limit" => "3-15",
 						"regEx" => "/^([a-zA-Z0-9_])+$/"
 						),
@@ -439,7 +439,7 @@ On Failure it returns false
             $this->id = $user['user_id'];
             $this->save_hash();
 
-            $data = array("email" => $email,"username" => $user['username'],"user_id" => $user['user_id'],
+            $data = array("email" => $email,"name" => $user['name'],"user_id" => $user['user_id'],
                 "hash" => $this->confirm);
             return $data;
         }else{
@@ -552,10 +552,10 @@ Returns the geocode location for that address in terms of lat and lng.
         if($result == false){
             $_SESSION[$this->opt['user_session']] = $this->opt['default_user'];
             $this->update_from_session();
-            $this->report("User is " + $this->username);
+            $this->report("User is " + $this->name);
         }else{
-            if(!$auto and isset($_SESSION['uFlex']['remember'])){
-                unset($_SESSION['uFlex']['remember']);
+            if(!$auto and isset($_SESSION['uManagement']['remember'])){
+                unset($_SESSION['uManagement']['remember']);
                 $this->setCookie();
             }
         }
@@ -567,7 +567,7 @@ Returns the geocode location for that address in terms of lat and lng.
         if(@$_SESSION[$this->opt['user_session']]['signed']){
             $this->report("User Is signed in from session");
             $this->update_from_session();
-            if(isset($_SESSION['uFlex']['update'])){
+            if(isset($_SESSION['uManagement']['update'])){
                 $this->report("Updating Session from database");
                 //Get User From database because its info has change during current session
                 $update = $this->getRow("SELECT * FROM {$this->opt['table_name']} WHERE user_id='{$this->id}'");
@@ -582,7 +582,7 @@ Returns the geocode location for that address in terms of lat and lng.
             $this->report("Attemping Login with cookies");
             if($this->check_hash($c,true)){
                 $auto = true;
-                $cond = "username='{$this->username}'";
+                $cond = "name='{$this->name}'";
             }else{
                 $this->error(6);
                 $this->logout();
@@ -595,9 +595,10 @@ Returns the geocode location for that address in terms of lat and lng.
                     //Login using email
                     $cond = "email='{$user}'";
                 }else{
-                    //Login using username
-                    $cond = "username='{$user}'";
-                    
+                    //Login without email is attempted.
+                    $this->error(10);
+                    return false;
+                    ////$cond = "name='{$user}'";                    
                 }
                 $this->hash_pass($pass);
                 $this->report("Credentials received");
@@ -698,7 +699,7 @@ Returns the geocode location for that address in terms of lat and lng.
     }
 
     private function update_session($d){
-        unset($_SESSION['uFlex']['update']);
+        unset($_SESSION['uManagement']['update']);
 
         $_SESSION[$this->opt['user_session']] = $d;
         $_SESSION[$this->opt['user_session']]['signed'] = 1;
@@ -712,7 +713,7 @@ Returns the geocode location for that address in terms of lat and lng.
 
         $this->id = $d['user_id'];
         $this->data = $d;
-        $this->username = $d['username'];
+        $this->name = $d['name'];
         $this->pass = $d['password'];
         $this->signed = $d['signed'];
 
@@ -720,7 +721,7 @@ Returns the geocode location for that address in terms of lat and lng.
     }
 
     function hash_pass($pass){
-        $salt = uFlex::salt;
+        $salt = uManagement::salt;
         $this->pass = md5($salt.$pass.$salt);
         return $this->pass;
     }
@@ -858,7 +859,7 @@ Returns the geocode location for that address in terms of lat and lng.
         //Hash is valid import user's info to object
         $this->data = $result;
         $this->id = $result['user_id'];
-        $this->username = $result['username'];
+        $this->name = $result['name'];
         $this->pass = $result['password'];
         
         $this->report("Hash successfully validated");
@@ -1048,7 +1049,6 @@ Returns the geocode location for that address in terms of lat and lng.
         return true;
     }
 
-	//NEW uFlex 0.41
 	//Encoder
 	function encode($d){
 		$k=$this->encoder;preg_match_all("/[1-9][0-9]|[0-9]/",$d,$a);$n="";$o=count($k);foreach($a[0]as$i){if($i<$o){

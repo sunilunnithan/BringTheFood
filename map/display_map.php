@@ -26,7 +26,21 @@
     var lngs = ["<?php echo implode ('","', $glng); ?>"]
 
     //alert (streets + " " + lats + " " + lngs);
-    
+    var customIcons = {
+      restaurant: {
+            icon: 'http://labs.google.com/ridefinder/images/mm_20_blue.png',
+            shadow: 'http://labs.google.com/ridefinder/images/mm_20_shadow.png'
+      },
+      bar: {
+            icon: 'http://labs.google.com/ridefinder/images/mm_20_red.png',
+            shadow: 'http://labs.google.com/ridefinder/images/mm_20_shadow.png'
+      },
+      event: {
+            icon: 'http://labs.google.com/ridefinder/images/mm_20_red.png',
+            shadow: 'http://labs.google.com/ridefinder/images/mm_20_shadow.png'
+      }
+    };
+   // var icon = customIcons[type] || {};
     var locations = new Array ();
     var latlng = new Array();
     var contentString = new Array();
@@ -68,7 +82,9 @@
       //alert(i);
       marker = new google.maps.Marker({
         position: latlng[i],
-        map: map
+        map: map,
+       // icon: 'http://labs.google.com/ridefinder/images/mm_20_blue.png',
+       // shadow: 'http://labs.google.com/ridefinder/images/mm_20_shadow.png'
       });
 
       google.maps.event.addListener(marker, 'mouseover', (function(marker, i) {

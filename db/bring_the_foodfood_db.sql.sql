@@ -36,7 +36,7 @@ CREATE TABLE `address` (
   `phone` decimal(24,0) NOT NULL,
   `lat` float NOT NULL,
   `lng` float NOT NULL,
-  PRIMARY KEY (`address_id`)
+  PRIMARY KEY (`address_id`),
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=18 ;
 
 --

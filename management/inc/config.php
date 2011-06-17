@@ -8,9 +8,9 @@
 	
 	$connection = mysql_select_db($db_name, $db_link);
 	
-	include('class.uFlex.php');
+	include('class.uManagement.php');
        
 	
-	$user = new uFlex();
+	$user = new uManagement();
        // $geocode = new geoCode();
 ?>

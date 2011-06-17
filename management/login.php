@@ -3,11 +3,11 @@
 		
 	//Proccess Login
 	if(count($_POST)){
-	  @$username = $_POST['username'];
+	  @$username = $_POST['email'];
 	  @$password = $_POST['password'];
 	  @$auto = $_POST['auto'];
 	  
-	  @$user = new uFlex($username,$password,$auto);
+	  @$user = new uManagement($username,$password,$auto);
 	}
 	
 	if($user->signed) header("Location: index.php");
@@ -35,8 +35,8 @@
 	</div>
 	
     <form method="post" action="">
-        <label>Username or Email:</label>
-        <input name="username" type="text" value="<?=@$_POST['username']?>">
+        <label>Email:</label>
+        <input name="email" type="text" value="<?=@$_POST['email']?>">
         
         
         <label>Password:</label>

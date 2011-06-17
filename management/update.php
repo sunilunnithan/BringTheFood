@@ -12,10 +12,10 @@
 		}
 
                 
-		//Add validation for custom fields, first_name, last_name and website
-		//$user->addValidation("first_name","0-15","/[a-zA-Z]+/");
-		//$user->addValidation("last_name","0-15","/[a-zA-Z]+/");
-		//$user->addValidation("website","0-50","@((https?://)?([-\w\.]+)+(:\d+)?(/([\w/_\.]*(\?\S+)?)?)?)@");
+		//Add validation for custom fields, name, address
+		//$user->addValidation("name","0-25","/\w+/");
+                $user->addValidation("name","0-25",'#^[a-z\s\.]+$#i');
+		//$user->addValidation("last_name","0-15","/\w+/");
 		$user->addValidation("address","0-50");
 
 		if(count($_POST)){
@@ -56,7 +56,15 @@
 
       <form method="post" action="">
         <label>Name or Company Name:</label><span class="required">*</span>
-        <input name="username" type="text" value="<?=@$_POST['username']?>">
+        <input name="name" type="text" value="<?=@$_POST['name']?>">
+
+
+        <label>Password:</label><span class="required">*</span>
+        <input name="password" type="password" value="<?=@$_POST['password']?>">
+
+
+        <label>Re-enter Password:</label><span class="required">*</span>
+        <input name="password2" type="password" value="<?=@$_POST['password2']?>">
 
 
         <label>Email: </label><span class="required">*</span>
@@ -72,14 +80,14 @@
         <input name="country" type="text" value="<?=@$_POST['province']?>">
         <label>Phone: </label><span class="required">*</span>
         <input name="phone" type="text" value="<?=@$_POST['phone']?>">
-        
 
         <label>Role: </label>
-         <select name="role" value="<?=@$_POST['role']?>">
+        <select name="role" value="<?=@$_POST['role']?>">
             <option value="supplier">Supplier</option>
             <option value="collector">Collector</option>
             <option value="distributor">Distributor</option>
         </select>
+        <br>
         
                 
         <input value="Update" type="submit">

@@ -5,11 +5,11 @@
 	
 	//Proccess Registration
 	if(count($_POST)){
-		
+
 		//Add validation for custom fields, name, address 
-		$user->addValidation("username","0-25","/\w+/");
+		//$user->addValidation("name","0-25","/\w+/");
+                $user->addValidation("name","0-25",'#^[a-z\s\.]+$#i');
 		//$user->addValidation("last_name","0-15","/\w+/");
-		//$user->addValidation("website","0-50","@((https?://)?([-\w\.]+)+(:\d+)?(/([\w/_\.]*(\?\S+)?)?)?)@");
 		$user->addValidation("address","0-50");
                
 		//Register User
@@ -46,17 +46,9 @@
 
     <form method="post" action="">
         <label>Name or Company Name:</label><span class="required">*</span>
-        <input name="username" type="text" value="<?=@$_POST['username']?>">
+        <input name="name" type="text" value="<?=@$_POST['name']?>">
         
-        
-        <!-- <label>First Name:</label>
-        <input name="first_name" type="text" value="<?=@$_POST['first_name']?>">
-        
-        
-        <label>Last Name:</label>
-        <input name="last_name" type="text" value="<?=@$_POST['last_name']?>"> -->
-        
-        
+               
         <label>Password:</label><span class="required">*</span>
         <input name="password" type="password" value="<?=@$_POST['password']?>">
         
@@ -86,11 +78,11 @@
             <option value="distributor">Distributor</option>
         </select>
         <br>
-         <label> Type (only for Suppliers) : </label>
+        <!-- <label> Type (only for Suppliers) : </label>
          <select name="type" value="<?=@$_POST['role']?>">
             <option value="occasional">Occasional</option>
             <option value="onetime">One time</option>
-        </select>
+        </select> -->
         
         <input value="Register" type="submit">
     </form>

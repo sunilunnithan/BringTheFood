@@ -57,7 +57,7 @@
                 //echo $user->getRow($get_offer_address_sql);
                 if (!$user->check_sql($get_offer_address_sql)) {
                     echo "Query Faild in fetching the geocode information. Check the SQL.";
-                    $user->error(18);
+                    $user->error(17);
                 } else {
                     //$result = mysql_query($sql_2);
                     //echo "Query Faild to for the geocode, Check the SQL.";
