@@ -3,7 +3,7 @@ bringthefood.views.Login = Ext.extend(Ext.form.FormPanel,{
     id: 'loginform',
     fullscreen: true,
     url: 'include/login.php',
-    standardSubmit: true,
+    standardSubmit: false,
     items: [
     {
         xtype: 'fieldset',

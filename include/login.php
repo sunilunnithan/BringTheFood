@@ -11,8 +11,14 @@ if (count($_POST)) {
     @$user = new uManagement($username, $password, $auto);
 }
 
-if ($user->signed){
+$response = array();
+
+if ($user->signed) {
     //header("Location: index.php");
-    echo "Evviva!!";
+    $response = array("success" => true);
+} else {
+    $response = array("success" => false);
 }
+
+echo json_encode($response);
 ?>
