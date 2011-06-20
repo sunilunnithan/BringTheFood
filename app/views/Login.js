@@ -2,6 +2,10 @@ bringthefood.views.Login = Ext.extend(Ext.form.FormPanel,{
     title: 'Login',
     id: 'loginform',
     fullscreen: true,
+    layout: {
+        type: 'vbox',
+        pack: 'center'
+    },
     url: 'include/login.php',
     standardSubmit: false,
     items: [
@@ -13,13 +17,15 @@ bringthefood.views.Login = Ext.extend(Ext.form.FormPanel,{
             xtype: 'textfield',
             name: 'email',
             label: 'E-mail',
-            vtype: 'email'
+            vtype: 'email',
+            required: true
         },
         {
             xtype: 'passwordfield',
             label: 'Password',
             name: 'password',
-            vtype: 'password'
+            vtype: 'password',
+            required: true
         },
 
         ]
@@ -29,6 +35,8 @@ bringthefood.views.Login = Ext.extend(Ext.form.FormPanel,{
         text: 'Login',
         name: 'loginBtn',
         style: 'margin-top: .5em; padding: .5em',
+        width: '200px',
+        centered: true,
         ui: 'confirm',
         handler : function(){
             Ext.dispatch({
@@ -42,6 +50,7 @@ bringthefood.views.Login = Ext.extend(Ext.form.FormPanel,{
         text: 'Register',
         name: 'loginBtn',
         style: 'margin-top: .5em; padding: .5em',
+        width: '200px',
         ui: 'action',
         handler : function(){
             Ext.dispatch({

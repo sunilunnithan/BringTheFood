@@ -2,19 +2,31 @@ bringthefood.views.Registration = Ext.extend(Ext.form.FormPanel,{
     title: 'Basic',
     id: 'basicform',
     scroll: 'vertical',
+    dockedItems:[{
+        xtype: 'toolbar',
+        title: 'Registration',
+        dock: 'top',
+        items: [
+        {
+            text: 'Back',
+            ui: 'back',
+            handler: function(){
+                Ext.dispatch({
+                    controller: bringthefood.controllers.registrationController,
+                    action: 'goBack'
+                });
+            }
+        }
+
+        ]
+    }],
     items: [{
         xtype: 'fieldset',
-        title: 'Personal Info',
-        instructions: 'Please enter the information above.',
-        defaults: {
-            // labelAlign: 'right'
-            labelWidth: '35%'
-        },
+        title: 'Personal Information',
         items: [{
             xtype: 'textfield',
             name: 'name',
-            label: 'Name',
-            placeHolder: 'Tom Roy',
+            label: '(Company) Name',
             autoCapitalize : true,
             required: true,
             useClearIcon: true
@@ -22,105 +34,83 @@ bringthefood.views.Registration = Ext.extend(Ext.form.FormPanel,{
             xtype: 'passwordfield',
             name: 'password',
             label: 'Password',
-            useClearIcon: true
-        }, {
+            useClearIcon: true,
+            required: true
+        },{
+            xtype: 'passwordfield',
+            name: 'password2',
+            label: 'Re-enter Password',
+            useClearIcon: true,
+            required: true
+        },
+        {
             xtype: 'emailfield',
             name: 'email',
             label: 'Email',
-            placeHolder: 'me@sencha.com',
-            useClearIcon: true
-        }, {
-            xtype: 'urlfield',
-            name: 'url',
-            label: 'Url',
-            placeHolder: 'http://sencha.com',
-            useClearIcon: true
-        }, {
-            xtype: 'checkboxfield',
-            name: 'cool',
-            label: 'Cool'
-        }, {
-            xtype: 'datepickerfield',
-            name: 'birthday',
-            label: 'Birthday',
-            picker: {
-                yearFrom: 1900
-            }
-        }, {
-            xtype: 'selectfield',
-            name: 'rank',
-            label: 'Rank',
-            options: [{
-                text: 'Master',
-                value: 'master'
-            }, {
-                text: 'Journeyman',
-                value: 'journeyman'
-            }, {
-                text: 'Apprentice',
-                value: 'apprentice'
-            }]
-        }, {
-            xtype: 'hiddenfield',
-            name: 'secret',
-            value: false
-        }, {
-            xtype: 'textareafield',
-            name: 'bio',
-            label: 'Bio'
+            useClearIcon: true,
+            required: true
         }]
-    }, {
+    },{
         xtype: 'fieldset',
-        title: 'Favorite color',
+        title: 'Address',
         defaults: {
-            xtype: 'radiofield',
-            labelWidth: '35%'
+            xtype: 'textfield'
         },
         items: [{
-            name: 'color',
-            value: 'red',
-            label: 'Red'
+            name: 'street',
+            label: 'Street'
         }, {
-            name: 'color',
-            label: 'Blue',
-            value: 'blue'
+            name: 'city',
+            label: 'City'
         }, {
-            name: 'color',
-            label: 'Green',
-            value: 'green'
+            name: 'zip',
+            label: 'ZIP Code',
+            vtype: 'zip'
         }, {
-            name: 'color',
-            label: 'Purple',
-            value: 'purple'
+            name: 'country',
+            label: 'Country'
+        },{
+            name: 'phone',
+            label: 'Phone',
+            vtype: 'phone'
         }]
+    },{
+        xtype: 'selectfield',
+        name: 'role',
+        label: 'Role',
+        options: [
+        {
+            text:'Supplier',
+            value:'supplier'
+        } ,
+{
+            text:'Collector',
+            value:'collector'
+        },
+
+        {
+            text:'Distributor',
+            value:'distributor'
+        }
+        ]
     }, {
-        layout: 'vbox',
+        layout: 'hbox',
         defaults: {
             xtype: 'button',
             flex: 1,
             style: 'margin: .5em;'
         },
         items: [{
-            text: 'Disable fields',
-            scope: this,
-            hasDisabled: false,
-            handler: function(btn){
-                var form = Ext.getCmp('basicform');
-
-                if (btn.hasDisabled) {
-                    form.enable();
-                    btn.hasDisabled = false;
-                    btn.setText('Disable fields');
-                } else {
-                    form.disable();
-                    btn.hasDisabled = true;
-                    btn.setText('Enable fields');
-                }
-            }
-        }, {
-            text: 'Reset form',
+            text: 'Reset',
             handler: function(){
                 Ext.getCmp('basicform').reset();
+            }
+        },
+        {
+            text: 'Submit',
+            ui: 'confirm',
+            handler: function(){
+            
             }
         }]
     }]

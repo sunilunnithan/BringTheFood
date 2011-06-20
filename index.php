@@ -1,6 +1,3 @@
-<?php
-//include ('db/DB_Connector.php');
-?>
 <html>
     <head>       
         <title>Bring the Food!</title>
@@ -18,6 +15,7 @@
 
         <!-- Controllers -->
         <script type="text/javascript" src="app/controllers/loginController.js"></script>
+        <script type="text/javascript" src="app/controllers/registrationController.js"></script>
 
     </head>
 
