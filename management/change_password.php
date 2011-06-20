@@ -4,32 +4,36 @@
 	//In is not signed
 	//if($user->signed) header("Location: index.php");
 	
-//Validate current password
-if ($user->validate_pass($_POST[password0])){       
+      
         //Proccess Password change
 	if(count($_POST)){
 		if(!$user->signed and isset($_GET['c'])){
 			//Change password with confirmation hash
 			$user->new_pass($_GET['c'],$_POST);	
 		}else{
-			//Change the password of signed in user without a confirmation hash 
-			$user->update($_POST);			
-		}
-		
+			//Validate current password
+                        if ($user->validate_pass($_POST[password0])){ 
+                            //Change the password of signed in user without a confirmation hash 
+                            $user->make_hash($user->id); $user->save_hash();
+                            $user->new_pass($user->confirm,$_POST);
+                        }
+			else $user->error("Current password is wrong !!");
+                
+                }
 		
 		//If there is not error
 		if(!$user->has_error()){
 			//A workaround to display a confirmation message in this specific  Example
 			$user->error("Password Changed");
+                        header("Location: myAccount.php");
 		}
 	}else if(!$user->signed and !isset($_GET['c'])){
 		//Refirect
 		header("Location: index.php");
 	}
-}
- else {
-    $user->error("Current password is wrong !!");
-}
+
+
+ 
 	
 ?>
 <html>
@@ -54,9 +58,8 @@ if ($user->validate_pass($_POST[password0])){
 	</div>
 
     <form method="post" action="">
-        <label>Current Password:</label><span class="required">*</span>
-        <input name="password0" type="password">        
-        
+       <?php if($user->signed) echo ' <label>Current Password:</label><span class="required">*</span> <input name="password0" type="password">'; ?>        
+   
         <label>New Password:</label><span class="required">*</span>
         <input name="password" type="password">        
         

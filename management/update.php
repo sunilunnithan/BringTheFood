@@ -60,17 +60,17 @@
 	</div>
 
       <form method="post" action="">
-        <label>Name or Company Name:</label><span class="required">*</span>
-        <input name="name" type="text" value="<?php echo $row['username'] ?>">
+       <label>Name or Company Name:</label><span class="required">*</span>
+        <input name="name" type="text" value="<?php echo $row['name'] ?>">
 
-
+<!--
         <label>Password:</label><span class="required">*</span>
         <input name="password" type="password" value="">
 
 
         <label>Re-enter Password:</label><span class="required">*</span>
         <input name="password2" type="password" value="">
-
+-->
 
         <label>Email: </label><span class="required">*</span>
         <input name="email" type="text" value="<?php echo $row['email'] ?>">
@@ -86,13 +86,13 @@
         <label>Phone: </label><span class="required">*</span>
         <input name="phone" type="text" value="<?php echo $row2['phone']; ?>">
 
-        <label>Role: </label>
+      <!--  <label>Role: </label>
         <select name="role" value="<?=@$_POST['role']?>">
             <option value="supplier">Supplier</option>
             <option value="collector">Collector</option>
             <option value="distributor">Distributor</option>
         </select>
-        <br>
+  -->      <br>
         
                 
         <input value="Update" type="submit">

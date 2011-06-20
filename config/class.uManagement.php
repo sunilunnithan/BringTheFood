@@ -251,9 +251,9 @@ On Success returns true
 On Failure return false	
 */
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
-    function update($info){
+   function update($info){
         $this->logger("update"); //Index for Errors and Reports
-
+// name , email, street , zip , city , country , phone
         //Saves Updates Data in Class
         $this->tmp_data = $info;
 
@@ -261,35 +261,30 @@ On Failure return false
         if(!$this->validateAll())
             return false; //There are validations error
 
-        //Built in actions for special fields
-        //Hash Password
-        if(isset($info['password'])){
-            $this->hash_pass($info['password']);
-            $info['password'] = $this->pass;
-        }
-
-        //Check for Email in database
-        if(isset($info['email']))
-            if($this->check_field('email',$info['email'],"This Email is Already in Use"))
-                return false;
-
         //Check for name in database
         $info['name'] = stripslashes($info['name']);
-        if(isset($info['name']))
-            if($this->check_field('name',$info['name'], "This name is Already in taken."))
-                return false;           
         
+        if(isset($info['name'])) 
+                if( $this->check_field('name',$info['name'], "This name is Already in taken."))
+                    return false;
+        
+       
+        //Check for Email in database
+         if(isset($info['email']))
+            if($this->check_field('email',$info['email'],"This Email is Already in Use"))
+                return false;
+ 
         //Check for Street Address in database
         if(isset($info['street']))
             if($this->check_field('street',$info['street'], "This Street Address is Already in Use"))
                 return false;
+        
 
         //Check for errors
         if($this->has_error()) return false;
 
          //Prepare Info for SQL Insertion
-        foreach($info as $index => $val){
-            if ($index=='password0')                continue;
+        foreach($info as $index => $val){ 
             if  (!preg_match("/2$/", $index)) { //Skips double fields
                 if (strcmp($index, "street") == 0
                         || strcmp($index, "zip") == 0
@@ -315,6 +310,10 @@ On Failure return false
         //echo "checking ... ".$this->id;
         $sql_user = "UPDATE {$this->opt['table_name']} SET $set_user
 					WHERE user_id='{$this->id}'";
+        
+        
+        
+        
         //Prepare Address Update	Query
         $table_name = "address";
         $complete_address = $info["street"] . ", " . $info["city"] . ", " . $info["zip"] . ", " . $info["country"];
@@ -334,13 +333,20 @@ On Failure return false
         //Check for Changes
         if ($this->check_sql($sql_user)) {
             $this->report("Information Updated");
+            //update session info
+                
             if ($this->check_sql($sql_address)) {
                 $this->report("Address Information is also Updated");
+                
             } else {
                 $this->error(17);
             }
-
+            
             $_SESSION['mFood']['update'] = true;
+             $update = $this->getRow("SELECT * FROM {$this->opt['table_name']} WHERE user_id='{$this->id}'");
+             $this->update_session($update);
+             
+          
             return true;
         } else {
             $this->error(2);
