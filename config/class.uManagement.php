@@ -209,8 +209,9 @@ Returns false on Error
             $geocode_info = grapGeocodeInfo($complete_address);
             $lat = $geocode_info["lat"];
             $lng = $geocode_info["lng"];
-            $sql_address = "INSERT INTO {$table_name} (address_type, address_type_id, $into_tbladdress,lat,lng)
-					VALUES('user',$user_id,$values_tbladdress,$lat,$lng)";
+            //echo 'lat and lng .. '.$lat." ".$lng;
+            $sql_address = "INSERT INTO {$table_name} ($into_tbladdress,lat,lng,offer_id,user_id)
+					VALUES($values_tbladdress,$lat,$lng,0,$user_id)";
 
             //Enter New address to Database
             if ($this->check_sql($sql_address)) {
@@ -951,7 +952,7 @@ Returns false on error
     }
 
     //Executes SQL query and returns a user_id
-    function abortTransaction($email) {
+    function abortTransaction($user_id) {
 
         $this->logger("Abort Transaction");
 
@@ -963,7 +964,7 @@ Returns false on error
             $this->error("Transaction Successfully Aborted");
             return true;
         } else {
-            $this->error("Aboart Failed");
+            $this->error("Abort Failed");
             return false;
         }
     }

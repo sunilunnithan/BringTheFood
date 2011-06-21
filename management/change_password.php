@@ -15,8 +15,9 @@
                   
                     if ($user->validate_pass($_POST['password0'])) {
                      //   $user->new_pass($user->data['email'], $_POST); //, "signed_user");
-                        //$user->make_hash($user->id);
-                        //$user->save_hash();
+                        $user->make_hash($user->id);
+                        $user->save_hash();
+                       // $res = $user->pass_reset($_POST['email']);
                         $user->new_pass($user->confirm,$_POST);
                     }
                      else {
@@ -29,7 +30,7 @@
 		if(!$user->has_error()){
 			//A workaround to display a confirmation message in this specific  Example
 			$user->error("Password Changed");
-                        header("Location: myAccount.php");
+                        //header("Location: myAccount.php");
 		}
                 
 	}else if(!$user->signed and !isset($_GET['c'])){
