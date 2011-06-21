@@ -1,7 +1,5 @@
 <?php
-define("MAPS_HOST", "maps.google.com");
-define("KEY", 'ABQIAAAA0rgRviA_63qGVWEKdx8ZOxRYrjFVhF5kx3H2A1TMuRZMY43TWRR7RygmrBmV4H-NDeem5LnW9Lo_Cw');
-
+include ("../config/geocode.php");
 // 
 // ---------------------------------------------------------------------------
 // 	  uManagement - An all in one authentication system PHP class based on
@@ -138,7 +136,7 @@ Returns false on Error
             $this->hash_pass($info['password']);
             $info['password'] = $this->pass;
         }
-        //Check for Email in database, allow duplication if a user is registering for different role.
+        //Check for Email in database.
         if(isset($info['email']))
             if($this->check_field('email',$info['email'],"This Email is Already in Use"))
                 return false;
@@ -147,8 +145,6 @@ Returns false on Error
         if(isset($info['name']))
             if($this->check_field('name',$info['name'], "This Name is Already in Use"))
                 return false;
-
-            
 
         //Check for Street Address in database
         if(isset($info['street']))
@@ -176,11 +172,6 @@ Returns false on Error
                         || strcmp($index, "phone")== 0) {
                     $into_tbladdress[] = $index;
                     $values_tbladdress[] = "'" . mysql_real_escape_string($val) . "'";
-
-                }else if (strcmp($index, "type")== 0) {
-                    //$into_tbltype[] = $index;
-                    //$values_tbltype[] = "'" . mysql_real_escape_string($val) . "'";
-                    //do nothing!
                 }else {
                     if (strcmp($index, "type")!= 0) {
                         $into_tbluser[] = $index;
@@ -215,7 +206,7 @@ Returns false on Error
 
            //Preparing address to fetch geocode.
             $complete_address = $info["street"].", ".$info["city"].", ".$info["zip"].", ".$info["country"];
-            $geocode_info = $this->grapGeocodeInfo($complete_address);
+            $geocode_info = grapGeocodeInfo($complete_address);
             $lat = $geocode_info["lat"];
             $lng = $geocode_info["lng"];
             $sql_address = "INSERT INTO {$table_name} (address_type, address_type_id, $into_tbladdress,lat,lng)
@@ -259,34 +250,40 @@ On Failure return false
 */
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
    function update($info){
-        $this->logger("update"); //Index for Errors and Reports
-// name , email, street , zip , city , country , phone
-        //Saves Updates Data in Class
-        $this->tmp_data = $info;
+
+       $this->logger("update"); //Index for Errors and Reports
+       
+       $this->tmp_data = $info;
 
         //Validate All Fields
         if(!$this->validateAll())
             return false; //There are validations error
-
-        //Check for name in database
-        //$info['name'] = stripslashes($info['name']);
         
-        if(isset($info['name'])) 
-                if( $this->check_field('name',$info['name'], "This name is Already in taken."))
+        if(isset($info['name'])) {
+            if (strcmp($this->data["name"], $info["name"]) != 0) {
+                if( $this->check_field('name',$info['name'], "This name is Already in taken.")) {
                     return false;
+                }
+            }
+        }
         
-       
         //Check for Email in database
-         if(isset($info['email']))
-            if($this->check_field('email',$info['email'],"This Email is Already in Use"))
-                return false;
- 
-        //Check for Street Address in database
-        if(isset($info['street']))
-            if($this->check_field('street',$info['street'], "This Street Address is Already in Use"))
-                return false;
-        
-
+         if(isset($info['email'])) {
+           if (strcmp($this->data["email"], $info["email"]) != 0) {
+                   if($this->check_field('email',$info['email'],"This Email is Already in Use")) {
+                           return false;
+                   }
+           }
+         }
+                   
+       //Check for Street Address in database
+        if(isset($info['street'])) {
+            if (strcmp($this->data["street"], $info["street"]) != 0) {
+                    if($this->check_field('street',$info['street'], "This Street Address is Already in Use")) {
+                            return false;
+                    }
+            }
+        }
         //Check for errors
         if($this->has_error()) return false;
 
@@ -310,7 +307,6 @@ On Failure return false
             }
         }
 
-    
         $set_user = implode(", ", $set_user);
         
         //Prepare User Update	Query
@@ -318,15 +314,12 @@ On Failure return false
         $sql_user = "UPDATE {$this->opt['table_name']} SET $set_user
 					WHERE user_id='{$this->id}'";
         
-        
-        
-        
         //Prepare Address Update	Query
         $table_name = "address";
         $complete_address = $info["street"] . ", " . $info["city"] . ", " . $info["zip"] . ", " . $info["country"];
 
         //Now get the geocode.
-        $geocode_info = $this->grapGeocodeInfo($complete_address);
+        $geocode_info = grapGeocodeInfo($complete_address);
         $lat = $geocode_info["lat"];
         $lng = $geocode_info["lng"];
 
@@ -350,10 +343,9 @@ On Failure return false
             }
             
             $_SESSION['mFood']['update'] = true;
-             $update = $this->getRow("SELECT * FROM {$this->opt['table_name']} WHERE user_id='{$this->id}'");
-             $this->update_session($update);
-             
-          
+            $update = $this->getRow("SELECT * FROM {$this->opt['table_name']} WHERE user_id='{$this->id}'");
+            $this->update_session($update);      
+         
             return true;
         } else {
             $this->error(2);
@@ -510,58 +502,6 @@ Returns false on error
            return false;
     }
 
-///////////////////////////////////////////////////////////////////////////////////////////////////////
-/*
-Get geocode information given an address and populate into a database.
--Takes one parameter
-	@full address = string (an address composed )
-					Example:
-					via Sommarive 14, 38123, Trento, Italy
-Returns the geocode location for that address in terms of lat and lng.
-*/
-/////////////////////////////////////////////////////////////////////////////////////////////
-    function grapGeocodeInfo($addr) {
-
-        // Initialize delay in geocode speed
-        //echo 'Address received '.$addr."<br />";
-        $geocodeInfo = null;
-        $delay = 0;
-        $base_url = "http://" . MAPS_HOST . "/maps/geo?output=xml" . "&key=" . KEY;
-
-        $geocode_pending = true;
-
-        while ($geocode_pending) {
-
-            $request_url = $base_url . "&q=" . urlencode($addr);
-            $xml = simplexml_load_file($request_url) or die("url not loading");
-
-            $status = $xml->Response->Status->code;
-            //echo 'status: ' . $status . "<br />";
-            if (strcmp($status, "200") == 0) {
-                // Successful geocode
-                $geocode_pending = false;
-                $coordinates = $xml->Response->Placemark->Point->coordinates;
-                $coordinatesSplit = split(",", $coordinates);
-                // Format: Longitude, Latitude, Altitude
-                $lat = $coordinatesSplit[1];
-                $lng = $coordinatesSplit[0];
-                $geocodeInfo = array("addr" => $addr, "lat" => $lat, "lng" => $lng, "status" => $status);
-
-                //echo 'lat : ' . $lat . " and lng: " . $lng . "<br />";
-            } else if (strcmp($status, "620") == 0) {
-                // sent geocodes too fast
-                $delay += 100000;
-            } else {
-                // failure to geocode
-                $geocode_pending = false;
-                $geocodeInfo = array("addr" => $addr, "lat" => NULL, "lng" => NULL, "status" => $status);
-                //echo "Address " . $addr . " failed to geocoded. ";
-                //echo "Received status " . $status . "<br />";
-            }
-            usleep($delay);
-        }
-        return ($geocodeInfo);
-    }
     
  /*////////////////////////////////////////////\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\*\
 ////////Private and Secondary Methods below this line\\\\\\\\\\\\\
