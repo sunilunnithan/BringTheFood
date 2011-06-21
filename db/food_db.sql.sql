@@ -2,15 +2,15 @@ SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL';
 
-CREATE SCHEMA IF NOT EXISTS `bringFood` ;
-USE `bringFood` ;
+CREATE SCHEMA IF NOT EXISTS `food_db` ;
+USE `food_db` ;
 
 -- -----------------------------------------------------
--- Table `bringFood`.`users`
+-- Table `food_db`.`users`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `bringFood`.`users` ;
+DROP TABLE IF EXISTS `food_db`.`users` ;
 
-CREATE  TABLE IF NOT EXISTS `bringFood`.`users` (
+CREATE  TABLE IF NOT EXISTS `food_db`.`users` (
   `user_id` INT(11) NOT NULL AUTO_INCREMENT ,
   `name` VARCHAR(128) NOT NULL ,
   `password` VARCHAR(35) NOT NULL ,
@@ -27,11 +27,11 @@ DEFAULT CHARACTER SET = latin1;
 
 
 -- -----------------------------------------------------
--- Table `bringFood`.`offer`
+-- Table `food_db`.`offer`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `bringFood`.`offer` ;
+DROP TABLE IF EXISTS `food_db`.`offer` ;
 
-CREATE  TABLE IF NOT EXISTS `bringFood`.`offer` (
+CREATE  TABLE IF NOT EXISTS `food_db`.`offer` (
   `offer_id` INT(11) NOT NULL AUTO_INCREMENT ,
   `description` VARCHAR(1024) NOT NULL ,
   `available_date` DATE NOT NULL ,
@@ -45,12 +45,12 @@ CREATE  TABLE IF NOT EXISTS `bringFood`.`offer` (
   INDEX `fk_offer_users2` (`collector_id` ASC) ,
   CONSTRAINT `fk_offer_users1`
     FOREIGN KEY (`supplier_id` )
-    REFERENCES `bringFood`.`users` (`user_id` )
+    REFERENCES `food_db`.`users` (`user_id` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_offer_users2`
     FOREIGN KEY (`collector_id` )
-    REFERENCES `bringFood`.`users` (`user_id` )
+    REFERENCES `food_db`.`users` (`user_id` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = MyISAM
@@ -59,11 +59,11 @@ DEFAULT CHARACTER SET = latin1;
 
 
 -- -----------------------------------------------------
--- Table `bringFood`.`address`
+-- Table `food_db`.`address`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `bringFood`.`address` ;
+DROP TABLE IF EXISTS `food_db`.`address` ;
 
-CREATE  TABLE IF NOT EXISTS `bringFood`.`address` (
+CREATE  TABLE IF NOT EXISTS `food_db`.`address` (
   `address_id` INT(11) NOT NULL AUTO_INCREMENT ,
   `street` CHAR(64) NOT NULL ,
   `city` CHAR(32) NOT NULL ,
@@ -79,12 +79,12 @@ CREATE  TABLE IF NOT EXISTS `bringFood`.`address` (
   INDEX `fk_address_users1` (`user_id` ASC) ,
   CONSTRAINT `fk_address_offer1`
     FOREIGN KEY (`offer_id` )
-    REFERENCES `bringFood`.`offer` (`offer_id` )
+    REFERENCES `food_db`.`offer` (`offer_id` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_address_users1`
     FOREIGN KEY (`user_id` )
-    REFERENCES `bringFood`.`users` (`user_id` )
+    REFERENCES `food_db`.`users` (`user_id` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = MyISAM

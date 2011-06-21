@@ -1,6 +1,10 @@
 <?php
+<<<<<<< HEAD
 include ('../config/geocode.php');
 
+=======
+include ("../config/geocode.php");
+>>>>>>> 715103de1b5e45634b1fd1b1423bdbf0f537b4ee
 // 
 // ---------------------------------------------------------------------------
 // 	  uManagement - An all in one authentication system PHP class based on
@@ -137,7 +141,7 @@ Returns false on Error
             $this->hash_pass($info['password']);
             $info['password'] = $this->pass;
         }
-        //Check for Email in database, allow duplication if a user is registering for different role.
+        //Check for Email in database.
         if(isset($info['email']))
             if($this->check_field('email',$info['email'],"This Email is Already in Use"))
                 return false;
@@ -146,8 +150,6 @@ Returns false on Error
         if(isset($info['name']))
             if($this->check_field('name',$info['name'], "This Name is Already in Use"))
                 return false;
-
-            
 
         //Check for Street Address in database
         if(isset($info['street']))
@@ -175,11 +177,6 @@ Returns false on Error
                         || strcmp($index, "phone")== 0) {
                     $into_tbladdress[] = $index;
                     $values_tbladdress[] = "'" . mysql_real_escape_string($val) . "'";
-
-                }else if (strcmp($index, "type")== 0) {
-                    //$into_tbltype[] = $index;
-                    //$values_tbltype[] = "'" . mysql_real_escape_string($val) . "'";
-                    //do nothing!
                 }else {
                     if (strcmp($index, "type")!= 0) {
                         $into_tbluser[] = $index;
@@ -217,8 +214,9 @@ Returns false on Error
             $geocode_info = grapGeocodeInfo($complete_address);
             $lat = $geocode_info["lat"];
             $lng = $geocode_info["lng"];
-            $sql_address = "INSERT INTO {$table_name} (address_type, address_type_id, $into_tbladdress,lat,lng)
-					VALUES('user',$user_id,$values_tbladdress,$lat,$lng)";
+            //echo 'lat and lng .. '.$lat." ".$lng;
+            $sql_address = "INSERT INTO {$table_name} ($into_tbladdress,lat,lng,offer_id,user_id)
+					VALUES($values_tbladdress,$lat,$lng,0,$user_id)";
 
             //Enter New address to Database
             if ($this->check_sql($sql_address)) {
@@ -258,34 +256,40 @@ On Failure return false
 */
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
    function update($info){
-        $this->logger("update"); //Index for Errors and Reports
-// name , email, street , zip , city , country , phone
-        //Saves Updates Data in Class
-        $this->tmp_data = $info;
+
+       $this->logger("update"); //Index for Errors and Reports
+       
+       $this->tmp_data = $info;
 
         //Validate All Fields
         if(!$this->validateAll())
             return false; //There are validations error
-
-        //Check for name in database
-        //$info['name'] = stripslashes($info['name']);
         
-        if(isset($info['name'])) 
-                if( $this->check_field('name',$info['name'], "This name is Already in taken."))
+        if(isset($info['name'])) {
+            if (strcmp($this->data["name"], $info["name"]) != 0) {
+                if( $this->check_field('name',$info['name'], "This name is Already in taken.")) {
                     return false;
+                }
+            }
+        }
         
-       
         //Check for Email in database
-         if(isset($info['email']))
-            if($this->check_field('email',$info['email'],"This Email is Already in Use"))
-                return false;
- 
-        //Check for Street Address in database
-        if(isset($info['street']))
-            if($this->check_field('street',$info['street'], "This Street Address is Already in Use"))
-                return false;
-        
-
+         if(isset($info['email'])) {
+           if (strcmp($this->data["email"], $info["email"]) != 0) {
+                   if($this->check_field('email',$info['email'],"This Email is Already in Use")) {
+                           return false;
+                   }
+           }
+         }
+                   
+       //Check for Street Address in database
+        if(isset($info['street'])) {
+            if (strcmp($this->data["street"], $info["street"]) != 0) {
+                    if($this->check_field('street',$info['street'], "This Street Address is Already in Use")) {
+                            return false;
+                    }
+            }
+        }
         //Check for errors
         if($this->has_error()) return false;
 
@@ -309,16 +313,12 @@ On Failure return false
             }
         }
 
-    
         $set_user = implode(", ", $set_user);
         
         //Prepare User Update	Query
         //echo "checking ... ".$this->id;
         $sql_user = "UPDATE {$this->opt['table_name']} SET $set_user
 					WHERE user_id='{$this->id}'";
-        
-        
-        
         
         //Prepare Address Update	Query
         $table_name = "address";
@@ -349,10 +349,9 @@ On Failure return false
             }
             
             $_SESSION['mFood']['update'] = true;
-             $update = $this->getRow("SELECT * FROM {$this->opt['table_name']} WHERE user_id='{$this->id}'");
-             $this->update_session($update);
-             
-          
+            $update = $this->getRow("SELECT * FROM {$this->opt['table_name']} WHERE user_id='{$this->id}'");
+            $this->update_session($update);      
+         
             return true;
         } else {
             $this->error(2);
@@ -509,7 +508,10 @@ Returns false on error
            return false;
     }
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 715103de1b5e45634b1fd1b1423bdbf0f537b4ee
     
  /*////////////////////////////////////////////\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\*\
 ////////Private and Secondary Methods below this line\\\\\\\\\\\\\
@@ -959,7 +961,7 @@ Returns false on error
     }
 
     //Executes SQL query and returns a user_id
-    function abortTransaction($email) {
+    function abortTransaction($user_id) {
 
         $this->logger("Abort Transaction");
 
@@ -971,7 +973,7 @@ Returns false on error
             $this->error("Transaction Successfully Aborted");
             return true;
         } else {
-            $this->error("Aboart Failed");
+            $this->error("Abort Failed");
             return false;
         }
     }

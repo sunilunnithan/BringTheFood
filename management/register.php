@@ -1,16 +1,17 @@
 <?php
-	include("inc/config.php");
+	include("../config/config.php");
 
 	if($user->signed) header("Location: index.php");	
 	
 	//Proccess Registration
 	if(count($_POST)){
-		
-		//Add validation for custom fields, first_name, last_name and website
-		$user->addValidation("first_name","0-15","/\w+/");
-		$user->addValidation("last_name","0-15","/\w+/");
-		$user->addValidation("website","0-50","@((https?://)?([-\w\.]+)+(:\d+)?(/([\w/_\.]*(\?\S+)?)?)?)@");
-		
+
+		//Add validation for custom fields, name, address 
+		//$user->addValidation("name","0-25","/\w+/");
+                $user->addValidation("name","0-25",'#^[a-z\s\.]+$#i');
+		//$user->addValidation("last_name","0-15","/\w+/");
+		$user->addValidation("address","0-50");
+               
 		//Register User
 		$user->register($_POST);
 		
@@ -25,7 +26,7 @@
 <html>
 <head>
 	<link rel="stylesheet" type="text/css" href="style.css" />
-	<title>Register | uFlex Demo</title>
+	<title>Register | Moving Food </title>
 </head>
 
 <body>
@@ -44,18 +45,10 @@
 	</div>
 
     <form method="post" action="">
-        <label>Username:</label><span class="required">*</span>
-        <input name="username" type="text" value="<?=@$_POST['username']?>">
+        <label>Name or Company Name:</label><span class="required">*</span>
+        <input name="name" type="text" value="<?=@$_POST['name']?>">
         
-        
-        <label>First Name:</label>
-        <input name="first_name" type="text" value="<?=@$_POST['first_name']?>">
-        
-        
-        <label>Last Name:</label>
-        <input name="last_name" type="text" value="<?=@$_POST['last_name']?>">
-        
-        
+               
         <label>Password:</label><span class="required">*</span>
         <input name="password" type="password" value="<?=@$_POST['password']?>">
         
@@ -66,19 +59,30 @@
         
         <label>Email: </label><span class="required">*</span>
         <input name="email" type="text" value="<?=@$_POST['email']?>">
+
+        <label>Street Address: </label><span class="required">*</span>
+        <input name="street" type="text" value="<?=@$_POST['street']?>">
+        <label>City: </label><span class="required">*</span>
+        <input name="city" type="text" value="<?=@$_POST['city']?>">
+        <label>CAP: </label><span class="required">*</span>
+        <input name="zip" type="text" value="<?=@$_POST['zip']?>">
+        <label>County: </label><span class="required">*</span>
+        <input name="country" type="text" value="<?=@$_POST['province']?>"> 
+        <label>Phone: </label><span class="required">*</span>
+        <input name="phone" type="text" value="<?=@$_POST['phone']?>">
         
-        
-        <label>Website: </label>
-        <input name="website" type="text" value="<?=@$_POST['website']?>">
-        
-        
-        <label>Group: </label>
-        <select name="group_id" value="<?=@$_POST['group_id']?>">
-            <option value="1">User</option>
-            <option value="2">Developer</option>
-            <option value="3">Designer</option>
+        <label>Role: </label>
+        <select name="role" value="<?=@$_POST['role']?>">
+            <option value="supplier">Supplier</option>
+            <option value="collector">Collector</option>
+            <option value="distributor">Distributor</option>
         </select>
-        
+        <br>
+        <!-- <label> Type (only for Suppliers) : </label>
+         <select name="type" value="<?=@$_POST['role']?>">
+            <option value="occasional">Occasional</option>
+            <option value="onetime">One time</option>
+        </select> -->
         
         <input value="Register" type="submit">
     </form>

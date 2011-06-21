@@ -1,12 +1,21 @@
 <?php
+<<<<<<< HEAD
+=======
+define("MAPS_HOST", "maps.google.com");
+define("KEY", 'ABQIAAAA0rgRviA_63qGVWEKdx8ZOxRYrjFVhF5kx3H2A1TMuRZMY43TWRR7RygmrBmV4H-NDeem5LnW9Lo_Cw');
+
+>>>>>>> 715103de1b5e45634b1fd1b1423bdbf0f537b4ee
 /* 
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
 
+<<<<<<< HEAD
 define("MAPS_HOST", "maps.google.com");
 define("KEY", 'ABQIAAAA0rgRviA_63qGVWEKdx8ZOxRYrjFVhF5kx3H2A1TMuRZMY43TWRR7RygmrBmV4H-NDeem5LnW9Lo_Cw');
 
+=======
+>>>>>>> 715103de1b5e45634b1fd1b1423bdbf0f537b4ee
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 /*
 Get geocode information given an address and populate into a database.
@@ -59,5 +68,9 @@ Returns the geocode location for that address in terms of lat and lng.
         }
         return ($geocodeInfo);
     }
+<<<<<<< HEAD
  
+=======
+
+>>>>>>> 715103de1b5e45634b1fd1b1423bdbf0f537b4ee
 ?>
