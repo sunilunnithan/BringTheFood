@@ -102,8 +102,10 @@ class uManagement {
             14 	=> "You need to reset your password to login",
             15 	=> "New Address Registration Failed",
             16  => "Address Change Could not be made", //Address Database Error while calling update functions
-            17  => "Query Faild to for the geocode, Check the SQL.",
-            18  => "There are no avaliable offers."
+            17  => "Query Faild to for the geocode, Check the SQL",
+            18  => "There are no avaliable offers",
+            19  => "Aaron put here your no 19",
+            20  => "Something is wrong in your current password"
         );
         
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -176,12 +178,14 @@ Returns false on Error
                     $values_tbladdress[] = "'" . mysql_real_escape_string($val) . "'";
 
                 }else if (strcmp($index, "type")== 0) {
-                    $into_tbltype[] = $index;
-                    $values_tbltype[] = "'" . mysql_real_escape_string($val) . "'";
-                }
-                    else {
-                    $into_tbluser[] = $index;
-                    $values_tbluser[] = "'" . mysql_real_escape_string($val) . "'";
+                    //$into_tbltype[] = $index;
+                    //$values_tbltype[] = "'" . mysql_real_escape_string($val) . "'";
+                    //do nothing!
+                }else {
+                    if (strcmp($index, "type")!= 0) {
+                        $into_tbluser[] = $index;
+                        $values_tbluser[] = "'" . mysql_real_escape_string($val) . "'";
+                    }
                 }
             }
         }
@@ -203,6 +207,7 @@ Returns false on Error
         //exit($sql);
         //Enter New user to Database
         if ($this->check_sql($sql_user)) {
+
             $this->report("New User \"{$info['name']}\" has been registered");
             $this->id = mysql_insert_id();
 
@@ -220,6 +225,8 @@ Returns false on Error
             if ($this->check_sql($sql_address)) {
                 $this->report("New Address for \"{$info['name']}\" has been registered");
             } else {
+                //$sql_delete = "DELETE FROM {$this->opt['table_name']} WHERE user_id ='$user_id'";
+                $this->abortTransaction($user_id);
                 $this->error(15);
             }
 
@@ -262,7 +269,7 @@ On Failure return false
             return false; //There are validations error
 
         //Check for name in database
-        $info['name'] = stripslashes($info['name']);
+        //$info['name'] = stripslashes($info['name']);
         
         if(isset($info['name'])) 
                 if( $this->check_field('name',$info['name'], "This name is Already in taken."))
@@ -478,7 +485,7 @@ Returns false on error
         if(!$this->check_hash($hash)) return false;
         
         $this->tmp_data = $newPass;
-        if(!$this->validateAll()) return false; //There are validations error
+        if(!$this->validateAll()) echo "here "; return false; //There are validations error
 
         $pass = $this->hash_pass($newPass['password']);
 
@@ -492,12 +499,15 @@ Returns false on error
             return false;
         }
     }
-   
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+/*Check the active user is the one who logged-in */
     function validate_pass($c_pass){
-      $query = mysql_query("SELECT password FROM {$this->opt['table_name']} WHERE user_id='{$this->id}'");
-      $row = mysql_fetch_array($query);       
-      if ( $this->hash_pass($c_pass)== $row['password'] ) return true;
-       else return false;
+      $sql = "SELECT * FROM {$this->opt['table_name']} WHERE password='{$this->hash_pass($c_pass)}'";
+      if ( $this->getRow($sql) )
+           return true;
+       else
+           return false;
     }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -562,7 +572,9 @@ Returns the geocode location for that address in terms of lat and lng.
         session_start();
         $this->sid = session_id();
 
+        //echo $user." ".$pass;
         $result = $this->login($user,$pass,$auto);
+        //echo "Result ".$result;
         if($result == false){
             $_SESSION[$this->opt['user_session']] = $this->opt['default_user'];
             $this->update_from_session();
@@ -579,6 +591,7 @@ Returns the geocode location for that address in terms of lat and lng.
     private function login($user = false,$pass = false,$auto = false){
         //Session Login
         if(@$_SESSION[$this->opt['user_session']]['signed']){
+           // echo "User Is signed in from session";
             $this->report("User Is signed in from session");
             $this->update_from_session();
             if(isset($_SESSION['uManagement']['update'])){
@@ -595,6 +608,7 @@ Returns the geocode location for that address in terms of lat and lng.
             $c = $_COOKIE[$this->opt['cookie_name']];
             $this->report("Attemping Login with cookies");
             if($this->check_hash($c,true)){
+                //echo ' ---- one:2-1 ----- ';
                 $auto = true;
                 $cond = "name='{$this->name}'";
             }else{
@@ -604,6 +618,8 @@ Returns the geocode location for that address in terms of lat and lng.
             }
         }else{
             //Credentials Login
+           // echo ' ---- one:3 ----- ';
+            //echo 'user -: '.$user;
             if($user && $pass){
                 if(preg_match($this->validations['email']['regEx'],$user)){
                     //Login using email
@@ -670,6 +686,7 @@ Returns the geocode location for that address in terms of lat and lng.
         if(!$deleted){
             $this->report("The Autologin cookie could not be deleted");
         }
+       // echo "User Logged out";
         $this->report("User Logged out");
     }
 
@@ -992,6 +1009,25 @@ Returns the geocode location for that address in terms of lat and lng.
             return false;
         }
     }
+
+    //Executes SQL query and returns a user_id
+    function abortTransaction($email) {
+
+        $this->logger("Abort Transaction");
+
+        $sql = "DELETE FROM {$this->opt['table_name']} WHERE user_id ='$user_id'";
+
+        //$user = $this->getRow($sql);
+        if ($this->check_sql($sql)) {
+            //echo "user_id: " . $user['user_id'];
+            $this->error("Transaction Successfully Aborted");
+            return true;
+        } else {
+            $this->error("Aboart Failed");
+            return false;
+        }
+    }
+
 
    
     //Validates All fields in ->tmp_data array

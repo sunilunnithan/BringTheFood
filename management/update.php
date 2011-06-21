@@ -1,11 +1,10 @@
 <?php
-	include("inc/config.php");
+	include("../config/config.php");
 	
-		$query = mysql_query("SELECT * FROM {$user->opt['table_name']} WHERE user_id='{$user->id}'");
-        $row = mysql_fetch_array($query);       
-        $query = mysql_query("SELECT * FROM address WHERE address_type_id='{$user->id}' && address_type='user'");
-        $row2 = mysql_fetch_array($query);       
-       
+        //quering user table
+        $user_row = $user->getRow("SELECT name, email FROM {$user->opt['table_name']} WHERE user_id='{$user->id}'");
+        //querting address table
+        $address_row = $user->getRow("SELECT * FROM address WHERE address_type_id='{$user->id}' && address_type='user'");
         //Proccess Update
 	if(count($_POST)){
 		
@@ -60,31 +59,40 @@
 	</div>
 
       <form method="post" action="">
-       <label>Name or Company Name:</label><span class="required">*</span>
-        <input name="name" type="text" value="<?php echo $row['name'] ?>">
-
-<!--
-        <label>Password:</label><span class="required">*</span>
-        <input name="password" type="password" value="">
-
-
-        <label>Re-enter Password:</label><span class="required">*</span>
-        <input name="password2" type="password" value="">
--->
-
-        <label>Email: </label><span class="required">*</span>
-        <input name="email" type="text" value="<?php echo $row['email'] ?>">
-
+        <?php if ($user_row) { ?>
+                 <label>Name or Company Name:</label><span class="required">*</span>
+                 <input name="name" type="text" value="<?php echo $user_row['name'] ?>">
+                 <label>Email: </label><span class="required">*</span>
+                 <input name="email" type="text" value="<?php echo $user_row['email'] ?>">
+        <?php } else { ?>
+                 <label>Name or Company Name:</label><span class="required">*</span>
+                 <input name="name" type="text" value="<?=@$_POST['name']?>">
+                 <label>Email: </label><span class="required">*</span>
+                 <input name="email" type="text" value="<?=@$_POST['email']?>">
+          <?php } ?>
+        <?php if ($address_row) { ?>
         <label>Street Address: </label><span class="required">*</span>
-        <input name="street" type="text" value="<?php echo $row2['street']; ?>">
+        <input name="street" type="text" value="<?php echo $address_row['street']; ?>">
         <label>City: </label><span class="required">*</span>
-        <input name="city" type="text" value="<?php echo $row2['city']; ?>">
+        <input name="city" type="text" value="<?php echo $address_row['city']; ?>">
         <label>CAP: </label><span class="required">*</span>
-        <input name="zip" type="text" value="<?php echo $row2['zip']; ?>">
+        <input name="zip" type="text" value="<?php echo $address_row['zip']; ?>">
         <label>County: </label><span class="required">*</span>
-        <input name="country" type="text" value="<?php echo $row2['country']; ?>">
+        <input name="country" type="text" value="<?php echo $address_row['country']; ?>">
         <label>Phone: </label><span class="required">*</span>
-        <input name="phone" type="text" value="<?php echo $row2['phone']; ?>">
+        <input name="phone" type="text" value="<?php echo $address_row['phone']; ?>">
+          <?php } else { ?>
+           <label>Street Address: </label><span class="required">*</span>
+            <input name="street" type="text" value="<?=@$_POST['street']?>">
+            <label>City: </label><span class="required">*</span>
+            <input name="city" type="text" value="<?=@$_POST['city']?>">
+            <label>CAP: </label><span class="required">*</span>
+            <input name="zip" type="text" value="<?=@$_POST['zip']?>">
+            <label>County: </label><span class="required">*</span>
+            <input name="country" type="text" value="<?=@$_POST['country']?>">
+            <label>Phone: </label><span class="required">*</span>
+            <input name="phone" type="text" value="<?=@$_POST['phone']?>">
+           <?php } ?>
 
       <!--  <label>Role: </label>
         <select name="role" value="<?=@$_POST['role']?>">
@@ -92,7 +100,7 @@
             <option value="collector">Collector</option>
             <option value="distributor">Distributor</option>
         </select>
-  -->      <br>
+  -->     
         
                 
         <input value="Update" type="submit">

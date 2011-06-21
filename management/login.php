@@ -1,13 +1,12 @@
 <?php
-	include("inc/config.php");
+	include("../config/config.php");
 		
 	//Proccess Login
 	if(count($_POST)){
 	  @$username = $_POST['email'];
 	  @$password = $_POST['password'];
 	  @$auto = $_POST['auto'];
-	  
-	  @$user = new uManagement($username,$password,$auto);
+          @$user = new uManagement($username,$password,$auto);
 	}
 	
 	if($user->signed) header("Location: index.php");
@@ -44,7 +43,7 @@
         
         
         <label>Remember me?:</label>
-        <input name="auto" type="checkbox" style="display: inline-block">
+        <input name="auto" type="checkbox" style="display:inline-block">
         
         
         <input value="SignIn" type="submit">

@@ -1,7 +1,7 @@
 <?php
-	include("inc/config.php");
+	include("../config/config.php");
 	
 	$user->logout();
-	
-	header("Location: index.php");	
+	header("Location: index.php");
+        
 ?>

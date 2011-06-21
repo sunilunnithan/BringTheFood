@@ -1,5 +1,5 @@
 <?php
-	include("inc/config.php");
+	include("../config/config.php");
 	
 	//Proccess Update
 	if(count($_POST)){
@@ -9,9 +9,8 @@
 			//Hash succesfully generated
 			//You would send an email to $res['email'] with the URL+HASH $res['hash'] to enter the new password
 			//In this demo we will just redirect the user directly
-			
 			$url = "change_password.php?c=" . $res['hash'];
-			
+                       
 			//Redirect
 			header("Location: {$url}",true);
 		}
@@ -21,11 +20,11 @@
 <html>
 <head>
 	<link rel="stylesheet" type="text/css" href="style.css" />
-	<title>Update | Moving Food </title>
+	<title>Reset Password | Moving Food </title>
 </head>
 
 <body>
-	<h1>Update</h1>
+	<h1>Reset Password</h1>
 	<hr>
 	<div class="report">
 		<ul>
@@ -40,7 +39,7 @@
 	</div>
 
     <form method="post" action="">
-        <p>Enter the email associated with your account</p>            
+        <p>Enter the email associated with your account</p>
         <label>Email: </label><span class="required">*</span>
         <input name="email" type="text" value="">
         
