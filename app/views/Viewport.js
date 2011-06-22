@@ -10,7 +10,8 @@ bringthefood.views.Viewport = Ext.extend(Ext.Panel, {
         //This makes the card available to other classes
         Ext.apply(bringthefood.views,{
             loginForm: new bringthefood.views.Login(),
-            regForm: new bringthefood.views.Registration()
+            regForm: new bringthefood.views.Registration(),
+            offersmap: new bringthefood.views.OffersMap()
         });
 
         // Let's add our view to the Viewport.
@@ -18,7 +19,8 @@ bringthefood.views.Viewport = Ext.extend(Ext.Panel, {
         Ext.apply(this, {
             items: [
             bringthefood.views.loginForm,
-            bringthefood.views.regForm
+            bringthefood.views.regForm,
+            bringthefood.views.offersmap //move to the end
             ]
         });
 

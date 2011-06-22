@@ -57,6 +57,9 @@ Returns the geocode location for that address in terms of lat and lng.
             }
             usleep($delay);
         }
+
+        print_r($geocodeInfo);
+
         return ($geocodeInfo);
     }
 ?>

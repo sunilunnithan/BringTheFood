@@ -13,6 +13,10 @@
         <script type="text/javascript" src="app/views/Login.js"></script>
         <script type="text/javascript" src="app/views/Registration.js"></script>
 
+        <!-- Collector views -->
+        <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=true"></script>
+        <script type="text/javascript" src="app/views/collector/OffersMap.js"></script>
+
         <!-- Controllers -->
         <script type="text/javascript" src="app/controllers/loginController.js"></script>
         <script type="text/javascript" src="app/controllers/registrationController.js"></script>
