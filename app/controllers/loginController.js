@@ -9,10 +9,10 @@ bringthefood.controllers.loginController = new Ext.Controller({
             waitMsg: {
                 message: 'Please wait...'
             },
-            success: function(e){
-                //go to logged in status
+            success: function(form, result){
+                Ext.Msg.alert('Login successful!','You are a ' + result.role,Ext.emptyFn);
             },
-            failure: function(e){
+            failure: function(form, result){
                 Ext.Msg.alert('Login failed!','Wrong e-mail or password!',Ext.emptyFn);
                 bringthefood.views.loginForm.reset();
             }

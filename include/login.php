@@ -15,7 +15,7 @@ $response = array();
 
 if ($user->signed) {
     //header("Location: index.php");
-    $response = array("success" => true);
+    $response = array("success" => true, "role" => $user->opt['role']);
 } else {
     $response = array("success" => false);
 }

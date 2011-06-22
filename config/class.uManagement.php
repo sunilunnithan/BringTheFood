@@ -102,8 +102,9 @@ class uManagement {
             14 	=> "You need to reset your password to login",
             15 	=> "New Address Registration Failed",
             16  => "Address Change Could not be made", //Address Database Error while calling update functions
-            17  => "Query Faild to for the geocode, Check the SQL.",
-            18  => "There are no avaliable offers."
+            17  => "Query Faild to for the geocode, Check the SQL",
+            18  => "There are no avaliable offers",
+            19  => "Can't load address. Is it a real address? (Or your Internet connection is down)"
         );
         
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -523,7 +524,12 @@ Returns the geocode location for that address in terms of lat and lng.
         while ($geocode_pending) {
 
             $request_url = $base_url . "&q=" . urlencode($addr);
-            $xml = simplexml_load_file($request_url) or die("url not loading");
+            $xml = simplexml_load_file($request_url);
+
+            if (!$xml){
+                $this->error(19);
+                return NULL;
+            }
 
             $status = $xml->Response->Status->code;
             //echo 'status: ' . $status . "<br />";
@@ -641,6 +647,10 @@ Returns the geocode location for that address in terms of lat and lng.
                 }
                 return false;
             }
+
+            //set role to load the correct UI
+            $this->opt['role'] = $userFile['role'];
+
             //Account is Activated and user is logged in
             $this->update_session($userFile);
 
@@ -1040,11 +1050,11 @@ Returns the geocode location for that address in terms of lat and lng.
                 $this->report("$Name is blank and optional - skipped");
                 return true;
             }
-            $this->form_error($name,"$Name is required.");
+            $this->form_error($name,"$Name is required");
             return false;
         }
         if(strlen($str) > $max){
-            $this->form_error($name,"The $Name is larger than $max characters.");
+            $this->form_error($name,"The $Name is larger than $max characters");
             return false;
         }
         if(strlen($str) < $min){

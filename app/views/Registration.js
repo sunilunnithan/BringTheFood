@@ -1,7 +1,9 @@
 bringthefood.views.Registration = Ext.extend(Ext.form.FormPanel,{
-    title: 'Basic',
-    id: 'basicform',
+    title: 'Registration',
+    id: 'regform',
     scroll: 'vertical',
+    url: 'include/register.php',
+    standardSubmit: true,
     dockedItems:[{
         xtype: 'toolbar',
         title: 'Registration',
@@ -103,14 +105,17 @@ bringthefood.views.Registration = Ext.extend(Ext.form.FormPanel,{
         items: [{
             text: 'Reset',
             handler: function(){
-                Ext.getCmp('basicform').reset();
+                Ext.getCmp('regform').reset();
             }
         },
         {
             text: 'Submit',
             ui: 'confirm',
             handler: function(){
-            
+                Ext.dispatch({
+                    controller: bringthefood.controllers.registrationController,
+                    action: 'register'
+                });
             }
         }]
     }]
