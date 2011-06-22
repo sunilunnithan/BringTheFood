@@ -5,7 +5,7 @@
      * and open the template in the editor.
      * Developer: Komminist Weldemariam
      */
-    include("../management/inc/config.php");
+    include("../config/config.php");
 
 
     $street = "street";
