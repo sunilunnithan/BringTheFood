@@ -1,8 +1,9 @@
-<!DOCTYPE html>
+
 <?php
     include "../food_supplier/offers.php";
     $offers = get_offers_JSON();
     ?>
+<!DOCTYPE html>
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">

@@ -3,13 +3,11 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-include ('../config/geocode.php');
-include ('../cofig/config.php');
-//connectToMySQL();
+include ('../config/config.php');
 
 //function to return JSON array of available offers
 function get_offers_JSON(){
-$offers =mysql_query('SELECT * FROM offer') or die ('Unable to retrieve offers');
+$offers =mysql_query("SELECT * FROM offer WHERE status='available'") or die ('Unable to retrieve offers');
 $num_offers = mysql_num_rows($offers);
 if ($num_offers>0){
     $offer_JSON_Array=array();
@@ -19,26 +17,43 @@ if ($num_offers>0){
             $description=mysql_result($offers, $i, 'description');
             $avail_date=mysql_result($offers, $i, 'available_date');
             $avial_time=mysql_result($offers, $i, 'available_time');
-            $exp_date=mysql_result($offers, $i, 'expiry_date');
+            $exp_date=mysql_result($offers, $i, 'expire_date');
             //$exp_time=mysql_result($offers, $i, 'exp_time');
             $status=mysql_result($offers, $i, 'status');
             $collector_ID=mysql_result($offers, $i, 'collector_id');
             
-            //make sure that it works fine with the address
-            $this_supplier =mysql_query("SELECT * FROM users WHERE role ='supplier' AND user_id ='$supplier_ID'") or die ("Unable to fetch supplier");
-            $name =mysql_result($supp,0,'name');
+            //get the address of this offer
+            $address_of_offer =mysql_query("SELECT * FROM address WHERE offer_id ='$offer_ID' OR user_id='$supplier_ID'") or die ("Unable to fetch address of offer");
+            $street =mysql_result($address_of_offer,0,'street');
+            $city =mysql_result($address_of_offer,0,'city');
+            $zip =mysql_result($address_of_offer,0,'zip');
+            $country =mysql_result($address_of_offer,0,'country');
+            $lati =mysql_result($address_of_offer,0,'lat');
+            $long =mysql_result($address_of_offer,0,'lng');
+
+            //build the array of offer details
             $this_offer =array(
+                'offer_id'=>$offer_ID,
+                'supplier_id'=>$supplier_ID,
                 'description'=>$description,
-                'supplier_ID'=>$supplier_ID,
-                'supplier_name'=>$name,
-                'status' => $status,
-                'offer_ID' => $offer_ID);
+                'status'=>$status,
+                'available_date'=>$avail_date,
+                'available_time'=>$avial_time,
+                'expiry_date'=>$exp_date,
+                'street'=>$street,
+                'zip'=>$zip,
+                'city'=>$city,
+                'country'=>$country,
+                'latitude'=>$lati,
+                'longitude'=>$long);
+                
             array_push($offer_JSON_Array,$this_offer);
     }
-    $offers=json_encode($offer_JSON_Array);
-    //echo $offers;
-    return $offers;
-}
+    //return json array of all offers available
+    return (json_encode($offer_JSON_Array));
+    
+} else
+//return empty json array
 return json_encode(array());
 }
 
@@ -46,33 +61,49 @@ return json_encode(array());
 //function to be invoked when supplier adds an offer.
 function add_offer(){
     //cross-check with the GUI
-    $supplier_ID=$_POST['sid'];
+    $supplier_ID=$_POST['sid']; //get from session
     $description =$_POST['desc'];
     $av_date =$_POST['avdate'];
     $av_time =$_POST['avtime'];
     $exp_date=$_POST['expdate'];
-    $new_address=$_POST['newaddress'];
+    $new_address=$_POST['newaddress'];  // Yes/No field to ask if the address is new
     $insert_offer=mysql_query("INSERT INTO offer (supplier_id, collector_id,description,available_date,available_time,expire_date,status) VALUES ('$supplier_ID','','$description','$av_date','$av_time','$exp_date','available')");
 
-
-    if ($new_address=='yes'){
-        //get the latest offer_id
-        $offer_id =mysql_query("SELECT MAX(offer_id) AS latest_offer_id FROM offer");
+    //if address of offer is new, insert the address ensuring that it corresponds to this offer
+    if ($new_address=='Yes'){
+        //get the latest offer_id for the current supplier
+        $offer_id =mysql_query("SELECT MAX(offer_id) AS latest_offer_id, supplier_id FROM offer WHERE supplier_id='$supplier_ID'");
         if ($offer_id){
             $latest_offer_id =mysql_result($offer_id, 0, 'latest_offer_id');
+            $supplier_id =mysql_result($offer_id, 0, 'supplier_id');
         }
+        
         $street=$_POST['street'];
         $city=$_POST['city'];
         $zip=$_POST['zip'];
         $country=$_POST['country'];
         $phone=$_POST['phone'];
-        //get latitude and longitude from geocode
-        $insert_offer_address =mysql_query("INSERT INTO address () VALUES()");
+        //get the latitude and longitude from google map API
+        $latitude_longitude =grapGeocodeInfo($street.','.$zip.','.$city.','.$country);
+        $lat =$latitude_longitude['lat'];
+        $long=$latitude_longitude['lng'];
+        $insert_offer_address =mysql_query("INSERT INTO address (street,city,zip,country,phone,lat,lng,offer_id,user_id) VALUES('$street','$city','$zip','$country','$phone','$lat','$long','$latest_offer_id','$supplier_id')");
     }
-    if ($insert)
+    
+    if ($new_address=="No"){  //offer address is current supplier's address
+        if ($insert_offer)    // just check correct insertion of offer
+            return 1;
+        else
+            return -1;
+
+    }
+
+    else {                     //offer address is new
+        if ($insert_offer && $insert_offer_address)  // check both offer and address
         return 1;
-    else
-        return -1;
+        else
+            return -1;
+    }
 }
 
 
@@ -95,9 +126,17 @@ function update_offer(){
     $av_time=$_POST['avtime'];
     $exp_date=$_POST['expdate'];
     $status=$_POST['status'];
+    //address of an offer
+    $street=$_POST['street'];
+    $city=$_POST['city'];
+    $zip=$_POST['zip'];
+    $country=$_POST['country'];
+    $phone=$_POST['phone'];
 
-    $update = mysql_query("UPDATE offer SET description='$description',availabl_date='$av_date', available_time ='$av_time', expiry_date='$exp_date', status='$status' WHERE offer_id='$offer_id' ");
-    if ($update)
+    $update_offer = mysql_query("UPDATE offer SET description='$description',availabl_date='$av_date', available_time ='$av_time', expire_date='$exp_date', status='$status' WHERE offer_id='$offer_id' ");
+    //assuming that the offer was registered with new address at the beginning. otherwise, change of address for the supplier is done as part of account update for user.
+    $update_offer_address = mysql_query("UPDATE address SET street='$street',city='$city', zip ='$zip', country='$country', phone='$phone' WHERE offer_id='$offer_id'");
+    if ($update_offer && $update_offer_address)
         return 1;
     else
         return -1;
@@ -106,6 +145,19 @@ function update_offer(){
 //function to be invoked when the collector books an offer.
 function book_offer(){
 
+    $collectorId = $_POST['collectorId'];
+    $offerId = $_POST['offerId'];
+    //$date = date('d/m/y');
+    //$time =date('h:m:s');
+    //$insert =  mysql_query("INSERT INTO stock(offer_ID, collector_ID,collection_date,amount, remark, status) VALUES(d','$collectorId','$date','$time')") or die ('Unable to add booking'.mysql_error());
+    $check =mysql_query("SELECT status from offer WHERE offer_ID='$offerId'") or die ('Unable to retrieve offer');
+    if(mysql_result($check, 0,'status')=="availabe"){
+        $update =mysql_query("UPDATE offer SET status ='booked' WHERE offer_ID ='$offerId'") or die ('Unable to complete booking');
+        return 1;
+   }
+    else
+        return -1;
+    
 }
 
 ?>
@@ -119,7 +171,7 @@ function book_offer(){
        <script type="text/javascript" src="js/offers.js"></script>
 </head>
 <body>
-    <div id="panel"></div>
+    <div id="panel"> <?php print_r(get_offers_JSON());?></div>
 </body>
 </html>
 
