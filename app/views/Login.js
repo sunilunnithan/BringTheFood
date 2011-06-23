@@ -27,6 +27,11 @@ bringthefood.views.Login = Ext.extend(Ext.form.FormPanel,{
             vtype: 'password',
             required: true
         },
+        {
+            xtype: 'togglefield',
+            name: 'auto',
+            label: 'Remember Login'
+        }
 
         ]
     },

@@ -14,8 +14,9 @@ if (count($_POST)) {
 $response = array();
 
 if ($user->signed) {
-    //header("Location: index.php");
-    $response = array("success" => true, "role" => $user->opt['role']);
+    $role = $user->data['role'];
+
+    $response = array("success" => true, "role" => $role);
 } else {
     $response = array("success" => false);
 }

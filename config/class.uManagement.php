@@ -704,6 +704,7 @@ function new_pass($hash, $newPass) {
         $this->name = $d['name'];
         $this->pass = $d['password'];
         $this->signed = $d['signed'];
+        $this->opt['role'] = $d['role'];
 
         $this->report("Session has been imported to the object");
     }

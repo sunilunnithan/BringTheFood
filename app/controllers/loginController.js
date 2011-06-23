@@ -10,12 +10,42 @@ bringthefood.controllers.loginController = new Ext.Controller({
                 message: 'Please wait...'
             },
             success: function(form, result){
-                Ext.Msg.alert('Login successful!','You are a ' + result.role,Ext.emptyFn);
+                animation = {
+                    type: 'slide',
+                    direction: 'left'
+                }
+
+                switch (result.role) {
+                    case 'Collector':
+                        bringthefood.views.viewport.setActiveItem(bringthefood.views.offersmap,animation);
+                        break;
+                    case 'supplier':
+                        bringthefood.views.viewport.setActiveItem(bringthefood.views.supplier_main,animation);
+                        break;
+                    default:
+                        break;
+                }
+
             },
             failure: function(form, result){
                 Ext.Msg.alert('Login failed!','Wrong e-mail or password!',Ext.emptyFn);
                 bringthefood.views.loginForm.reset();
             }
         });
+    },
+
+    logout: function(){
+        animation = {
+            type: 'slide',
+            direction: 'right'
+        };
+
+        Ext.Ajax.request({
+           url: 'include/logout.php',
+           success: function(){
+               bringthefood.views.viewport.setActiveItem(bringthefood.views.loginForm,animation);
+           }
+        });
+
     }
 });

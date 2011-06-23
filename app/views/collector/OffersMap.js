@@ -12,9 +12,23 @@ bringthefood.views.OffersMap = Ext.extend(Ext.Panel, {
         items: [
         {
             xtype: 'button',
+            name: 'logout',
+            text: 'Logout',
+            ui: 'back',
+            handler: function(){
+                Ext.dispatch({
+                    controller: bringthefood.controllers.loginController,
+                    action: 'logout'
+                });
+            }
+        },
+        {
+            xtype: 'button',
             name: 'home',
             iconCls: 'home',
-        //position: 'left'
+            handler: function(){
+                
+            }
         },
         {
             xtype: 'spacer'

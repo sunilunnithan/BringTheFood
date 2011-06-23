@@ -11,7 +11,8 @@ bringthefood.views.Viewport = Ext.extend(Ext.Panel, {
         Ext.apply(bringthefood.views,{
             loginForm: new bringthefood.views.Login(),
             regForm: new bringthefood.views.Registration(),
-            offersmap: new bringthefood.views.OffersMap()
+            offersmap: new bringthefood.views.OffersMap(),
+            supplier_main: new bringthefood.views.SupplierMain()
         });
 
         // Let's add our view to the Viewport.
@@ -20,8 +21,27 @@ bringthefood.views.Viewport = Ext.extend(Ext.Panel, {
             items: [
             bringthefood.views.loginForm,
             bringthefood.views.regForm,
-            bringthefood.views.offersmap //move to the end
+            bringthefood.views.offersmap,
+            bringthefood.views.supplier_main
             ]
+        });
+
+        Ext.Ajax.request({
+            url: 'include/login.php',
+            success: function(response){
+                var resp = Ext.decode(response.responseText);
+                animation = {
+                    type: 'fade'
+                };
+                //this has to be changed. now the login screen is seen for a few seconds
+                switch (resp.role){
+                    case 'Collector':
+                        bringthefood.views.viewport.setActiveItem(bringthefood.views.offersmap,animation);
+                        break;
+                    default:
+                        break;
+                }
+            }
         });
 
         // Similar to calling "super" in languages like Java.  Kicks off initialization in parent classes.
