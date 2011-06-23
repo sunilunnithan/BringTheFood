@@ -2,25 +2,24 @@
 	include("../config/config.php");
 	
         //quering user table
-        $user_row = $user->getRow("SELECT name, email FROM {$user->opt['table_name']} WHERE user_id='{$user->id}'");
+       // $user_row = $user->getRow("SELECT name, email FROM users WHERE user_id='{$user->id}'");
         //querting address table
-        $address_row = $user->getRow("SELECT * FROM address WHERE address_type_id='{$user->id}' && address_type='user'");
+        $address_row =  $user->getRow("SELECT * FROM address WHERE user_id='{$user->id}'");
+
         //Proccess Update
 	if(count($_POST)){
 		
-		foreach($_POST as $name=>$val){
+		/*foreach($_POST as $name=>$val){
+                    echo $val.", ";
 			if($user->data[$name] == $val){
 			
 				unset($_POST[$name]);
 			}		
-		}
+		}*/
 
-                
-		//Add validation for custom fields, name, address
-		//$user->addValidation("name","0-25","/\w+/");
-                $user->addValidation("name","0-25",'#^[a-z\s\.]+$#i');
-		//$user->addValidation("last_name","0-15","/\w+/");
-		$user->addValidation("address","0-50");
+                //Add validation for custom fields, name, address
+		$user->addValidation("name","0-25",'#^[a-z\s\.]+$#i');
+		$user->addValidation("street","0-50");
 
 		if(count($_POST)){
 			//Update info
@@ -59,17 +58,10 @@
 	</div>
 
       <form method="post" action="">
-        <?php if ($user_row) { ?>
-                 <label>Name or Company Name:</label><span class="required">*</span>
-                 <input name="name" type="text" value="<?php echo $user_row['name'] ?>">
-                 <label>Email: </label><span class="required">*</span>
-                 <input name="email" type="text" value="<?php echo $user_row['email'] ?>">
-        <?php } else { ?>
-                 <label>Name or Company Name:</label><span class="required">*</span>
-                 <input name="name" type="text" value="<?=@$_POST['name']?>">
-                 <label>Email: </label><span class="required">*</span>
-                 <input name="email" type="text" value="<?=@$_POST['email']?>">
-          <?php } ?>
+        <label>Name or Company Name:</label><span class="required">*</span>
+        <input name="name" type="text" value="<?php echo $user->data['name'] ?>">
+        <label>Email: </label><span class="required">*</span>
+        <input name="email" type="text" value="<?php echo $user->data['email'] ?>">
         <?php if ($address_row) { ?>
         <label>Street Address: </label><span class="required">*</span>
         <input name="street" type="text" value="<?php echo $address_row['street']; ?>">

@@ -99,7 +99,7 @@ class uManagement {
         14 => "You need to reset your password to login",
         15 => "New Address Registration Failed",
         16 => "Address Change Could not be made", //Address Database Error while calling update functions
-        17 => "Query Faild to for the geocode, Check the SQL",
+        17 => "A problem in update address.",
         18 => "There are no avaliable offers",
         19 => "Can't load address. Is it a real address? (Or your Internet connection is down)",
         20 => "Something is wrong in your current password"
@@ -136,17 +136,17 @@ class uManagement {
         }
         //Check for Email in database.
         if (isset($info['email']))
-            if ($this->check_field('email', $info['email'], "This Email is Already in Use"))
+            if ($this->check_field('email', "users",$info['email'], "This Email is Already in Use"))
                 return false;
 
         //Check for name in database
         if (isset($info['name']))
-            if ($this->check_field('name', $info['name'], "This Name is Already in Use"))
+            if ($this->check_field('name', "users",$info['name'], "This Name is Already in Use"))
                 return false;
 
         //Check for Street Address in database
         if (isset($info['street']))
-            if ($this->check_field('street', $info['street'], "This Street Address is Already in Use"))
+            if ($this->check_field('street', "address",$info['street'], "This Street Address is Already in Use"))
                 return false;
 
         //Check for errors
@@ -258,9 +258,11 @@ function update($info) {
     if (!$this->validateAll())
         return false; //There are validations error
 
-        if (isset($info['name'])) {
-        if (strcmp($this->data["name"], $info["name"]) != 0) {
-            if ($this->check_field('name', $info['name'], "This name is Already in taken.")) {
+
+       //echo 'name '.$info['name'];
+       if (isset($info['name'])) {
+        if (strcmp($this->data["name"],$info["name"]) != 0) { //only name different from current name.
+            if ($this->check_field('name', "users", $info['name'], "This name is Already in taken.")) {
                 return false;
             }
         }
@@ -268,55 +270,63 @@ function update($info) {
 
     //Check for Email in database
     if (isset($info['email'])) {
-        if (strcmp($this->data["email"], $info["email"]) != 0) {
-            if ($this->check_field('email', $info['email'], "This Email is Already in Use")) {
+        if (strcmp($this->data["email"], $info["email"]) != 0) { //only the email different from current.
+            if ($this->check_field('email', "users",$info['email'], "This Email is Already in Use")) {
                 return false;
-            }
+            }            
         }
     }
 
     //Check for Street Address in database
     if (isset($info['street'])) {
         if (strcmp($this->data["street"], $info["street"]) != 0) {
-            if ($this->check_field('street', $info['street'], "This Street Address is Already in Use")) {
+            if ($this->check_field('street', "users", $info['street'], "This Street Address is Already in Use")) {
                 return false;
             }
         }
     }
+
+    
     //Check for errors
     if ($this->has_error())
         return false;
 
     //Prepare Info for SQL Insertion
     foreach ($info as $index => $val) {
-        if (!preg_match("/2$/", $index)) { //Skips double fields
-            if (strcmp($index, "street") == 0
+        if (!preg_match("/2$/", $index)) {
+        //    if (isset(!$this->check_field($index, $val, "No change to $index value")) {
+                if (strcmp($index, "street") == 0
                     || strcmp($index, "zip") == 0
                     || strcmp($index, "city") == 0
                     || strcmp($index, "country") == 0
                     || strcmp($index, "phone") == 0) {
-                $value_tbladdress = "'" . mysql_real_escape_string($val) . "'";
-                $set_tbladdress[] = "{$index}={$value_tbladdress}";
-            } else if (strcmp($index, "type") == 0) {
-                $into_tbltype[] = "'" . mysql_real_escape_string($val) . "'";
-                $values_tbltype[] = "{$index}={$value_tbltype}";
-            } else {
-                $value_user = "'" . mysql_real_escape_string($val) . "'";
-                $set_user[] = "{$index}={$value_user}";
-            }
+                    $value_tbladdress = "'" . mysql_real_escape_string($val) . "'";
+                    $set_tbladdress[] = "{$index}={$value_tbladdress}";
+                   // echo $val;
+                    }
+                    else {
+                        $value_user = "'" . mysql_real_escape_string($val) . "'";
+                        $set_user[] = "{$index}={$value_user}";
+                        //echo $val;
+                    }
+          //  }
         }
     }
-
+    
     $set_user = implode(", ", $set_user);
 
     //Prepare User Update	Query
     //echo "checking ... ".$this->id;
-    $sql_user = "UPDATE {$this->opt['table_name']} SET $set_user
-					WHERE user_id='{$this->id}'";
+    $sql_user = "UPDATE users SET $set_user WHERE user_id='{$this->id}'";
 
     //Prepare Address Update	Query
     $table_name = "address";
+    $update = $this->getRow("SELECT * FROM users WHERE user_id='{$this->id}'");
+
     $complete_address = $info["street"] . ", " . $info["city"] . ", " . $info["zip"] . ", " . $info["country"];
+
+
+   //$address_row =  $user->getRow("SELECT * FROM address WHERE user_id='{$user->id}'");
 
     //Now get the geocode.
     $geocode_info = grapGeocodeInfo($complete_address);
@@ -327,15 +337,17 @@ function update($info) {
     $set_tbladdress[] = "lng= $lng";
     $set_tbladdress = implode(", ", $set_tbladdress);
 
+    //$latlng =  $this->getRow("SELECT *FROM address WHERE user_id='{$user->id}'");
+
     $sql_address = "UPDATE {$table_name} SET {$set_tbladdress}
-					WHERE address_type_id='{$this->id}'";
-    //exit($sql);
+					WHERE user_id ='{$this->id}'";
+    //exit($sql);s
     //Check for Changes
-    if ($this->check_sql($sql_user)) {
+    if ($this->check_sql_on_update($sql_user)) {
         $this->report("Information Updated");
         //update session info
 
-        if ($this->check_sql($sql_address)) {
+        if ($this->check_sql_on_update($sql_address)) {
             $this->report("Address Information is also Updated");
         } else {
             $this->error(17);
@@ -878,8 +890,8 @@ function new_pass($hash, $newPass) {
 
 */
     //Test field in database for a value
-    function check_field($field,$val,$err = false){
-        $query = mysql_query("SELECT {$field} FROM {$this->opt['table_name']} WHERE {$field}='{$val}' ");
+    function check_field($field,$table_name,$val,$err = false){
+        $query = mysql_query("SELECT {$field} FROM {$table_name} WHERE {$field}='{$val}' ");
         if(mysql_num_rows($query) >= 1){
             if($err){
                 $this->form_error($field,$err);
@@ -898,7 +910,7 @@ function new_pass($hash, $newPass) {
     //Executes SQL query and checks for success
     function check_sql($sql,$debug = false){
         $this->report("SQL: {$sql}"); //Log the SQL Query
-        //echo ' cheking ...';
+        //echo ' Query: '.$sql;
         if(!mysql_query($sql)){
             if(self::debug){
                 $this->error(mysql_error());
@@ -906,6 +918,7 @@ function new_pass($hash, $newPass) {
             return false;            
         }else{
             $rows = mysql_affected_rows();
+            //echo 'affected rows '.$rows;
             if($rows > 0){
                 //Good, Rows where affected
                 $this->report("$rows row(s) where Affected");
@@ -918,7 +931,32 @@ function new_pass($hash, $newPass) {
         }
     }
 
-    //Executes SQL query and returns an associate array of results
+
+    //Executes SQL query upon update and checks for success
+    function check_sql_on_update($sql,$debug = false){
+        $this->report("SQL: {$sql}"); //Log the SQL Query
+        //echo ' Query: '.$sql;
+        if(!mysql_query($sql)){
+            if(self::debug){
+                $this->error(mysql_error());
+            }
+            return false;
+        }else{
+            $rows = mysql_affected_rows();
+            //echo 'affected rows '.$rows;
+            if($rows >= 0){
+                //Good, Rows where affected
+                $this->report("$rows row(s) where Affected");
+                return true;
+            }else{
+                //Bad, No Rows where Affected
+                $this->report("No rows were Affected");
+                return false;
+            }
+        }
+    }
+
+//Executes SQL query and returns an associate array of results
     function getRow($sql){
         $this->report("SQL: {$sql}"); //Log the SQL Query first
         $query = mysql_query($sql);

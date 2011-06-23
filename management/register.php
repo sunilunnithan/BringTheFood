@@ -10,7 +10,7 @@
 		//$user->addValidation("name","0-25","/\w+/");
                 $user->addValidation("name","0-25",'#^[a-z\s\.]+$#i');
 		//$user->addValidation("last_name","0-15","/\w+/");
-		$user->addValidation("address","0-50");
+		$user->addValidation("street","0-50");
                
 		//Register User
 		$user->register($_POST);
