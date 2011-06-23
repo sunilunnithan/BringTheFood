@@ -1,4 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/1"/>
+    <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/1">
+        <file>file:/home/aaron/BringTheFood/app/views/collector/OffersMap.js</file>
+        <file>file:/home/aaron/BringTheFood/index.php</file>
+        <file>file:/home/aaron/BringTheFood/map/display_map.php</file>
+        <file>file:/home/aaron/BringTheFood/map/prepareMapInfo.php</file>
+        <file>file:/home/aaron/BringTheFood/app/views/Login.js</file>
+        <file>file:/home/aaron/BringTheFood/app/views/Viewport.js</file>
+        <file>file:/home/aaron/BringTheFood/app/controllers/registrationController.js</file>
+        <file>file:/home/aaron/BringTheFood/app/views/Registration.js</file>
+        <file>file:/home/aaron/BringTheFood/config/class.uManagement.php</file>
+        <file>file:/home/aaron/BringTheFood/config/geocode.php</file>
+    </open-files>
 </project-private>
