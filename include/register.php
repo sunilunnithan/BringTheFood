@@ -5,7 +5,7 @@ include("../config/config.php");
 //if ($user->signed)
 //    header("Location: index.php");
 
-$resp;
+$resp = array();
 
 //Proccess Registration
 if (count($_POST)) {
