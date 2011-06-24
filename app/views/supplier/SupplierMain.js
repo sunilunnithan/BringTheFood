@@ -25,24 +25,30 @@ bringthefood.views.SupplierMain = Ext.extend(Ext.Panel, {
     items: [
     {
         xtype: 'button',
-        text: 'Offers Management',
-        ui: 'round',
+        text: 'Offers',
         margin: 5,
+        style: 'padding: 1em',
+        width: '200px',
         handler: function(){
-        //offers management
+            Ext.dispatch({
+                controller: bringthefood.controllers.supplierController,
+                action: 'manageOffers'
+            });
         }
     },
     {
         xtype: 'button',
         text: 'Rewards',
-        ui: 'round',
+        style: 'padding: 1em',
+        width: '200px',
         margin: 5
     },
     {
         xtype: 'button',
         text: 'My Account',
-        ui: 'round',
         margin: 5,
+        style: 'padding: 1em',
+        width: '200px',
         handler: function(){
         //go to account management
         }

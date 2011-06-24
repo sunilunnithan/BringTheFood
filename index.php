@@ -21,10 +21,13 @@
 
         <!-- Supplier Views -->
         <script type="text/javascript" src="app/views/supplier/SupplierMain.js"></script>
+        <script type="text/javascript" src="app/views/supplier/PublishOffer.js"></script>
 
         <!-- Controllers -->
         <script type="text/javascript" src="app/controllers/loginController.js"></script>
         <script type="text/javascript" src="app/controllers/registrationController.js"></script>
+        <script type="text/javascript" src="app/controllers/mapController.js"></script>
+        <script type="text/javascript" src="app/controllers/supplierController.js"></script>
 
     </head>
 

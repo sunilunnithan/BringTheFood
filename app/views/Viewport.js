@@ -12,7 +12,8 @@ bringthefood.views.Viewport = Ext.extend(Ext.Panel, {
             loginForm: new bringthefood.views.Login(),
             regForm: new bringthefood.views.Registration(),
             offersmap: new bringthefood.views.OffersMap(),
-            supplier_main: new bringthefood.views.SupplierMain()
+            supplier_main: new bringthefood.views.SupplierMain(),
+            publishoffer: new bringthefood.views.PublishOffer()
         });
 
         // Let's add our view to the Viewport.
@@ -22,7 +23,8 @@ bringthefood.views.Viewport = Ext.extend(Ext.Panel, {
             bringthefood.views.loginForm,
             bringthefood.views.regForm,
             bringthefood.views.offersmap,
-            bringthefood.views.supplier_main
+            bringthefood.views.supplier_main,
+            bringthefood.views.publishoffer
             ]
         });
 
@@ -33,10 +35,13 @@ bringthefood.views.Viewport = Ext.extend(Ext.Panel, {
                 animation = {
                     type: 'fade'
                 };
-                //this has to be changed. now the login screen is seen for a few seconds
+                //this has to be changed. now the login screen is seen for a few seconds COMPLETE THIS!!
                 switch (resp.role){
-                    case 'Collector':
+                    case 'collector':
                         bringthefood.views.viewport.setActiveItem(bringthefood.views.offersmap,animation);
+                        break;
+                    case 'supplier':
+                        bringthefood.views.viewport.setActiveItem(bringthefood.views.supplier_main,animation);
                         break;
                     default:
                         break;
