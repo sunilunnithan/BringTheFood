@@ -16,7 +16,7 @@ bringthefood.controllers.loginController = new Ext.Controller({
                 }
 
                 switch (result.role) {
-                    case 'Collector':
+                    case 'collector':
                         bringthefood.views.viewport.setActiveItem(bringthefood.views.offersmap,animation);
                         break;
                     case 'supplier':
