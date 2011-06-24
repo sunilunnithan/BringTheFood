@@ -70,7 +70,7 @@ function add_offer(){
     $insert_offer=mysql_query("INSERT INTO offer (supplier_id, collector_id,description,available_date,available_time,expire_date,status) VALUES ('$supplier_ID','','$description','$av_date','$av_time','$exp_date','available')");
 
     //if address of offer is new, insert the address ensuring that it corresponds to this offer
-    if ($new_address=='Yes'){
+    if ($new_address=='true'){
         //get the latest offer_id for the current supplier
         $offer_id =mysql_query("SELECT MAX(offer_id) AS latest_offer_id, supplier_id FROM offer WHERE supplier_id='$supplier_ID'");
         if ($offer_id){
@@ -90,7 +90,7 @@ function add_offer(){
         $insert_offer_address =mysql_query("INSERT INTO address (street,city,zip,country,phone,lat,lng,offer_id,user_id) VALUES('$street','$city','$zip','$country','$phone','$lat','$long','$latest_offer_id','$supplier_id')");
     }
     
-    if ($new_address=="No"){  //offer address is current supplier's address
+    if ($new_address=="false"){  //offer address is current supplier's address
         if ($insert_offer)    // just check correct insertion of offer
             return 1;
         else
@@ -171,7 +171,18 @@ function book_offer(){
        <script type="text/javascript" src="js/offers.js"></script>
 </head>
 <body>
-    <div id="panel"> <?php print_r(get_offers_JSON());?></div>
+    <div id="panel"> <?php //print_r(get_offers_JSON());?></div>
+    <?php
+    if ($_GET['action']=='add')
+        add_offer();
+    else if ($_GET['action']=='remove')
+        remove_offer();
+    else if ($_GET['action']=='update')
+        update_offer();
+    else if ($_GET['action']=='view')
+        get_offers_JSON();
+    
+    ?>
 </body>
 </html>
 
