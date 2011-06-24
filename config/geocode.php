@@ -38,7 +38,7 @@ Returns the geocode location for that address in terms of lat and lng.
                 // Successful geocode
                 $geocode_pending = false;
                 $coordinates = $xml->Response->Placemark->Point->coordinates;
-                $coordinatesSplit = split(",", $coordinates);
+                $coordinatesSplit = explode(",", $coordinates);
                 // Format: Longitude, Latitude, Altitude
                 $lat = $coordinatesSplit[1];
                 $lng = $coordinatesSplit[0];
