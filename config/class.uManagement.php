@@ -130,7 +130,7 @@ class uManagement {
             return false; //There are validations error
             //Built in actions for special fields
             //Hash Password
- if (isset($info['password'])) {
+        if (isset($info['password'])) {
             $this->hash_pass($info['password']);
             $info['password'] = $this->pass;
         }
@@ -172,10 +172,10 @@ class uManagement {
                     $into_tbladdress[] = $index;
                     $values_tbladdress[] = "'" . mysql_real_escape_string($val) . "'";
                 } else {
-                    if (strcmp($index, "type") != 0) {
+                    //if (strcmp($index, "type") != 0) {
                         $into_tbluser[] = $index;
                         $values_tbluser[] = "'" . mysql_real_escape_string($val) . "'";
-                    }
+                    //}
                 }
             }
         }
