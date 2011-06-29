@@ -60,7 +60,7 @@ function get_offers_JSON() {
 //function to be invoked when supplier adds an offer.
 function add_offer() {
     //cross-check with the GUI
-    $supplier_ID = $_POST['sid']; //get from session
+    $supplier_ID = $_SESSION['sid']; //get from session
     $description = $_POST['desc'];
     $av_date = $_POST['avdate'];
     $av_time = $_POST['avtime'];

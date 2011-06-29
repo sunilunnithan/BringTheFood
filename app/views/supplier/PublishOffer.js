@@ -1,11 +1,12 @@
 bringthefood.views.PublishOffer = Ext.extend(Ext.form.FormPanel,{
+    title: 'Publish Offer',
+    id: 'publishoffer',
+    url: 'include/offers.php?action=add',
+    standardSubmit: true,
     fullscreen: 'true',
     layout: {
         type : 'vbox',
         align : 'center'
-    },
-    defaults: {
-        iconMask: true
     },
     layoutConfig: {
         trackLabels: false
@@ -15,7 +16,10 @@ bringthefood.views.PublishOffer = Ext.extend(Ext.form.FormPanel,{
     {
         dock: 'top',
         xtype: 'toolbar',
-        title: 'Offers',
+        title: 'Publish a New Offer',
+        defaults: {
+            iconMask: true
+        },
         items: [
         {
             xtype: 'button',
@@ -29,8 +33,15 @@ bringthefood.views.PublishOffer = Ext.extend(Ext.form.FormPanel,{
             }
         },
         {
+            xtype: 'spacer'
+        },
+        {
             xtype: 'button',
-            text: 'New Offer'
+            name: 'list',
+            text: 'Offers List',
+            handler: function(){
+            //go to offers list
+            }
         }
         ]
     }
@@ -46,22 +57,26 @@ bringthefood.views.PublishOffer = Ext.extend(Ext.form.FormPanel,{
         }, {
             xtype: 'datepickerfield',
             label: 'Date from',
-            name: 'avdate'
+            name: 'avdate',
+            value: new Date()
         },
         {
             xtype: 'textfield',
             label: 'Time from',
-            name: 'avtime'
+            name: 'avtime',
+            value: new Date().getHours() + ':' + new Date().getMinutes()
         },
         {
             xtype: 'datepickerfield',
             label: 'Date until',
-            name: 'expdate'
+            name: 'expdate',
+            value: new Date()
         },
         {
             xtype: 'textfield',
             label: 'Time until',
-            name: 'exptime'
+            name: 'exptime',
+            value: new Date().getHours() + ':' + new Date().getMinutes()
         }
         ]
     },
@@ -124,7 +139,10 @@ bringthefood.views.PublishOffer = Ext.extend(Ext.form.FormPanel,{
         text: 'Publish',
         ui: 'confirm',
         handler: function(){
-        //offerForm.submit('offers-submit.php');
+            Ext.dispatch({
+                controller: bringthefood.controllers.supplierController,
+                action: 'submitOffer'
+            });
         }
     }
     ]
