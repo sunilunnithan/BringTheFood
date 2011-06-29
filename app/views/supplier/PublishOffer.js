@@ -80,14 +80,41 @@ bringthefood.views.PublishOffer = Ext.extend(Ext.form.FormPanel,{
         }
         ]
     },
+    
+    {
+        xtype: 'button',
+        text: 'Upload Image'
+    },
+    {
+        xtype: 'hiddenfield',
+        id: 'image_field',
+        name: 'image',
+        hidden: true
+    },
     {
         xtype: 'fieldset',
+        id: 'additional_stuff',
+        items: [
+        {
+            xtype: 'numberfield',
+            label: 'How many people can it serve?',
+            labelWidth: '80%',
+            name: 'peopleserved',
+            minValue: 0,
+            value: 1
+        }
+        ]
+    },
+    {
+        xtype: 'fieldset',
+        item: 'newaddr_fieldset',
         items: [
         {
             xtype: 'checkboxfield',
             label: 'New address',
             name: 'newaddress',
             labelWidth: '80%',
+            value: 'true',
             listeners: {
                 check: function(){
                     var addressfields = bringthefood.views.publishoffer.getComponent('address');

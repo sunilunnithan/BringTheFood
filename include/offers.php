@@ -64,14 +64,14 @@ function get_offers_JSON() {
 //function to be invoked when supplier adds an offer.
 function add_offer() {
     //cross-check with the GUI
-    $supplier_ID = $_SESSION['sid']; //get from session
+    $supplier_ID = $_SESSION['demo']['user_id']; //get from session
     $description = $_POST['desc'];
     $av_date = $_POST['avdate'];
     $av_time = $_POST['avtime'];
     $exp_date = $_POST['expdate'];
     $image = $_POST['image']; //make a file upload here
     $people = $_POST['peopleserved'];
-    $new_address = $_POST['newaddress'];  // Yes/No field to ask if the address is new
+    $new_address = isset($_POST['newaddress']) ? $_POST['newaddress'] : false;  // Yes/No field to ask if the address is new
     $insert_offer = mysql_query("INSERT INTO offer (supplier_id, collector_id,description,available_date,available_time,expire_date,status,image,people_served) VALUES ('$supplier_ID','','$description','$av_date','$av_time','$exp_date','available','$image','$people')");
 
     //if address of offer is new, insert the address ensuring that it corresponds to this offer
@@ -164,9 +164,11 @@ function book_offer() {
         return -1;
 }
 
-if ($_GET['action'] == 'add')
-    add_offer();
-else if ($_GET['action'] == 'remove')
+if ($_GET['action'] == 'add') {
+    if (add_offer() == 1) {
+        echo json_encode(array("success" => true));
+    }
+} else if ($_GET['action'] == 'remove')
     remove_offer();
 else if ($_GET['action'] == 'update')
     update_offer();
