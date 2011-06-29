@@ -71,26 +71,32 @@ bringthefood.views.PublishOffer = Ext.extend(Ext.form.FormPanel,{
         {
             xtype: 'checkboxfield',
             label: 'New address',
-            onChange: function(field, value){
-                var addressfields = Ext.getCmp('address');
-
-                if (field.isChecked()){
+            name: 'newaddress',
+            labelWidth: '80%',
+            listeners: {
+                check: function(){
+                    var addressfields = bringthefood.views.publishoffer.getComponent('address');
                     addressfields.enable();
-                    addressfields.show();
-                } else {
+                    addressfields.show({
+                        type: 'fade'
+                    });
+                },
+                uncheck: function(){
+                    var addressfields = bringthefood.views.publishoffer.getComponent('address');
                     addressfields.disable();
-                    addressfields.hide();
+                    addressfields.hide({
+                        type: 'fade'
+                    });
                 }
             }
         }
-
-        
         ]
     },
     {
         xtype: 'fieldset',
-        name: 'address',
+        id: 'address',
         disabled: true,
+        hidden: true,
         defaults: {
             xtype: 'textfield'
         },
