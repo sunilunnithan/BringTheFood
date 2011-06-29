@@ -8,7 +8,7 @@ include ('../config/config.php');
 
 //function to return JSON array of available offers
 function get_offers_JSON() {
-    $offers = mysql_query("SELECT * FROM offer WHERE status='available'") or die('Unable to retrieve offers');
+    $offers = mysql_query("SELECT * FROM offer WHERE status='available'");
     $num_offers = mysql_num_rows($offers);
     if ($num_offers > 0) {
         $offer_JSON_Array = array();
@@ -19,12 +19,14 @@ function get_offers_JSON() {
             $avail_date = mysql_result($offers, $i, 'available_date');
             $avial_time = mysql_result($offers, $i, 'available_time');
             $exp_date = mysql_result($offers, $i, 'expire_date');
+            $image = mysql_result($offers, $i, 'image');
+            $people_served = mysql_result($offers, $i, 'people_served');
             //$exp_time=mysql_result($offers, $i, 'exp_time');
             $status = mysql_result($offers, $i, 'status');
             $collector_ID = mysql_result($offers, $i, 'collector_id');
 
             //get the address of this offer
-            $address_of_offer = mysql_query("SELECT * FROM address WHERE offer_id ='$offer_ID' OR user_id='$supplier_ID'") or die("Unable to fetch address of offer");
+            $address_of_offer = mysql_query("SELECT * FROM address WHERE offer_id ='$offer_ID' OR user_id='$supplier_ID'");
             $street = mysql_result($address_of_offer, 0, 'street');
             $city = mysql_result($address_of_offer, 0, 'city');
             $zip = mysql_result($address_of_offer, 0, 'zip');
@@ -41,6 +43,8 @@ function get_offers_JSON() {
                 'available_date' => $avail_date,
                 'available_time' => $avial_time,
                 'expiry_date' => $exp_date,
+                'image' => $image,
+                'people_served' => $people_served,
                 'street' => $street,
                 'zip' => $zip,
                 'city' => $city,
@@ -65,8 +69,10 @@ function add_offer() {
     $av_date = $_POST['avdate'];
     $av_time = $_POST['avtime'];
     $exp_date = $_POST['expdate'];
+    $image = $_POST['image']; //make a file upload here
+    $people = $_POST['peopleserved'];
     $new_address = $_POST['newaddress'];  // Yes/No field to ask if the address is new
-    $insert_offer = mysql_query("INSERT INTO offer (supplier_id, collector_id,description,available_date,available_time,expire_date,status) VALUES ('$supplier_ID','','$description','$av_date','$av_time','$exp_date','available')");
+    $insert_offer = mysql_query("INSERT INTO offer (supplier_id, collector_id,description,available_date,available_time,expire_date,status,image,people_served) VALUES ('$supplier_ID','','$description','$av_date','$av_time','$exp_date','available','$image','$people')");
 
     //if address of offer is new, insert the address ensuring that it corresponds to this offer
     if ($new_address == 'true') {
@@ -123,6 +129,8 @@ function update_offer() {
     $av_time = $_POST['avtime'];
     $exp_date = $_POST['expdate'];
     $status = $_POST['status'];
+    $image = $_POST['image']; //make image upload here
+    $people = $_POST['people'];
     //address of an offer
     $street = $_POST['street'];
     $city = $_POST['city'];
@@ -130,7 +138,7 @@ function update_offer() {
     $country = $_POST['country'];
     $phone = $_POST['phone'];
 
-    $update_offer = mysql_query("UPDATE offer SET description='$description',availabl_date='$av_date', available_time ='$av_time', expire_date='$exp_date', status='$status' WHERE offer_id='$offer_id' ");
+    $update_offer = mysql_query("UPDATE offer SET description='$description',availabl_date='$av_date', available_time ='$av_time', expire_date='$exp_date', status='$status', image='$image', people_served ='$people' WHERE offer_id='$offer_id' ");
     //assuming that the offer was registered with new address at the beginning. otherwise, change of address for the supplier is done as part of account update for user.
     $update_offer_address = mysql_query("UPDATE address SET street='$street',city='$city', zip ='$zip', country='$country', phone='$phone' WHERE offer_id='$offer_id'");
     if ($update_offer && $update_offer_address)
