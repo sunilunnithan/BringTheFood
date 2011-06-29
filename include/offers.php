@@ -71,11 +71,11 @@ function add_offer() {
     $exp_date = $_POST['expdate'];
     $image = $_POST['image']; //make a file upload here
     $people = $_POST['peopleserved'];
-    $new_address = isset($_POST['newaddress']) ? $_POST['newaddress'] : false;  // Yes/No field to ask if the address is new
+    $new_address = isset($_POST['newaddress']) ? true : false;  // Yes/No field to ask if the address is new
     $insert_offer = mysql_query("INSERT INTO offer (supplier_id, collector_id,description,available_date,available_time,expire_date,status,image,people_served) VALUES ('$supplier_ID','','$description','$av_date','$av_time','$exp_date','available','$image','$people')");
 
     //if address of offer is new, insert the address ensuring that it corresponds to this offer
-    if ($new_address == 'true') {
+    if ($new_address) {
         //get the latest offer_id for the current supplier
         $offer_id = mysql_query("SELECT MAX(offer_id) AS latest_offer_id, supplier_id FROM offer WHERE supplier_id='$supplier_ID'");
         if ($offer_id) {
@@ -166,7 +166,7 @@ function book_offer() {
 
 if ($_GET['action'] == 'add') {
     if (add_offer() == 1) {
-        echo json_encode(array("success" => true));
+        echo json_encode(array('success' => true));
     }
 } else if ($_GET['action'] == 'remove')
     remove_offer();

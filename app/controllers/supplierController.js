@@ -1,5 +1,8 @@
 bringthefood.controllers.supplierController = new Ext.Controller({
     manageOffers: function(){
+       bringthefood.views.viewport.setActiveItem(bringthefood.views.offerslist);
+    },
+    newOffer: function(){
        bringthefood.views.viewport.setActiveItem(bringthefood.views.publishoffer);
     },
 
@@ -13,7 +16,7 @@ bringthefood.controllers.supplierController = new Ext.Controller({
                 message: 'Submitting...'
             },
             success: function(form, result){
-                Ext.Msg.alert('Success!','You have been registered and may now login',Ext.emptyFn);
+                Ext.Msg.alert('Success!','Offer successfully published',Ext.emptyFn);
                 bringthefood.views.publishoffer.reset();
                 animation = {
                     type: 'slide',

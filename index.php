@@ -11,10 +11,17 @@
         <!-- Google maps API -->
         <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=true"></script>
 
+        <!-- Models -->
+        <script type="text/javascript" src="app/models/offerModel.js"></script>
+
+        <!-- Stores -->
+        <script type="text/javascript" src="app/stores/offersStore.js"></script>
+
         <!-- Views -->
         <script type="text/javascript" src="app/views/Viewport.js"></script>
         <script type="text/javascript" src="app/views/Login.js"></script>
         <script type="text/javascript" src="app/views/Registration.js"></script>
+        <script type="text/javascript" src="app/views/OffersList.js"></script>
 
         <!-- Collector views -->
         <script type="text/javascript" src="app/views/collector/OffersMap.js"></script>

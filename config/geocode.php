@@ -23,13 +23,13 @@ Returns the geocode location for that address in terms of lat and lng.
         //echo 'Address received '.$addr."<br />";
         $geocodeInfo = null;
         $delay = 0;
-        $base_url = "http://" . MAPS_HOST . "/maps/geo?output=xml" . "&key=" . KEY;
+        $base_url = "http://" . MAPS_HOST . "/maps/geo?";
 
         $geocode_pending = true;
 
         while ($geocode_pending) {
 
-            $request_url = $base_url . "&q=" . urlencode($addr);
+            $request_url = $base_url . "q=" . urlencode($addr) . "&output=xml" . "&key=" . KEY;
             $xml = simplexml_load_file($request_url) or die("url not loading");
 
             $status = $xml->Response->Status->code;
