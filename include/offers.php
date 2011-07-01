@@ -7,17 +7,25 @@
 include ('../config/config.php');
 
 //function to return JSON array of available offers
-function get_offers_JSON() {
+function get_offers_JSON($my_offers_only = false) {
+
     $offers = mysql_query("SELECT * FROM offer WHERE status='available'");
+
+    if ($my_offers_only) {
+        $supplier_ID = $_SESSION['demo']['user_id'];
+        $offers .= " AND supplier_id='$supplier_ID'";
+    }
+
     $num_offers = mysql_num_rows($offers);
     if ($num_offers > 0) {
         $offer_JSON_Array = array();
         for ($i = 0; $i < $num_offers; $i++) {
             $offer_ID = mysql_result($offers, $i, 'offer_id');
             $supplier_ID = mysql_result($offers, $i, 'supplier_id');
+            $supplier_name = mysql_result(mysql_query("SELECT name FROM users WHERE user_id = $supplier_ID"), 0, 'name');
             $description = mysql_result($offers, $i, 'description');
             $avail_date = mysql_result($offers, $i, 'available_date');
-            $avial_time = mysql_result($offers, $i, 'available_time');
+            $avail_time = mysql_result($offers, $i, 'available_time');
             $exp_date = mysql_result($offers, $i, 'expire_date');
             $image = mysql_result($offers, $i, 'image');
             $people_served = mysql_result($offers, $i, 'people_served');
@@ -38,13 +46,14 @@ function get_offers_JSON() {
             $this_offer = array(
                 'offer_id' => $offer_ID,
                 'supplier_id' => $supplier_ID,
-                'description' => $description,
+                'supplier_name' => $supplier_name,
+                'desc' => $description,
                 'status' => $status,
-                'available_date' => $avail_date,
-                'available_time' => $avial_time,
-                'expiry_date' => $exp_date,
+                'avdate' => $avail_date,
+                'avtime' => $avail_time,
+                'expdate' => $exp_date,
                 'image' => $image,
-                'people_served' => $people_served,
+                'peopleserved' => $people_served,
                 'street' => $street,
                 'zip' => $zip,
                 'city' => $city,
@@ -55,10 +64,10 @@ function get_offers_JSON() {
             array_push($offer_JSON_Array, $this_offer);
         }
         //return json array of all offers available
-        return (json_encode($offer_JSON_Array));
+        return (json_encode(array('data' => $offer_JSON_Array)));
     } else
 //return empty json array
-        return json_encode(array());
+        return json_encode(array('data' => array()));
 }
 
 //function to be invoked when supplier adds an offer.
@@ -71,7 +80,7 @@ function add_offer() {
     $exp_date = $_POST['expdate'];
     $image = $_POST['image']; //make a file upload here
     $people = $_POST['peopleserved'];
-    $new_address = isset($_POST['newaddress']) ? true : false;  // Yes/No field to ask if the address is new
+    $new_address = isset($_POST['newaddress']) ? $_POST['newaddress'] : false;  // Yes/No field to ask if the address is new
     $insert_offer = mysql_query("INSERT INTO offer (supplier_id, collector_id,description,available_date,available_time,expire_date,status,image,people_served) VALUES ('$supplier_ID','','$description','$av_date','$av_time','$exp_date','available','$image','$people')");
 
     //if address of offer is new, insert the address ensuring that it corresponds to this offer
@@ -93,21 +102,17 @@ function add_offer() {
         $lat = $latitude_longitude['lat'];
         $long = $latitude_longitude['lng'];
         $insert_offer_address = mysql_query("INSERT INTO address (street,city,zip,country,phone,lat,lng,offer_id,user_id) VALUES('$street','$city','$zip','$country','$phone','$lat','$long','$latest_offer_id','$supplier_id')");
-    }
 
-    if ($new_address == "false") {  //offer address is current supplier's address
-        if ($insert_offer)    // just check correct insertion of offer
-            return 1;
-        else
-            return -1;
-    }
-
-    else {                     //offer address is new
         if ($insert_offer && $insert_offer_address)  // check both offer and address
             return 1;
         else
             return -1;
     }
+
+    if ($insert_offer)    // just check correct insertion of offer
+        return 1;
+    else
+        return -1;
 }
 
 //function to be invoked when the supplier wants to remove an offer which is still available.
@@ -123,14 +128,14 @@ function remove_offer() {
 //function to be invoked when the supplier needs to update an offer
 function update_offer() {
     //Cross-check with the GUI
-    $offer_id = $_POST['offerid'];
-    $description = $_POST['description'];
+    $offer_id = $_POST['offer_id'];
+    $description = $_POST['desc'];
     $av_date = $_POST['avdate'];
     $av_time = $_POST['avtime'];
     $exp_date = $_POST['expdate'];
     $status = $_POST['status'];
     $image = $_POST['image']; //make image upload here
-    $people = $_POST['people'];
+    $people = $_POST['peopleserved'];
     //address of an offer
     $street = $_POST['street'];
     $city = $_POST['city'];
@@ -138,7 +143,8 @@ function update_offer() {
     $country = $_POST['country'];
     $phone = $_POST['phone'];
 
-    $update_offer = mysql_query("UPDATE offer SET description='$description',availabl_date='$av_date', available_time ='$av_time', expire_date='$exp_date', status='$status', image='$image', people_served ='$people' WHERE offer_id='$offer_id' ");
+    $update_offer = mysql_query("UPDATE offer SET description='$description',available_date='$av_date', available_time ='$av_time', expire_date='$exp_date', status='$status', image='$image', people_served ='$people' WHERE offer_id='$offer_id' ");
+
     //assuming that the offer was registered with new address at the beginning. otherwise, change of address for the supplier is done as part of account update for user.
     $update_offer_address = mysql_query("UPDATE address SET street='$street',city='$city', zip ='$zip', country='$country', phone='$phone' WHERE offer_id='$offer_id'");
     if ($update_offer && $update_offer_address)
@@ -170,9 +176,16 @@ if ($_GET['action'] == 'add') {
     }
 } else if ($_GET['action'] == 'remove')
     remove_offer();
-else if ($_GET['action'] == 'update')
-    update_offer();
-else if ($_GET['action'] == 'view')
+else if ($_GET['action'] == 'update') {
+    if (update_offer() == 1) {
+        echo json_encode(array('success' => true));
+    } else {
+        echo json_encode(array('success' => false));
+    }
+} else if ($_GET['action'] == 'view')
     echo get_offers_JSON();
+else if ($_GET['action'] == 'myoffers')
+    echo get_offers_JSON(true);
+
 ?>
 

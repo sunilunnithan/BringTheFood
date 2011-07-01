@@ -1,33 +1,26 @@
 bringthefood.views.OffersList = Ext.extend(Ext.Panel,{
     dockedItems: [{
         xtype: 'toolbar',
-        title: 'Available Offers',
+        title: 'Offers',
         dock: 'top',
         items: [{
             xtype: 'button',
             text: 'Back',
             ui: 'back',
             handler: function() {
-            //go back
+               //
             },
             scope: this
-        },
-        {
-            xtype:'spacer'
-        },
-        {
-            xtype: 'button',
-            text: 'New Offer'
         }
         ]
     }],
     items: [{
         xtype: 'list',
-        emptyText   : 'No data available.',
+        emptyText: 'No data available.',
         store: bringthefood.stores.offersStore,
-        itemTpl: '{title}',
+        itemTpl: '{desc}',
         onItemDisclosure: function (record) {
-        //todo
+            //lock offer
         },
         grouped: false,
         scroll: 'vertical',
