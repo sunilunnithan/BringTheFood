@@ -2,6 +2,7 @@ bringthefood.views.OffersMap = Ext.extend(Ext.Panel, {
     title: 'Offers',
     id: 'offersmap',
     layout: 'fit',
+
     dockedItems: [
     {
         xtype: 'toolbar',
@@ -40,7 +41,12 @@ bringthefood.views.OffersMap = Ext.extend(Ext.Panel, {
             iconCls: 'refresh',
             //position: 'right',
             handler: function(){
-            //reload offers
+                Ext.dispatch({
+                    controller: bringthefood.controllers.collectorController,
+                    action: 'refreshMap',
+                    map: bringthefood.views.offersmap.getComponent('map').map
+                })
+                
             }
         }
         ]
@@ -49,7 +55,18 @@ bringthefood.views.OffersMap = Ext.extend(Ext.Panel, {
     items: [
     {
         xtype: 'map',
-        useCurrentLocation: true
+        id: 'map',
+        useCurrentLocation: true,
+        listeners: {
+            show: function() {
+                var offers = bringthefood.stores.offersStore.read();
+                bringthefood.views.offersmap.refreshMap(offers.data);
+                bringthefood.views.offersmap.doLayout();
+            }
+        }
     }
     ]
+
+    
+   
 });

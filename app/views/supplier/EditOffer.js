@@ -1,9 +1,10 @@
-bringthefood.views.PublishOffer = Ext.extend(Ext.form.FormPanel,{
-    title: 'Publish Offer',
-    id: 'publishoffer',
-    url: 'include/offers.php?action=add',
+bringthefood.views.EditOffer = Ext.extend(Ext.form.FormPanel,{
+    title: 'Edit Offer',
+    id: 'editoffer',
+    url: 'include/offers.php?action=update',
     standardSubmit: false,
     fullscreen: 'true',
+    model: 'bringthefood.models.offerModel',
     layout: {
         type : 'vbox',
         align : 'center'
@@ -16,37 +17,56 @@ bringthefood.views.PublishOffer = Ext.extend(Ext.form.FormPanel,{
     {
         dock: 'top',
         xtype: 'toolbar',
-        title: 'Publish a New Offer',
+        title: 'Update Offer',
         defaults: {
             iconMask: true
         },
         items: [
         {
             xtype: 'button',
-            name: 'home',
-            iconCls: 'home',
+            name: 'back',
+            text: 'Back',
+            ui: 'back',
             handler: function(){
                 Ext.dispatch({
                     controller: bringthefood.controllers.supplierController,
-                    action: 'goBack'
+                    action: 'manageOffers'
                 });
-            }
-        },
-        {
-            xtype: 'spacer'
-        },
-        {
-            xtype: 'button',
-            name: 'list',
-            text: 'Offers List',
-            handler: function(){
-            //go to offers list
             }
         }
         ]
     }
     ],
     items: [
+    {
+      xtype: 'hiddenfield',
+      name: 'offer_id'
+    },
+    {
+        xtype: 'fieldset',
+        items: [
+        {
+            xtype: 'selectfield',
+            name: 'status',
+            label: 'Status',
+            options: [
+            {
+                text: 'available',
+                value: 'available'
+            },
+
+            {
+                text: 'locked',
+                value: 'locked'
+            },
+
+            {
+                text: 'taken',
+                value: 'taken'
+            },
+            ]
+        }]
+    },
     {
         xtype: 'fieldset',
         items: [
@@ -57,30 +77,26 @@ bringthefood.views.PublishOffer = Ext.extend(Ext.form.FormPanel,{
         }, {
             xtype: 'datepickerfield',
             label: 'Date from',
-            name: 'avdate',
-            value: new Date()
+            name: 'avdate'
         },
         {
             xtype: 'textfield',
             label: 'Time from',
-            name: 'avtime',
-            value: new Date().getHours() + ':' + new Date().getMinutes()
+            name: 'avtime'
         },
         {
             xtype: 'datepickerfield',
             label: 'Date until',
-            name: 'expdate',
-            value: new Date()
+            name: 'expdate'
         },
         {
             xtype: 'textfield',
             label: 'Time until',
-            name: 'exptime',
-            value: new Date().getHours() + ':' + new Date().getMinutes()
+            name: 'exptime'
         }
         ]
     },
-    
+
     {
         xtype: 'button',
         text: 'Upload Image'
@@ -107,38 +123,7 @@ bringthefood.views.PublishOffer = Ext.extend(Ext.form.FormPanel,{
     },
     {
         xtype: 'fieldset',
-        item: 'newaddr_fieldset',
-        items: [
-        {
-            xtype: 'checkboxfield',
-            label: 'New address',
-            name: 'newaddress',
-            labelWidth: '80%',
-            value: 'true',
-            listeners: {
-                check: function(){
-                    var addressfields = bringthefood.views.publishoffer.getComponent('address');
-                    addressfields.enable();
-                    addressfields.show({
-                        type: 'fade'
-                    });
-                },
-                uncheck: function(){
-                    var addressfields = bringthefood.views.publishoffer.getComponent('address');
-                    addressfields.disable();
-                    addressfields.hide({
-                        type: 'fade'
-                    });
-                }
-            }
-        }
-        ]
-    },
-    {
-        xtype: 'fieldset',
         id: 'address',
-        disabled: true,
-        hidden: true,
         defaults: {
             xtype: 'textfield'
         },
@@ -162,17 +147,36 @@ bringthefood.views.PublishOffer = Ext.extend(Ext.form.FormPanel,{
         }]
     },
     {
-        xtype: 'button',
-        text: 'Publish',
-        ui: 'confirm',
-        handler: function(){
-            Ext.dispatch({
-                controller: bringthefood.controllers.supplierController,
-                action: 'submitOffer'
-            });
+        xtype: 'container',
+        layout: 'hbox',
+        items: [
+        {
+            xtype: 'button',
+            text: 'Update',
+            ui: 'confirm',
+            margin: '10px',
+            handler: function(){
+                Ext.dispatch({
+                    controller: bringthefood.controllers.supplierController,
+                    action: 'updateOffer'
+                });
+            }
+        },
+        {
+            xtype: 'button',
+            text: 'Delete',
+            ui: 'decline',
+            margin: '10px',
+            handler: function(){
+                Ext.dispatch({
+                    controller: bringthefood.controllers.supplierController,
+                    action: 'deleteOffer'
+                });
+            }
         }
+        ]
     }
-    ]
     
-});
+    ]
 
+});

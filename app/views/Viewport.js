@@ -13,7 +13,10 @@ bringthefood.views.Viewport = Ext.extend(Ext.Panel, {
             regForm: new bringthefood.views.Registration(),
             offersmap: new bringthefood.views.OffersMap(),
             supplier_main: new bringthefood.views.SupplierMain(),
-            publishoffer: new bringthefood.views.PublishOffer()
+            myoffers: new bringthefood.views.MyOffersList(),
+            publishoffer: new bringthefood.views.PublishOffer(),
+            editoffer: new bringthefood.views.EditOffer(),
+            offerslist: new bringthefood.views.OffersList()
         });
 
         // Let's add our view to the Viewport.
@@ -24,7 +27,10 @@ bringthefood.views.Viewport = Ext.extend(Ext.Panel, {
             bringthefood.views.regForm,
             bringthefood.views.offersmap,
             bringthefood.views.supplier_main,
-            bringthefood.views.publishoffer
+            bringthefood.views.myoffers,
+            bringthefood.views.publishoffer,
+            bringthefood.views.editoffer,
+            bringthefood.views.offerslist
             ]
         });
 

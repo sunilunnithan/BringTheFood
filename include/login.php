@@ -16,7 +16,7 @@ $response = array();
 if ($user->signed) {
     $role = $user->data['role'];
 
-    $response = array("success" => true, "role" => $role);
+    $response = array("success" => true, "role" => $role, "id" => $user->data['user_id']);
 } else {
     $response = array("success" => false);
 }

@@ -16,9 +16,11 @@ bringthefood.controllers.loginController = new Ext.Controller({
                 }
 
                 switch (result.role) {
-                    case 'collector':
+                    case 'collector':{
+                        var data = bringthefood.stores.offersStore.read();
                         bringthefood.views.viewport.setActiveItem(bringthefood.views.offersmap,animation);
-                        break;
+                    }
+                    break;
                     case 'supplier':
                         bringthefood.views.viewport.setActiveItem(bringthefood.views.supplier_main,animation);
                         break;
@@ -41,10 +43,10 @@ bringthefood.controllers.loginController = new Ext.Controller({
         };
 
         Ext.Ajax.request({
-           url: 'include/logout.php',
-           success: function(){
-               bringthefood.views.viewport.setActiveItem(bringthefood.views.loginForm,animation);
-           }
+            url: 'include/logout.php',
+            success: function(){
+                bringthefood.views.viewport.setActiveItem(bringthefood.views.loginForm,animation);
+            }
         });
 
     }
