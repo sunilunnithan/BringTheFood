@@ -49,8 +49,11 @@ bringthefood.views.OffersMap = Ext.extend(Ext.Panel, {
         xtype: 'map',
         id: 'map',
         useCurrentLocation: true,
+        mapOptions: {
+            zoom: 14
+        },
         listeners: {
-            maprender: function() {
+            maprender: function() { 
                 Ext.dispatch({
                     controller: bringthefood.controllers.collectorController,
                     action: 'refreshMap',

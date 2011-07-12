@@ -9,7 +9,7 @@ include ('../config/config.php');
 //function to return JSON array of available offers
 function get_offers_JSON($my_offers_only = false) {
 
-    $offers = mysql_query("SELECT * FROM offer WHERE status='available'");
+    $offers = mysql_query("SELECT * FROM offer");
 
     if ($my_offers_only) {
         $supplier_ID = $_SESSION['demo']['user_id'];
@@ -163,7 +163,7 @@ function book_offer() {
     //$insert =  mysql_query("INSERT INTO stock(offer_ID, collector_ID,collection_date,amount, remark, status) VALUES(d','$collectorId','$date','$time')") or die ('Unable to add booking'.mysql_error());
     $check = mysql_query("SELECT status from offer WHERE offer_ID='$offerId'");
     if ($check) {
-        if (mysql_result($check, 0, 'status') == "availabe") {
+        if (mysql_result($check, 0, 'status') == "available") {
             if (mysql_query("UPDATE offer SET status ='booked' WHERE offer_ID ='$offerId'"))
                 return 1;
             else

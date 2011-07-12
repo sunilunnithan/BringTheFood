@@ -11,7 +11,7 @@ bringthefood.views.SupplierMain = Ext.extend(Ext.Panel, {
         title: 'Food Supplier',
         items: [
         {
-            text: 'Log Out',
+            text: 'Logout',
             ui: 'back',
             handler: function(){
                 Ext.dispatch({
