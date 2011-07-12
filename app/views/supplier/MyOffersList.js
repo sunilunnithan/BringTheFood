@@ -33,7 +33,7 @@ bringthefood.views.MyOffersList = Ext.extend(Ext.Panel,{
     }],
     items: [{
         xtype: 'list',
-        emptyText: 'No data available.',
+        emptyText: 'You haven\'t posted any offer yet',
         store: bringthefood.stores.offersStore,
         itemTpl: '{desc}',
         onItemDisclosure: function (record) {

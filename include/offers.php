@@ -156,18 +156,24 @@ function update_offer() {
 //function to be invoked when the collector books an offer.
 function book_offer() {
 
-    $collectorId = $_POST['collectorId'];
-    $offerId = $_POST['offerId'];
+    $collectorId = $_SESSION['demo']['user_id'];
+    $offerId = $_GET['offerId'];
     //$date = date('d/m/y');
     //$time =date('h:m:s');
     //$insert =  mysql_query("INSERT INTO stock(offer_ID, collector_ID,collection_date,amount, remark, status) VALUES(d','$collectorId','$date','$time')") or die ('Unable to add booking'.mysql_error());
-    $check = mysql_query("SELECT status from offer WHERE offer_ID='$offerId'") or die('Unable to retrieve offer');
-    if (mysql_result($check, 0, 'status') == "availabe") {
-        $update = mysql_query("UPDATE offer SET status ='booked' WHERE offer_ID ='$offerId'") or die('Unable to complete booking');
-        return 1;
-    }
-    else
+    $check = mysql_query("SELECT status from offer WHERE offer_ID='$offerId'");
+    if ($check) {
+        if (mysql_result($check, 0, 'status') == "availabe") {
+            if (mysql_query("UPDATE offer SET status ='booked' WHERE offer_ID ='$offerId'"))
+                return 1;
+            else
+                return -1;
+        }
+        else
+            return -1;
+    } else {
         return -1;
+    }
 }
 
 if ($_GET['action'] == 'add') {
@@ -186,6 +192,12 @@ else if ($_GET['action'] == 'update') {
     echo get_offers_JSON();
 else if ($_GET['action'] == 'myoffers')
     echo get_offers_JSON(true);
-
+else if ($_GET['action'] == 'lock') {
+    if (book_offer () == 1) {
+        echo json_encode(array('success' => true));
+    } else {
+        echo json_encode(array('success' => false));
+    }
+}
 ?>
 
