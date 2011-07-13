@@ -176,6 +176,50 @@ function book_offer() {
     }
 }
 
+//function to unlock offer by collecter
+function unlock_offer() {
+
+    $collectorId = $_SESSION['demo']['user_id'];
+    $offerId = $_GET['offerId'];
+    $check = mysql_query("SELECT status from offer WHERE offer_ID='$offerId'");
+    if ($check) {
+        if (mysql_result($check, 0, 'status') == "booked") {
+            if (mysql_query("UPDATE offer SET status ='available' WHERE offer_ID ='$offerId'"))
+                return 1;
+            else
+                return -1;
+        }
+        else
+            return -1;
+    } else {
+        return -1;
+    }
+}
+
+
+
+//function to complete offer by supplier after offer is collected
+function complete_offer() {
+
+    $collectorId = $_SESSION['demo']['user_id'];
+    $offerId = $_GET['offerId'];
+    $check = mysql_query("SELECT status from offer WHERE offer_ID='$offerId'");
+    if ($check) {
+        if (mysql_result($check, 0, 'status') == "booked") {
+            if (mysql_query("UPDATE offer SET status ='collected' WHERE offer_ID ='$offerId'"))
+                return 1;
+            else
+                return -1;
+        }
+        else
+            return -1;
+    } else {
+        return -1;
+    }
+}
+
+
+
 if ($_GET['action'] == 'add') {
     if (add_offer() == 1) {
         echo json_encode(array('success' => true));
@@ -194,6 +238,22 @@ else if ($_GET['action'] == 'myoffers')
     echo get_offers_JSON(true);
 else if ($_GET['action'] == 'lock') {
     if (book_offer () == 1) {
+        echo json_encode(array('success' => true));
+    } else {
+        echo json_encode(array('success' => false));
+    }
+}
+
+else if ($_GET['action'] == 'unlock') {
+    if (unlock_offer() == 1) {
+        echo json_encode(array('success' => true));
+    } else {
+        echo json_encode(array('success' => false));
+    }
+}
+
+else if ($_GET['action'] == 'complete') {
+    if (complete_offer() == 1) {
         echo json_encode(array('success' => true));
     } else {
         echo json_encode(array('success' => false));
