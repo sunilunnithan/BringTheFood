@@ -1,4 +1,4 @@
-bringthefood.views.Account = Ext.extend(Ext.TabPanel, {
+bringthefood.views.Account = Ext.extend(Ext.TabPanel, {    
     title: 'Account management',
     cardSwitchAnimation: 'slide',
     dockedItems:[{
@@ -10,10 +10,7 @@ bringthefood.views.Account = Ext.extend(Ext.TabPanel, {
             text: 'Back',
             ui: 'back',
             handler: function(){
-                Ext.dispatch({
-                    controller: bringthefood.controllers.supplierController,
-                    action: 'goBack'
-                });
+                //TODO waiting for komminist
             }
         }
 

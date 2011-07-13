@@ -3,17 +3,20 @@ bringthefood.views.MyOffersList = Ext.extend(Ext.Panel,{
         xtype: 'toolbar',
         title: 'Offers you published',
         dock: 'top',
-        items: [{
+        defaults: {
+            iconMask: true
+        },
+        items: [
+        {
             xtype: 'button',
-            text: 'Back',
-            ui: 'back',
-            handler: function() {
+            name: 'home',
+            iconCls: 'home',
+            handler: function(){
                 Ext.dispatch({
                     controller: bringthefood.controllers.supplierController,
-                    action: 'goBack'
+                    action: 'goHome'
                 });
-            },
-            scope: this
+            }
         },
         {
             xtype:'spacer'
@@ -21,7 +24,7 @@ bringthefood.views.MyOffersList = Ext.extend(Ext.Panel,{
         {
             xtype: 'button',
             text: 'New Offer',
-            ui: 'forward',
+            iconCls: 'add',
             handler: function(){
                 Ext.dispatch({
                     controller: bringthefood.controllers.supplierController,
@@ -35,16 +38,41 @@ bringthefood.views.MyOffersList = Ext.extend(Ext.Panel,{
         xtype: 'list',
         emptyText: 'You haven\'t posted any offer yet',
         store: bringthefood.stores.offersStore,
-        itemTpl: '{desc}',
-        onItemDisclosure: function (record) {
-            Ext.dispatch({
-                controller: bringthefood.controllers.supplierController,
-                action: 'editOffer',
-                data: record
-            })
-        },
-        grouped: false,
+        grouped: true,
+        //indexBar: true,
         scroll: 'vertical',
-        fullscreen: true
+        fullscreen: true,
+        
+        itemTpl: [
+        '<div><b>{desc}</b> for <b>{peopleserved}</b> at <b>{supplier_name}</b></div>',
+        '<div class="offer instructions">',
+        '<tpl if="status == \'booked\'">Click to confirm pickup</tpl>',
+        '<tpl if="status == \'available\'">Click to edit</tpl>',
+        '</div>'
+        ],
+
+        itemtap: function(){
+            console.log("pippo");
+        },
+
+        onItemDisclosure: function (record) {
+            var status = record.data.status;
+
+            if (status == 'booked'){
+                Ext.dispatch({
+                    controller: bringthefood.controllers.supplierController,
+                    action: 'confirmPickUp',
+                    data: record
+                });
+            } else {
+                Ext.dispatch({
+                    controller: bringthefood.controllers.supplierController,
+                    action: 'editOffer',
+                    data: record
+                });
+            }
+
+        }
+        
     }]
 });

@@ -1,18 +1,27 @@
 bringthefood.controllers.supplierController = new Ext.Controller({
     manageOffers: function(){
-        bringthefood.stores.offersStore.clearFilter(true);
-        bringthefood.stores.offersStore.load();
         Ext.Ajax.request({
             url: 'include/login.php' ,
             success: function(response){
                 var resp = Ext.decode(response.responseText);
                 var uid = resp.id;
-                bringthefood.stores.offersStore.filter({
-                    property: 'supplier_id',
-                    value: uid,
-                    exactMatch: true
-                });
-                bringthefood.views.viewport.setActiveItem(bringthefood.views.myoffers);
+                bringthefood.stores.offersStore.clearFilter(true);
+                bringthefood.stores.offersStore.load({
+                    scope: this,
+                    callback: function(){
+                        bringthefood.stores.offersStore.filter({
+                            property: 'supplier_id',
+                            value: uid,
+                            exactMatch: true
+                        });
+                        bringthefood.stores.offersStore.filter({
+                            filterFn: function(item){
+                                return item.get('status') != "collected";
+                            }
+                        });
+                        bringthefood.views.viewport.setActiveItem(bringthefood.views.myoffers);
+                    }
+                });   
             }
         });
         
@@ -22,6 +31,10 @@ bringthefood.controllers.supplierController = new Ext.Controller({
     },
 
     goBack: function(){
+        bringthefood.views.viewport.setActiveItem(bringthefood.views.myoffers);
+    },
+
+    goHome: function(){
         bringthefood.views.viewport.setActiveItem(bringthefood.views.supplier_main);
     },
 
@@ -78,6 +91,27 @@ bringthefood.controllers.supplierController = new Ext.Controller({
                 Ext.Msg.alert('Your Score', 'You have <b>' + res.score + '</b> points!<br />More info on how to spend them coming soon!', Ext.emptyFn);
             }
         })
+    },
+
+    confirmPickUp: function(options){
+        //var record = options.data;
+
+        Ext.Msg.confirm('Please Confirm','Has this offer been picked up?',function(ans){//we need a way (password from collector?) to verify pick up
+            if (ans == 'yes'){
+                Ext.Ajax.request({
+                    url: 'include/offers.php?action=complete&offerId=' + options.data.get('offer_id'),
+                    success: function(resp){
+                        var res = Ext.decode(resp.responseText);
+                        if (res.success){
+                            Ext.Msg.alert('Transaction Complete','Food has been brought. Thank you.',Ext.emptyFn);
+                            bringthefood.stores.offersStore.load();
+                        }
+                    }
+                });
+            }
+        });
+
+        
     }
    
 });

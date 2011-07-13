@@ -23,8 +23,9 @@ bringthefood.views.PublishOffer = Ext.extend(Ext.form.FormPanel,{
         items: [
         {
             xtype: 'button',
-            name: 'home',
-            iconCls: 'home',
+            name: 'list',
+            ui: 'back',
+            text: 'Offers List',
             handler: function(){
                 Ext.dispatch({
                     controller: bringthefood.controllers.supplierController,
@@ -33,16 +34,18 @@ bringthefood.views.PublishOffer = Ext.extend(Ext.form.FormPanel,{
             }
         },
         {
-            xtype: 'spacer'
-        },
-        {
             xtype: 'button',
-            name: 'list',
-            text: 'Offers List',
+            name: 'home',
+            iconCls: 'home',
             handler: function(){
-            //go to offers list
+                Ext.dispatch({
+                    controller: bringthefood.controllers.supplierController,
+                    action: 'goHome'
+                });
             }
-        }
+        },
+        
+        
         ]
     }
     ],

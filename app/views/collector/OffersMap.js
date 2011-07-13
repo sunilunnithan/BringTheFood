@@ -26,7 +26,6 @@ bringthefood.views.OffersMap = Ext.extend(Ext.Panel, {
         {
             xtype: 'spacer'
         },
-
         {
             xtype: 'button',
             name: 'refresh',
@@ -39,6 +38,39 @@ bringthefood.views.OffersMap = Ext.extend(Ext.Panel, {
                     map: bringthefood.views.offersmap.getComponent('map').map
                 })
                 
+            }
+        }
+        ]
+    },
+    {
+        xtype: 'toolbar',
+        dock: 'bottom',
+        layout: {
+            pack: 'center',
+            align: 'center'
+        },
+        defaults: {
+            iconMask: true
+        },
+        items: [
+        {
+            xtype: 'button',
+            name: 'account',
+            iconCls: 'user',
+            text: 'Account',
+            //position: 'right',
+            handler: function(){
+            //
+            }
+        },
+        {
+            xtype: 'button',
+            name: 'youroffers',
+            iconCls: 'compose',
+            text: 'Commitments',
+            //position: 'right',
+            handler: function(){
+            //
             }
         }
         ]
