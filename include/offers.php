@@ -9,7 +9,7 @@ include ('../config/config.php');
 //function to return JSON array of available offers
 function get_offers_JSON($my_offers_only = false) {
 
-    $offers = mysql_query("SELECT * FROM offer WHERE status='available'");
+    $offers = mysql_query("SELECT * FROM offer");
 
     if ($my_offers_only) {
         $supplier_ID = $_SESSION['demo']['user_id'];
@@ -156,19 +156,69 @@ function update_offer() {
 //function to be invoked when the collector books an offer.
 function book_offer() {
 
-    $collectorId = $_POST['collectorId'];
-    $offerId = $_POST['offerId'];
+    $collectorId = $_SESSION['demo']['user_id'];
+    $offerId = $_GET['offerId'];
     //$date = date('d/m/y');
     //$time =date('h:m:s');
     //$insert =  mysql_query("INSERT INTO stock(offer_ID, collector_ID,collection_date,amount, remark, status) VALUES(d','$collectorId','$date','$time')") or die ('Unable to add booking'.mysql_error());
-    $check = mysql_query("SELECT status from offer WHERE offer_ID='$offerId'") or die('Unable to retrieve offer');
-    if (mysql_result($check, 0, 'status') == "availabe") {
-        $update = mysql_query("UPDATE offer SET status ='booked' WHERE offer_ID ='$offerId'") or die('Unable to complete booking');
-        return 1;
-    }
-    else
+    $check = mysql_query("SELECT status from offer WHERE offer_ID='$offerId'");
+    if ($check) {
+        if (mysql_result($check, 0, 'status') == "available") {
+            if (mysql_query("UPDATE offer SET status ='booked' WHERE offer_ID ='$offerId'"))
+                return 1;
+            else
+                return -1;
+        }
+        else
+            return -1;
+    } else {
         return -1;
+    }
 }
+
+//function to unlock offer by collecter
+function unlock_offer() {
+
+    $collectorId = $_SESSION['demo']['user_id'];
+    $offerId = $_GET['offerId'];
+    $check = mysql_query("SELECT status from offer WHERE offer_ID='$offerId'");
+    if ($check) {
+        if (mysql_result($check, 0, 'status') == "booked") {
+            if (mysql_query("UPDATE offer SET status ='available' WHERE offer_ID ='$offerId'"))
+                return 1;
+            else
+                return -1;
+        }
+        else
+            return -1;
+    } else {
+        return -1;
+    }
+}
+
+
+
+//function to complete offer by supplier after offer is collected
+function complete_offer() {
+
+    $collectorId = $_SESSION['demo']['user_id'];
+    $offerId = $_GET['offerId'];
+    $check = mysql_query("SELECT status from offer WHERE offer_ID='$offerId'");
+    if ($check) {
+        if (mysql_result($check, 0, 'status') == "booked") {
+            if (mysql_query("UPDATE offer SET status ='collected' WHERE offer_ID ='$offerId'"))
+                return 1;
+            else
+                return -1;
+        }
+        else
+            return -1;
+    } else {
+        return -1;
+    }
+}
+
+
 
 if ($_GET['action'] == 'add') {
     if (add_offer() == 1) {
@@ -186,6 +236,28 @@ else if ($_GET['action'] == 'update') {
     echo get_offers_JSON();
 else if ($_GET['action'] == 'myoffers')
     echo get_offers_JSON(true);
+else if ($_GET['action'] == 'lock') {
+    if (book_offer () == 1) {
+        echo json_encode(array('success' => true));
+    } else {
+        echo json_encode(array('success' => false));
+    }
+}
 
+else if ($_GET['action'] == 'unlock') {
+    if (unlock_offer() == 1) {
+        echo json_encode(array('success' => true));
+    } else {
+        echo json_encode(array('success' => false));
+    }
+}
+
+else if ($_GET['action'] == 'complete') {
+    if (complete_offer() == 1) {
+        echo json_encode(array('success' => true));
+    } else {
+        echo json_encode(array('success' => false));
+    }
+}
 ?>
 

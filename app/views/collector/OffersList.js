@@ -1,29 +1,25 @@
-bringthefood.views.OffersList = Ext.extend(Ext.Panel,{
+bringthefood.views.OffersList = Ext.extend(Ext.Carousel,{
+    scroll: 'vertical',
+
     dockedItems: [{
         xtype: 'toolbar',
-        title: 'Offers',
+        title: 'Offers Here',
         dock: 'top',
+        defaults: {
+            iconMask: true
+        },
         items: [{
             xtype: 'button',
-            text: 'Back',
-            ui: 'back',
+            iconCls: 'maps',
             handler: function() {
-               //
-            },
-            scope: this
+                Ext.dispatch({
+                    controller: bringthefood.controllers.collectorController,
+                    action: 'goHome'
+                });
+            }
         }
         ]
-    }],
-    items: [{
-        xtype: 'list',
-        emptyText: 'No data available.',
-        store: bringthefood.stores.offersStore,
-        itemTpl: '{desc}',
-        onItemDisclosure: function (record) {
-            //lock offer
-        },
-        grouped: false,
-        scroll: 'vertical',
-        fullscreen: true
     }]
+
+
 });

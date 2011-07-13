@@ -11,7 +11,7 @@ bringthefood.views.SupplierMain = Ext.extend(Ext.Panel, {
         title: 'Food Supplier',
         items: [
         {
-            text: 'Log Out',
+            text: 'Logout',
             ui: 'back',
             handler: function(){
                 Ext.dispatch({
@@ -41,7 +41,13 @@ bringthefood.views.SupplierMain = Ext.extend(Ext.Panel, {
         text: 'Rewards',
         style: 'padding: 1em',
         width: '200px',
-        margin: 5
+        margin: 5,
+        handler: function(){
+            Ext.dispatch({
+                controller: bringthefood.controllers.supplierController,
+                action: 'rewards'
+            });
+        }
     },
     {
         xtype: 'button',
@@ -50,7 +56,10 @@ bringthefood.views.SupplierMain = Ext.extend(Ext.Panel, {
         style: 'padding: 1em',
         width: '200px',
         handler: function(){
-        //go to account management
+            Ext.dispatch({
+                controller: bringthefood.controllers.registrationController,
+                action: 'goToUpdate'
+            });
         }
     }
     ]

@@ -11,6 +11,7 @@ bringthefood.views.Viewport = Ext.extend(Ext.Panel, {
         Ext.apply(bringthefood.views,{
             loginForm: new bringthefood.views.Login(),
             regForm: new bringthefood.views.Registration(),
+            accountMgmt: new bringthefood.views.Account(),
             offersmap: new bringthefood.views.OffersMap(),
             supplier_main: new bringthefood.views.SupplierMain(),
             myoffers: new bringthefood.views.MyOffersList(),
@@ -19,12 +20,11 @@ bringthefood.views.Viewport = Ext.extend(Ext.Panel, {
             offerslist: new bringthefood.views.OffersList()
         });
 
-        // Let's add our view to the Viewport.
-        // This is defined in the "views" folder under its respective name.
-        Ext.apply(this, {
-            items: [
+        //determining the order of things
+        var items = [
             bringthefood.views.loginForm,
             bringthefood.views.regForm,
+            bringthefood.views.accountMgmt,
             bringthefood.views.offersmap,
             bringthefood.views.supplier_main,
             bringthefood.views.myoffers,
@@ -32,10 +32,17 @@ bringthefood.views.Viewport = Ext.extend(Ext.Panel, {
             bringthefood.views.editoffer,
             bringthefood.views.offerslist
             ]
+
+        // Let's add our view to the Viewport.
+        // This is defined in the "views" folder under its respective name.
+        Ext.apply(this, {
+            items: items
         });
 
         Ext.Ajax.request({
             url: 'include/login.php',
+            scope: this,
+            waitMsg: 'Please wait while I do some stuff',
             success: function(response){
                 var resp = Ext.decode(response.responseText);
                 animation = {

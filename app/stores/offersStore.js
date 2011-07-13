@@ -1,6 +1,6 @@
 bringthefood.stores.offersStore = new Ext.data.Store({
    model: 'bringthefood.models.offerModel' ,
-   autoLoad: true,
+   //autoLoad: true,
    proxy: {
        type: 'ajax',
        url: 'include/offers.php?action=view',
