@@ -11,6 +11,7 @@ bringthefood.views.Viewport = Ext.extend(Ext.Panel, {
         Ext.apply(bringthefood.views,{
             loginForm: new bringthefood.views.Login(),
             regForm: new bringthefood.views.Registration(),
+            accountMgmt: new bringthefood.views.Account(),
             offersmap: new bringthefood.views.OffersMap(),
             supplier_main: new bringthefood.views.SupplierMain(),
             myoffers: new bringthefood.views.MyOffersList(),
@@ -23,6 +24,7 @@ bringthefood.views.Viewport = Ext.extend(Ext.Panel, {
         var items = [
             bringthefood.views.loginForm,
             bringthefood.views.regForm,
+            bringthefood.views.accountMgmt,
             bringthefood.views.offersmap,
             bringthefood.views.supplier_main,
             bringthefood.views.myoffers,

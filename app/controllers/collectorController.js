@@ -121,7 +121,8 @@ bringthefood.controllers.collectorController = new Ext.Controller({
         Ext.Ajax.request({
             url: 'include/offers.php?action=lock&offerId='+options.offer_id,
             waitMsg: 'Please wait while I do some stuff',
-            success: function(resp){
+            success: function(response){
+                var resp = Ext.decode(response.responseText);
                 if (resp.success != true){
                     Ext.Msg.alert('Error!', 'You cannot lock this offer!!',Ext.emptyFn);
                 }

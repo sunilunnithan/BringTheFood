@@ -29,5 +29,9 @@ bringthefood.controllers.registrationController = new Ext.Controller({
             //bringthefood.views.regForm.reset();
             }
         });
+    },
+
+    goToUpdate: function(){
+        bringthefood.views.viewport.setActiveItem(bringthefood.views.accountMgmt);
     }
 });

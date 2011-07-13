@@ -21,6 +21,7 @@
         <script type="text/javascript" src="app/views/Viewport.js"></script>
         <script type="text/javascript" src="app/views/Login.js"></script>
         <script type="text/javascript" src="app/views/Registration.js"></script>
+        <script type="text/javascript" src="app/views/Account.js"></script>
 
         <!-- Collector views -->
         <script type="text/javascript" src="app/views/collector/OfferCard.js"></script>

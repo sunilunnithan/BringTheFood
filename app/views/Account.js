@@ -1,12 +1,9 @@
-bringthefood.views.Account = Ext.extend(Ext.form.FormPanel, {
-    title: 'Your account',
-    id: 'accountform',
-    scroll: 'vertical',
-    url: 'include/account.php',
-    standardSubmit: false,
+bringthefood.views.Account = Ext.extend(Ext.TabPanel, {
+    title: 'Account management',
+    cardSwitchAnimation: 'slide',
     dockedItems:[{
         xtype: 'toolbar',
-        title: 'Registration',
+        title: 'Your Account',
         dock: 'top',
         items: [
         {
@@ -14,7 +11,7 @@ bringthefood.views.Account = Ext.extend(Ext.form.FormPanel, {
             ui: 'back',
             handler: function(){
                 Ext.dispatch({
-                    controller: bringthefood.controllers.registrationController,
+                    controller: bringthefood.controllers.supplierController,
                     action: 'goBack'
                 });
             }
@@ -22,101 +19,134 @@ bringthefood.views.Account = Ext.extend(Ext.form.FormPanel, {
 
         ]
     }],
-    items: [{
-        xtype: 'fieldset',
-        title: 'Personal Information',
+    items: [
+    {
+        xtype: 'formpanel',
+        title: 'Update Account',
+        id: 'accountform',
+        scroll: 'vertical',
+        url: 'include/account.php',
+        standardSubmit: false,
         items: [{
-            xtype: 'textfield',
-            name: 'name',
-            label: '(Company) Name',
-            autoCapitalize : true,
-            required: true,
-            useClearIcon: true
-        }, {
-            xtype: 'passwordfield',
-            name: 'password',
-            label: 'Password',
-            useClearIcon: true,
-            required: true
+            xtype: 'fieldset',
+            title: 'Personal Information',
+            items: [{
+                xtype: 'textfield',
+                name: 'name',
+                label: '(Company) Name',
+                autoCapitalize : true,
+                required: true,
+                useClearIcon: true
+            },
+            {
+                xtype: 'emailfield',
+                name: 'email',
+                label: 'Email',
+                useClearIcon: true,
+                required: true
+            }]
         },{
-            xtype: 'passwordfield',
-            name: 'password2',
-            label: 'Re-enter Password',
-            useClearIcon: true,
-            required: true
+            xtype: 'fieldset',
+            title: 'Address',
+            defaults: {
+                xtype: 'textfield'
+            },
+            items: [{
+                name: 'street',
+                label: 'Street'
+            }, {
+                name: 'city',
+                label: 'City'
+            }, {
+                name: 'zip',
+                label: 'ZIP Code',
+                vtype: 'zip'
+            }, {
+                name: 'country',
+                label: 'Country'
+            },{
+                name: 'phone',
+                label: 'Phone',
+                vtype: 'phone'
+            }]
         },
         {
-            xtype: 'emailfield',
-            name: 'email',
-            label: 'Email',
-            useClearIcon: true,
-            required: true
+            layout: 'hbox',
+            defaults: {
+                xtype: 'button',
+                flex: 1,
+                style: 'margin: .5em;'
+            },
+            items: [{
+                text: 'Reset',
+                handler: function(){
+                    Ext.getCmp('regform').reset();
+                }
+            },
+            {
+                text: 'Submit',
+                ui: 'confirm',
+                handler: function(){
+                    Ext.dispatch({
+                        controller: bringthefood.controllers.registrationController,
+                        action: 'update'
+                    });
+                }
+            }]
         }]
-    },{
-        xtype: 'fieldset',
-        title: 'Address',
-        defaults: {
-            xtype: 'textfield'
-        },
-        items: [{
-            name: 'street',
-            label: 'Street'
-        }, {
-            name: 'city',
-            label: 'City'
-        }, {
-            name: 'zip',
-            label: 'ZIP Code',
-            vtype: 'zip'
-        }, {
-            name: 'country',
-            label: 'Country'
-        },{
-            name: 'phone',
-            label: 'Phone',
-            vtype: 'phone'
-        }]
-    },{
-        xtype: 'selectfield',
-        name: 'role',
-        label: 'Role',
-        options: [
+    },
+    {
+        id: 'passwordchange',
+        title: 'Change Password',
+        xtype: 'formpanel',
+        scroll: 'vertical',
+        url: 'include/account.php',
+        standardSubmit: false,
+        items: [
         {
-            text:'Supplier',
-            value:'supplier'
-        } ,
-{
-            text:'Collector',
-            value:'collector'
+            xtype: 'fieldset',
+            title: 'Type your new password below',
+            items: [{
+                xtype: 'passwordfield',
+                name: 'password',
+                label: 'New Password',
+                useClearIcon: true,
+                required: true
+            },{
+                xtype: 'passwordfield',
+                name: 'password2',
+                label: 'New Password (again)',
+                useClearIcon: true,
+                required: true
+            }
+            ]
         },
-
         {
-            text:'Distributor',
-            value:'distributor'
+            layout: 'hbox',
+            defaults: {
+                xtype: 'button',
+                flex: 1,
+                style: 'margin: .5em;'
+            },
+            items: [{
+                text: 'Reset',
+                handler: function(){
+                    Ext.getCmp('regform').reset();
+                }
+            },
+            {
+                text: 'Submit',
+                ui: 'confirm',
+                handler: function(){
+                    Ext.dispatch({
+                        controller: bringthefood.controllers.registrationController,
+                        action: 'updatePassword'
+                    });
+                }
+            }]
         }
         ]
-    }, {
-        layout: 'hbox',
-        defaults: {
-            xtype: 'button',
-            flex: 1,
-            style: 'margin: .5em;'
-        },
-        items: [{
-            text: 'Reset',
-            handler: function(){
-                Ext.getCmp('regform').reset();
-            }
-        },
-        {
-            text: 'Submit',
-            ui: 'confirm',
-            handler: function(){
-                Ext.dispatch({
-                    controller: bringthefood.controllers.registrationController,
-                    action: 'register'
-                });
-            }
-        }]
-    }]
+    }
+    ]
+    
 });

@@ -1,5 +1,5 @@
 <?php
 
-echo json_encode(array("success" => true, "score" => 0));
+echo json_encode(array('success' => true, 'score' => 0));
 
 ?>
