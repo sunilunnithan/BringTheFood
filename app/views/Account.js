@@ -1,6 +1,7 @@
-bringthefood.views.Account = Ext.extend(Ext.TabPanel, {
+bringthefood.views.Account = Ext.extend(Ext.TabPanel, {    
     title: 'Account management',
     cardSwitchAnimation: 'slide',
+    origin: undefined,
     dockedItems:[{
         xtype: 'toolbar',
         title: 'Your Account',
@@ -10,10 +11,19 @@ bringthefood.views.Account = Ext.extend(Ext.TabPanel, {
             text: 'Back',
             ui: 'back',
             handler: function(){
-                Ext.dispatch({
-                    controller: bringthefood.controllers.supplierController,
-                    action: 'goBack'
-                });
+                if (bringthefood.views.accountMgmt.origin == 'collector'){
+                    Ext.dispatch({
+                        controller: bringthefood.controllers.collectorController,
+                        action: 'goHome'
+                    });
+                } else if (bringthefood.views.accountMgmt.origin == 'supplier'){
+                    Ext.dispatch({
+                        controller: bringthefood.controllers.supplierController,
+                        action: 'goHome'
+                    });
+                } else {
+                    Ext.Msg.alert('Error!','And who the hell are you supposed to be, dude?',Ext.emptyFn);
+                }
             }
         }
 

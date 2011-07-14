@@ -1,9 +1,26 @@
 <html>
     <head>       
         <title>Bring the Food!</title>
-        
+
         <link rel="stylesheet" href="lib/touch/resources/css/sencha-touch.css" type="text/css">
         <script type="text/javascript" src="http://dev.sencha.com/deploy/touch/sencha-touch-debug.js"></script>
+        <script type="text/javascript">
+            //ugly workaround for map markers tap/click
+            Ext.gesture.Manager.onMouseEventOld = Ext.gesture.Manager.onMouseEvent;
+            Ext.gesture.Manager.onMouseEvent = function(e) {
+                var target = e.target;
+
+                while (target) {
+                    if (Ext.fly(target) && Ext.fly(target).hasCls('x-map')) {
+                        return;
+                    }
+
+                    target = target.parentNode;
+                }
+
+                this.onMouseEventOld.apply(this, arguments);
+            };
+        </script>
 
         <!-- Main app -->
         <script type="text/javascript" src="app/btf.js"></script>
