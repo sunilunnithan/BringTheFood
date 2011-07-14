@@ -3,6 +3,7 @@ bringthefood.views.OffersList = Ext.extend(Ext.Carousel,{
 
     dockedItems: [{
         xtype: 'toolbar',
+        id: 'titlebar',
         title: 'Offers Here',
         dock: 'top',
         defaults: {
@@ -14,7 +15,7 @@ bringthefood.views.OffersList = Ext.extend(Ext.Carousel,{
             handler: function() {
                 Ext.dispatch({
                     controller: bringthefood.controllers.collectorController,
-                    action: 'goHome'
+                    action: 'goBackToMap'
                 });
             }
         }

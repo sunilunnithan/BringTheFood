@@ -102,7 +102,7 @@ function add_offer() {
         $latitude_longitude = grapGeocodeInfo($street . ',' . $zip . ',' . $city . ',' . $country);
         $lat = $latitude_longitude['lat'];
         $long = $latitude_longitude['lng'];
-        $insert_offer_address = mysql_query("INSERT INTO address (street,city,zip,country,phone,lat,lng,offer_id,user_id) VALUES('$street','$city','$zip','$country','$phone','$lat','$long','$latest_offer_id','$supplier_id')");
+        $insert_offer_address = mysql_query("INSERT INTO address (street,city,zip,country,phone,lat,lng,offer_id) VALUES('$street','$city','$zip','$country','$phone','$lat','$long','$latest_offer_id')");
 
         if ($insert_offer && $insert_offer_address)  // check both offer and address
             return 1;

@@ -1,9 +1,33 @@
 bringthefood.controllers.collectorController = new Ext.Controller({
-    markersArray: [],
+    posArray: [],
     countMarkers: [],
+    markersArray: [],
+    popup: [],
 
     goHome: function(){
+        animation = {
+            type: 'slide',
+            direction: 'right'
+        };
+        bringthefood.views.viewport.setActiveItem(bringthefood.views.collector_main,animation);
+    },
 
+    goList: function(){
+        bringthefood.stores.offersStore.clearFilter(true);
+        bringthefood.stores.offersStore.load({
+            scope: this,
+            callback: function(){
+                bringthefood.stores.offersStore.filter('status','available');
+                bringthefood.views.viewport.setActiveItem(bringthefood.views.avoffers);
+            }
+        });   
+    },
+
+    goMap: function(){
+        bringthefood.views.viewport.setActiveItem(bringthefood.views.offersmap);
+    },
+
+    goBackToMap: function(){
         var carousel = bringthefood.views.offerslist;
         carousel.removeAll();
 
@@ -11,7 +35,7 @@ bringthefood.controllers.collectorController = new Ext.Controller({
             type: 'slide',
             direction: 'right'
         };
-        
+
         bringthefood.views.viewport.setActiveItem(bringthefood.views.offersmap,animation);
     },
 
@@ -25,6 +49,7 @@ bringthefood.controllers.collectorController = new Ext.Controller({
             for (var i=0; i<this.markersArray.length; i++){
                 this.markersArray[i].setMap(null);
             }
+            this.posArray.length = 0;
             this.markersArray.length = 0;
             this.countMarkers.length = 0;
         }
@@ -40,31 +65,43 @@ bringthefood.controllers.collectorController = new Ext.Controller({
                     if (offer.latitude && offer.longitude) {
                         var position = new google.maps.LatLng(offer.latitude, offer.longitude);
 
-                        if (!this.markersArray.contains(position)){
+                        var alreadyThere = false;
+
+                        for (var j=0; j<this.posArray.length; j++){
+                            if ((this.posArray[j].lat() == position.lat())&&(this.posArray[j].lng() == position.lng())){
+                                alreadyThere = true;
+                                break;
+                            }
+                        }
+
+                        if (!alreadyThere){
                             this.countMarkers.push(1);
-                            this.markersArray.push(position);
+                            this.posArray.push(position);
                         } else {
-                            idx = this.markersArray.indexOf(position);
+                            idx = this.posArray.indexOf(position);
                             this.countMarkers[idx]++;
                         }
 
                     }
                 }
 
-                if (this.markersArray.length > 0){
-                    for (i=0; i<this.markersArray.length; i++){
-                        //this.addMarker(options.map, this.markersArray[i]);
+                if (this.posArray.length > 0){
+                    for (i=0; i<this.posArray.length; i++){
+                        //this.addMarker(options.map, this.posArray[i]);
+
+                        var pos = this.posArray[i];
 
                         var marker = new google.maps.Marker({
                             map: options.map,
-                            position: this.markersArray[i]
+                            position: pos
                         });
 
-                        google.maps.event.addListener(marker, "click", function() {  //added this function
+                        google.maps.event.addListener(marker, "click", function(event) {  //added this function
+                            
                             Ext.dispatch({
                                 controller: bringthefood.controllers.collectorController,
                                 action: 'listOffersAt',
-                                pos: position
+                                pos: event.latLng
                             });
                         });
 
@@ -78,7 +115,7 @@ bringthefood.controllers.collectorController = new Ext.Controller({
     },
 
     listOffersAt: function(options){
-        position = options.pos;
+        var position = options.pos;
         var store = bringthefood.stores.offersStore;
 
         store.clearFilter(true);
@@ -90,14 +127,17 @@ bringthefood.controllers.collectorController = new Ext.Controller({
 
                 var items = [];
 
-                for (var i=0; i<records.length; i++){
+                store.each(function(record){
                     var offercard = new bringthefood.views.OfferCard({
-                        offer: records[i]
+                        offer: record
                     });
+                    offercard.updateContent();
+                    //offercard.doLayout();
+
                     //offercard.offer = records[i];
-                    var locked = records[i].get('status');
+                    var locked = record.get('status');
                     var lockBtn = offercard.getComponent('lockbtn');
-                    
+
 
                     if (locked == 'booked'){
                         lockBtn.setText('This offer is already locked!');
@@ -105,14 +145,35 @@ bringthefood.controllers.collectorController = new Ext.Controller({
                     }
 
                     items.push(offercard);
-                }
+                });
 
                 bringthefood.views.offerslist.add(items);
+                bringthefood.views.offerslist.getComponent('titlebar').setTitle('Offers Here (' + items.length + ')');
                 bringthefood.views.viewport.setActiveItem(bringthefood.views.offerslist);
                 bringthefood.views.offerslist.doLayout();
             }
         });
         
+
+    },
+
+    showOffer: function(options){
+        record = options.offer;
+        index = record.get('offer_id');
+        
+        //if (!this.popup[index]){
+            this.popup[index] = new bringthefood.views.OfferCard({
+                offer: record,
+                floating: true,
+                fullscreen: false,
+                modal: true,
+                centered: true,
+                width: 300,
+                height: 400
+            });
+        //}
+
+        this.popup[index].show('pop');
 
     },
 
@@ -124,6 +185,8 @@ bringthefood.controllers.collectorController = new Ext.Controller({
                 var resp = Ext.decode(response.responseText);
                 if (resp.success != true){
                     Ext.Msg.alert('Error!', 'You cannot lock this offer!!',Ext.emptyFn);
+                } else {
+                    Ext.Msg.alert('Done!', 'You have reserved this offer!!',Ext.emptyFn);
                 }
             }
         })
