@@ -9,6 +9,7 @@ bringthefood.views.SupplierMain = Ext.extend(Ext.Panel, {
         dock: 'top',
         xtype: 'toolbar',
         title: 'Food Supplier',
+        id: 'titlebar',
         items: [
         {
             text: 'Logout',
@@ -57,8 +58,8 @@ bringthefood.views.SupplierMain = Ext.extend(Ext.Panel, {
         width: '200px',
         handler: function(){
             Ext.dispatch({
-                controller: bringthefood.controllers.registrationController,
-                action: 'goToUpdate'
+                controller: bringthefood.controllers.supplierController,
+                action: 'manageAccount'
             });
         }
     }

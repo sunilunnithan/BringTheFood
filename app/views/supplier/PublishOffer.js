@@ -74,12 +74,6 @@ bringthefood.views.PublishOffer = Ext.extend(Ext.form.FormPanel,{
             label: 'Date until',
             name: 'expdate',
             value: new Date()
-        },
-        {
-            xtype: 'textfield',
-            label: 'Time until',
-            name: 'exptime',
-            value: new Date().getHours() + ':' + new Date().getMinutes()
         }
         ]
     },

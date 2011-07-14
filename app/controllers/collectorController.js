@@ -15,6 +15,11 @@ bringthefood.controllers.collectorController = new Ext.Controller({
         bringthefood.views.viewport.setActiveItem(bringthefood.views.offersmap,animation);
     },
 
+    manageAccount: function(){
+        bringthefood.views.accountMgmt.origin = 'collector';
+        bringthefood.views.viewport.setActiveItem(bringthefood.views.accountMgmt);
+    },
+
     refreshMap: function(options){
         if (this.markersArray.length > 0){
             for (var i=0; i<this.markersArray.length; i++){
@@ -69,12 +74,6 @@ bringthefood.controllers.collectorController = new Ext.Controller({
                 }
             }
         });
-        
-    },
-
-    addMarker: function(map, position){
-
-       
         
     },
 

@@ -1,7 +1,7 @@
 bringthefood.views.MyOffersList = Ext.extend(Ext.Panel,{
     dockedItems: [{
         xtype: 'toolbar',
-        title: 'Offers you published',
+        title: 'Your Offers',
         dock: 'top',
         defaults: {
             iconMask: true
@@ -23,7 +23,6 @@ bringthefood.views.MyOffersList = Ext.extend(Ext.Panel,{
         },
         {
             xtype: 'button',
-            text: 'New Offer',
             iconCls: 'add',
             handler: function(){
                 Ext.dispatch({
@@ -44,7 +43,8 @@ bringthefood.views.MyOffersList = Ext.extend(Ext.Panel,{
         fullscreen: true,
         
         itemTpl: [
-        '<div><b>{desc}</b> for <b>{peopleserved}</b> at <b>{supplier_name}</b></div>',
+        '<div><b>{desc}</b> for <b>{peopleserved}</b></div>',
+        '<div class="offer datetime">from <b>{avdate}</b> at <b>{avtime}</b></div>',
         '<div class="offer instructions">',
         '<tpl if="status == \'booked\'">Click to confirm pickup</tpl>',
         '<tpl if="status == \'available\'">Click to edit</tpl>',

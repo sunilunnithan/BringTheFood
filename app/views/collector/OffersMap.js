@@ -60,7 +60,10 @@ bringthefood.views.OffersMap = Ext.extend(Ext.Panel, {
             text: 'Account',
             //position: 'right',
             handler: function(){
-            //
+                Ext.dispatch({
+                    controller: bringthefood.controllers.collectorController,
+                    action: 'manageAccount'
+                });
             }
         },
         {

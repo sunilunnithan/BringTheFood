@@ -61,8 +61,8 @@ bringthefood.views.EditOffer = Ext.extend(Ext.form.FormPanel,{
             },
 
             {
-                text: 'taken',
-                value: 'taken'
+                text: 'collected',
+                value: 'collected'
             },
             ]
         }]
@@ -88,11 +88,6 @@ bringthefood.views.EditOffer = Ext.extend(Ext.form.FormPanel,{
             xtype: 'datepickerfield',
             label: 'Date until',
             name: 'expdate'
-        },
-        {
-            xtype: 'textfield',
-            label: 'Time until',
-            name: 'exptime'
         }
         ]
     },

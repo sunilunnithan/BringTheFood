@@ -9,7 +9,7 @@ include ('../config/config.php');
 //function to return JSON array of available offers
 function get_offers_JSON($my_offers_only = false) {
 
-    $offers = mysql_query("SELECT * FROM offer");
+    $offers = mysql_query("SELECT * FROM offer WHERE status<>'collected'");
 
     if ($my_offers_only) {
         $supplier_ID = $_SESSION['demo']['user_id'];
@@ -77,6 +77,7 @@ function add_offer() {
     $description = $_POST['desc'];
     $av_date = $_POST['avdate'];
     $av_time = $_POST['avtime'];
+
     $exp_date = $_POST['expdate'];
     $image = $_POST['image']; //make a file upload here
     $people = $_POST['peopleserved'];
@@ -217,8 +218,6 @@ function complete_offer() {
         return -1;
     }
 }
-
-
 
 if ($_GET['action'] == 'add') {
     if (add_offer() == 1) {
