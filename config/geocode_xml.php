@@ -1,10 +1,11 @@
 <?php
 
-/*
+/* 
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
 define("MAPS_HOST", "74.125.232.108");
+define("KEY", 'ABQIAAAA0rgRviA_63qGVWEKdx8ZOxRYrjFVhF5kx3H2A1TMuRZMY43TWRR7RygmrBmV4H-NDeem5LnW9Lo_Cw');
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 /*
@@ -19,41 +20,46 @@ Returns the geocode location for that address in terms of lat and lng.
     function grapGeocodeInfo($addr) {
 
         // Initialize delay in geocode speed
+        //echo 'Address received '.$addr."<br />";
         $geocodeInfo = null;
         $delay = 0;
-        //$base_url = "http://" . MAPS_HOST . "/maps/geo?";
-        $base_url = "http://" . MAPS_HOST . "/maps/api/geocode/json?";
+        $base_url = "http://" . MAPS_HOST . "/maps/geo?";
 
         $geocode_pending = true;
 
         while ($geocode_pending) {
 
-            $request_url = $base_url . "address=" . urlencode($addr) . "&sonsor=false";
-            $geocode = file_get_contents($request_url);
-            $output= json_decode($geocode);
+            $request_url = $base_url . "q=" . urlencode($addr) . "&output=xml" . "&key=" . KEY;
+            $xml = simplexml_load_file($request_url) or die("url not loading");
 
-            $status = $output->status;
-
+            $status = $xml->Response->Status->code;
             //echo 'status: ' . $status . "<br />";
-            if (strcmp($status, "OK") == 0) {
+            if (strcmp($status, "200") == 0) {
                 // Successful geocode
                 $geocode_pending = false;
+                $coordinates = $xml->Response->Placemark->Point->coordinates;
+                $coordinatesSplit = explode(",", $coordinates);
                 // Format: Longitude, Latitude, Altitude
-                $lat = $output->results[0]->geometry->location->lat;
-                $lng = $output->results[0]->geometry->location->lng;
-
+                $lat = $coordinatesSplit[1];
+                $lng = $coordinatesSplit[0];
                 $geocodeInfo = array("addr" => $addr, "lat" => $lat, "lng" => $lng, "status" => $status);
 
-            }else {
-                // A non-existent address or a latlng in a remote location or failure
+                //echo 'lat : ' . $lat . " and lng: " . $lng . "<br />";
+            } else if (strcmp($status, "620") == 0) {
+                // sent geocodes too fast
+                $delay += 100000;
+            } else {
+                // failure to geocode
                 $geocode_pending = false;
                 $geocodeInfo = array("addr" => $addr, "lat" => NULL, "lng" => NULL, "status" => $status);
+                //echo "Address " . $addr . " failed to geocoded. ";
+                //echo "Received status " . $status . "<br />";
             }
             usleep($delay);
         }
 
        // print_r($geocodeInfo);
 
-        echo json_encode($geocodeInfo);
+        return ($geocodeInfo);
     }
 ?>

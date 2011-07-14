@@ -871,25 +871,8 @@ function new_pass($hash, $newPass) {
         }
         return true;
     }
-    //Test field in database for a value
-    /*function check_field($field,$val,$err = false){
-        $query = mysql_query("SELECT {$field} FROM {$this->opt['table_name']} WHERE {$field}='{$val}' ");
-        if(mysql_num_rows($query) >= 1){
-            if($err){
-                $this->form_error($field,$err);
-            }else{
 
-                $this->form_error($field,"The $field $val exists in database");
-            }
-            $this->report("There was a match for $field = $val");
-            return true;
-        }else{
-            $this->report("No Match for $field = $val");
-            return false;
-        }
-    }
-
-*/
+    
     //Test field in database for a value
     function check_field($field,$table_name,$val,$err = false){
         $query = mysql_query("SELECT {$field} FROM {$table_name} WHERE {$field}='{$val}' ");

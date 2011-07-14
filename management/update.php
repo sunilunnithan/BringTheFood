@@ -2,39 +2,32 @@
 	include("../config/config.php");
 	
         //quering user table
-       // $user_row = $user->getRow("SELECT name, email FROM users WHERE user_id='{$user->id}'");
-        //querting address table
+        $resp = Array();
         $address_row =  $user->getRow("SELECT * FROM address WHERE user_id='{$user->id}'");
 
         //Proccess Update
 	if(count($_POST)){
 		
-		/*foreach($_POST as $name=>$val){
-                    echo $val.", ";
-			if($user->data[$name] == $val){
-			
-				unset($_POST[$name]);
-			}		
-		}*/
-
-                //Add validation for custom fields, name, address
+		//Add validation for custom fields, name, address
 		$user->addValidation("name","0-25",'#^[a-z\s\.]+$#i');
 		$user->addValidation("street","0-50");
-
-		if(count($_POST)){
+                //Update User
+                $user->update($_POST);
+                
+                //If there is not error
+		if(!$user->has_error()) { //$user->update($_POST) == true){
 			//Update info
-			$user->update($_POST);			
+			$resp = array('success' => true, 'message' => $user->error("Information Updated!"));
+
 		}else{
-			$user->error("No need to update!");
-		}
+			$resp = array('success' => false, 'message' => $user->error('Information Not Updated due to Error!'));
+                }
 		
-		//If there is not error
-		if(!$user->has_error()){
-			//A workaround to display a confirmation message in this specific  Example
-			$user->error("Information Updated!");
-		}
-	}
-	
+        }else{
+           $resp = array('success' => false,'message' => $user->error("No need to update!"));
+        }
+        
+	echo json_encode($resp);
 ?>
 <html>
 <head>
