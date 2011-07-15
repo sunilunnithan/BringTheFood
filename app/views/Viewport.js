@@ -43,7 +43,7 @@ bringthefood.views.Viewport = Ext.extend(Ext.Panel, {
         });
 
         Ext.Ajax.request({
-            url: 'include/user/login.php',
+            url: 'include/login.php',
             scope: this,
             waitMsg: 'Please wait while I do some stuff',
             success: function(response){

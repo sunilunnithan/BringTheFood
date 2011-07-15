@@ -110,7 +110,7 @@ bringthefood.views.Account = Ext.extend(Ext.TabPanel, {
         title: 'Change Password',
         xtype: 'formpanel',
         scroll: 'vertical',
-        url: 'include/account.php',
+        url: 'include/myaccount.php',
         standardSubmit: false,
         items: [
         {
