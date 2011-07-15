@@ -51,12 +51,19 @@ bringthefood.views.MyOffersList = Ext.extend(Ext.Panel,{
         '</div>'
         ],
 
-        itemtap: function(){
-            console.log("pippo");
+        listeners: {
+            itemtap:function(panel,index){
+                this.handleOffer(panel.store.getAt(index));
+            }
         },
 
         onItemDisclosure: function (record) {
-            var status = record.data.status;
+            this.handleOffer(record);
+
+        },
+
+        handleOffer: function(record){
+            var status = record.get('status');
 
             if (status == 'booked'){
                 Ext.dispatch({
@@ -71,7 +78,6 @@ bringthefood.views.MyOffersList = Ext.extend(Ext.Panel,{
                     data: record
                 });
             }
-
         }
         
     }]

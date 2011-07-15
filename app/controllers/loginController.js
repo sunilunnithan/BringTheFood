@@ -18,7 +18,7 @@ bringthefood.controllers.loginController = new Ext.Controller({
                 switch (result.role) {
                     case 'collector':{
                         var data = bringthefood.stores.offersStore.read();
-                        bringthefood.views.viewport.setActiveItem(bringthefood.views.offersmap,animation);
+                        bringthefood.views.viewport.setActiveItem(bringthefood.views.collector_main,animation);
                     }
                     break;
                     case 'supplier':

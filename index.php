@@ -41,10 +41,12 @@
         <script type="text/javascript" src="app/views/Account.js"></script>
 
         <!-- Collector views -->
+        <script type="text/javascript" src="app/views/collector/CollectorMain.js"></script>
         <script type="text/javascript" src="app/views/collector/OfferCard.js"></script>
         <script type="text/javascript" src="app/views/collector/LockButton.js"></script>
         <script type="text/javascript" src="app/views/collector/OffersMap.js"></script>
         <script type="text/javascript" src="app/views/collector/OffersList.js"></script>
+        <script type="text/javascript" src="app/views/collector/AvailableOffersList.js"></script>
 
         <!-- Supplier Views -->
         <script type="text/javascript" src="app/views/supplier/SupplierMain.js"></script>
