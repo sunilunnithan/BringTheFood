@@ -3,7 +3,7 @@
 
         //quering user table
         $resp = Array();
-        $address_row =  $user->getRow("SELECT * FROM address WHERE user_id='{$user->id}'");
+        //$address_row =  $user->getRow("SELECT * FROM address WHERE user_id='{$user->id}'");
 
         //Proccess Update
 	if(count($_POST)){

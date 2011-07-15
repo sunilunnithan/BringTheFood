@@ -29,5 +29,44 @@ bringthefood.controllers.registrationController = new Ext.Controller({
             //bringthefood.views.regForm.reset();
             }
         });
+    },
+
+    update: function(){
+        var form = bringthefood.views.accountMgmt.getComponent('accountform');
+        form.submit({
+            waitMsg: {
+                message: 'Please wait...'
+            },
+            success: function(form, result){
+                Ext.Msg.alert('Success!','Your data has been updated',Ext.emptyFn);
+                form.reset();
+                animation = {
+                    type: 'slide',
+                    direction: 'right'
+                };
+                form.up('panel').returnHome();
+            }
+        });
+    },
+
+    updatePassword: function(){
+        var form = bringthefood.views.accountMgmt.getComponent('passwordform');
+        form.submit({
+            waitMsg: {
+                message: 'Please wait...'
+            },
+            success: function(form, result){
+                Ext.Msg.alert('Success!','Your password has been updated. Please login again.',Ext.emptyFn);
+                form.reset();
+                animation = {
+                    type: 'slide',
+                    direction: 'right'
+                };
+                Ext.dispatch({
+                    controller: bringthefood.controllers.loginController,
+                    action: 'logout'
+                });
+            }
+        });
     }
 });

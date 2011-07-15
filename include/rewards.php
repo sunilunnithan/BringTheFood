@@ -7,8 +7,11 @@ function get_supplier_score() {
     $supplier_id = $_SESSION['demo']['user_id'];
     $score = 0;
     $people_served = mysql_query("SELECT SUM(people_served) AS served_so_far FROM offer WHERE supplier_id ='$supplier_id' AND status='collected'");
-    if ($people_served) {
+    if (mysql_num_rows($people_served) > 0) {
         $score = mysql_result($people_served, 0, 'served_so_far');
+        if ($score == null){
+            $score = 0;
+        }
     }
     return $score;
 }

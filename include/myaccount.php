@@ -10,7 +10,7 @@
     
     if($user->signed) {
 
-        $myaccount = array("name" => $user->data["name"], "email" => $user->data['email']); //$user->data;
+        $myaccount = array("name" => $user->data["name"]); //$user->data;
 
        /* foreach($user->data as $field=>$val){
             echo $field." :  ".$val."<br />";
@@ -31,7 +31,8 @@
         $resp =  array('success' => false, 'myaccount' => $myaccount);//do something here
     }
 
-    $resp = array_merge($resp, array("myaddress" =>$myaddress));
+    $resp['myaccount'] = array(array_merge($resp['myaccount'], $myaddress));
+
     
     echo json_encode($resp);
 ?>

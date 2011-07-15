@@ -278,13 +278,13 @@ function update($info) {
     }
 
     //Check for Street Address in database
-    if (isset($info['street'])) {
-        if (strcmp($this->data["street"], $info["street"]) != 0) {
-            if ($this->check_field('street', "users", $info['street'], "This Street Address is Already in Use")) {
-                return false;
-            }
-        }
-    }
+//    if (isset($info['street'])) {
+//        if (strcmp($this->data["street"], $info["street"]) != 0) {
+//            if ($this->check_field('street', "users", $info['street'], "This Street Address is Already in Use")) {
+//                return false;
+//            }
+//        }
+//    }
 
     
     //Check for errors

@@ -2,6 +2,24 @@ bringthefood.views.Account = Ext.extend(Ext.TabPanel, {
     title: 'Account management',
     cardSwitchAnimation: 'slide',
     origin: undefined,
+    store: bringthefood.stores.userStore,
+
+    returnHome: function(){
+        if (bringthefood.views.accountMgmt.origin == 'collector'){
+            Ext.dispatch({
+                controller: bringthefood.controllers.collectorController,
+                action: 'goHome'
+            });
+        } else if (bringthefood.views.accountMgmt.origin == 'supplier'){
+            Ext.dispatch({
+                controller: bringthefood.controllers.supplierController,
+                action: 'goHome'
+            });
+        } else {
+            Ext.Msg.alert('Error!','And who the hell are you supposed to be, dude?',Ext.emptyFn);
+        }
+    },
+
     dockedItems:[{
         xtype: 'toolbar',
         title: 'Your Account',
@@ -11,19 +29,7 @@ bringthefood.views.Account = Ext.extend(Ext.TabPanel, {
             text: 'Back',
             ui: 'back',
             handler: function(){
-                if (bringthefood.views.accountMgmt.origin == 'collector'){
-                    Ext.dispatch({
-                        controller: bringthefood.controllers.collectorController,
-                        action: 'goHome'
-                    });
-                } else if (bringthefood.views.accountMgmt.origin == 'supplier'){
-                    Ext.dispatch({
-                        controller: bringthefood.controllers.supplierController,
-                        action: 'goHome'
-                    });
-                } else {
-                    Ext.Msg.alert('Error!','And who the hell are you supposed to be, dude?',Ext.emptyFn);
-                }
+                bringthefood.views.accountMgmt.returnHome();
             }
         }
 
@@ -35,7 +41,7 @@ bringthefood.views.Account = Ext.extend(Ext.TabPanel, {
         title: 'Update Account',
         id: 'accountform',
         scroll: 'vertical',
-        url: 'include/myaccount.php',
+        url: 'include/update.php',
         standardSubmit: false,
         items: [{
             xtype: 'fieldset',
@@ -45,15 +51,7 @@ bringthefood.views.Account = Ext.extend(Ext.TabPanel, {
                 name: 'name',
                 label: '(Company) Name',
                 autoCapitalize : true,
-                required: true,
                 useClearIcon: true
-            },
-            {
-                xtype: 'emailfield',
-                name: 'email',
-                label: 'Email',
-                useClearIcon: true,
-                required: true
             }]
         },{
             xtype: 'fieldset',
@@ -106,13 +104,24 @@ bringthefood.views.Account = Ext.extend(Ext.TabPanel, {
         }]
     },
     {
-        id: 'passwordchange',
+        id: 'passwordform',
         title: 'Change Password',
         xtype: 'formpanel',
         scroll: 'vertical',
         url: 'include/change_pwd.php',
         standardSubmit: false,
         items: [
+        {
+            xtype: 'fieldset',
+            items: [{
+                xtype: 'passwordfield',
+                name: 'password0',
+                label: 'Old Password',
+                useClearIcon: true,
+                required: true
+            }
+            ]
+        },
         {
             xtype: 'fieldset',
             title: 'Type your new password below',
@@ -125,7 +134,7 @@ bringthefood.views.Account = Ext.extend(Ext.TabPanel, {
             },{
                 xtype: 'passwordfield',
                 name: 'password2',
-                label: 'New Password (again)',
+                label: 'Retype New Password',
                 useClearIcon: true,
                 required: true
             }
@@ -158,5 +167,6 @@ bringthefood.views.Account = Ext.extend(Ext.TabPanel, {
         ]
     }
     ]
+
     
 });

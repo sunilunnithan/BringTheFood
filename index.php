@@ -30,9 +30,11 @@
 
         <!-- Models -->
         <script type="text/javascript" src="app/models/offerModel.js"></script>
+        <script type="text/javascript" src="app/models/userModel.js"></script>
 
         <!-- Stores -->
         <script type="text/javascript" src="app/stores/offersStore.js"></script>
+        <script type="text/javascript" src="app/stores/userStore.js"></script>
 
         <!-- Views -->
         <script type="text/javascript" src="app/views/Viewport.js"></script>
