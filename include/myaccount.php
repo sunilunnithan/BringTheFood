@@ -28,7 +28,7 @@
        // $myaddress = Array ('myaddress' => $myadd);
         
     }else {
-        $resp =  array('success' => false);//do something here
+        $resp =  array('success' => false, 'myaccount' => $myaccount);//do something here
     }
 
     $resp = array_merge($resp, array("myaddress" =>$myaddress));
