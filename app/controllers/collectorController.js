@@ -58,7 +58,8 @@ bringthefood.controllers.collectorController = new Ext.Controller({
         bringthefood.stores.offersStore.load({
             scope:this,
             callback: function(records,operation,success){
-                
+                bringthefood.stores.offersStore.filter('status','available');
+
                 for (var i = 0; i < records.length; i++) {
                     var offer = records[i].data;
 
@@ -144,6 +145,10 @@ bringthefood.controllers.collectorController = new Ext.Controller({
                         lockBtn.setDisabled(true);
                     }
 
+                    lockBtn.addListener('tap',function(){
+                        bringthefood.views.viewport.setActiveItem(bringthefood.views.offersmap);
+                    });
+
                     items.push(offercard);
                 });
 
@@ -162,15 +167,15 @@ bringthefood.controllers.collectorController = new Ext.Controller({
         index = record.get('offer_id');
         
         //if (!this.popup[index]){
-            this.popup[index] = new bringthefood.views.OfferCard({
-                offer: record,
-                floating: true,
-                fullscreen: false,
-                modal: true,
-                centered: true,
-                width: 300,
-                height: 400
-            });
+        this.popup[index] = new bringthefood.views.OfferCard({
+            offer: record,
+            floating: true,
+            fullscreen: false,
+            modal: true,
+            centered: true,
+            width: 300,
+            height: 400
+        });
         //}
 
         this.popup[index].show('pop');
@@ -186,8 +191,15 @@ bringthefood.controllers.collectorController = new Ext.Controller({
                 if (resp.success != true){
                     Ext.Msg.alert('Error!', 'You cannot lock this offer!!',Ext.emptyFn);
                 } else {
-                    Ext.Msg.alert('Done!', 'You have reserved this offer!!',Ext.emptyFn);
+                    bringthefood.stores.offersStore.load({
+                        callback: function(){
+                            Ext.Msg.alert('Done!', 'You have reserved this offer!!',Ext.emptyFn);
+                        }
+                    })
+                    
                 }
+
+                
             }
         })
     }

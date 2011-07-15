@@ -8,6 +8,15 @@ bringthefood.views.LockButton = Ext.extend(Ext.Button, {
             action: 'lockOffer',
             offer_id: this.offer_id
         });
+
+        if (this.up('carousel')){
+            Ext.dispatch({
+                controller: bringthefood.controllers.collectorController,
+                action: 'goBackToMap'
+            });
+        } else if (this.up('panel')) {
+            this.up('panel').hide();
+        }
     }
 });
 
