@@ -43,19 +43,6 @@ bringthefood.controllers.supplierController = new Ext.Controller({
         bringthefood.views.viewport.setActiveItem(bringthefood.views.supplier_main,animation);
     },
 
-    manageAccount: function(){
-        bringthefood.views.accountMgmt.origin = 'supplier';
-        bringthefood.stores.userStore.load({
-            callback:function(){
-                var store = bringthefood.stores.userStore;
-                bringthefood.views.accountMgmt.getComponent('accountform').load(store.getAt(0));
-                bringthefood.views.viewport.setActiveItem(bringthefood.views.accountMgmt);
-            }
-        });
-        
-    },
-
-
     submitOffer: function(){
         bringthefood.views.publishoffer.submit({
             waitMsg: {

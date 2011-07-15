@@ -68,8 +68,9 @@ bringthefood.views.CollectorMain = Ext.extend(Ext.Panel, {
         width: '200px',
         handler: function(){
             Ext.dispatch({
-                controller: bringthefood.controllers.collectorController,
-                action: 'manageAccount'
+                controller: bringthefood.controllers.registrationController,
+                action: 'manageAccount',
+                role: 'collector'
             });
         }
     }

@@ -58,8 +58,9 @@ bringthefood.views.SupplierMain = Ext.extend(Ext.Panel, {
         width: '200px',
         handler: function(){
             Ext.dispatch({
-                controller: bringthefood.controllers.supplierController,
-                action: 'manageAccount'
+                controller: bringthefood.controllers.registrationController,
+                action: 'manageAccount',
+                role: 'supplier'
             });
         }
     }

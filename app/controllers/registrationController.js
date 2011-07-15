@@ -31,6 +31,18 @@ bringthefood.controllers.registrationController = new Ext.Controller({
         });
     },
 
+    manageAccount: function(options){
+        bringthefood.views.accountMgmt.origin = options.role;
+        bringthefood.stores.userStore.load({
+            callback:function(){
+                var store = bringthefood.stores.userStore;
+                bringthefood.views.accountMgmt.getComponent('accountform').load(store.getAt(0));
+                bringthefood.views.viewport.setActiveItem(bringthefood.views.accountMgmt);
+            }
+        });
+
+    },
+
     update: function(){
         var form = bringthefood.views.accountMgmt.getComponent('accountform');
         form.submit({
