@@ -1,6 +1,6 @@
 <?php
 
-include ('../config/geocode_xml.php');
+include ('../config/geocode.php');
 
 // 
 // ---------------------------------------------------------------------------

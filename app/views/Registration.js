@@ -2,7 +2,7 @@ bringthefood.views.Registration = Ext.extend(Ext.form.FormPanel,{
     title: 'Registration',
     id: 'regform',
     scroll: 'vertical',
-    url: 'include/account.php?action=register',
+    url: 'include/register.php',
     standardSubmit: false,
     dockedItems:[{
         xtype: 'toolbar',

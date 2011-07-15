@@ -35,7 +35,7 @@ bringthefood.views.Account = Ext.extend(Ext.TabPanel, {
         title: 'Update Account',
         id: 'accountform',
         scroll: 'vertical',
-        url: 'include/account.php',
+        url: 'include/myaccount.php',
         standardSubmit: false,
         items: [{
             xtype: 'fieldset',
