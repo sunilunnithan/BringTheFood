@@ -1,6 +1,6 @@
 <?php
 
-    include ('../config/config.php');
+    require ('../config/config.php');
 
     //function to be invoked when a user register
     function register() {
