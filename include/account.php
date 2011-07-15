@@ -145,22 +145,22 @@
         }
     }
 
-    //based on _GET value call one of the above functions at a time!
-    //function lee() {
-        if ($_GET['action'] == 'register') {
+//based on _GET value call one of the above functions at a time!
+//function lee() {
+    if ($_GET['action'] == 'register') {
         echo json_encode(register());
-        } else if ($_GET['action'] == 'login') {
+    } else if ($_GET['action'] == 'login') {
         echo json_encode(login());
-        } else if ($_GET['action'] == 'logout') {
+    } else if ($_GET['action'] == 'logout') {
         echo json_encode(logout());
-        } else if ($_GET['action'] == 'update') {
+    } else if ($_GET['action'] == 'update') {
         echo json_encode(update());
-        } else if ($_GET['action'] == 'new_pass') {
+    } else if ($_GET['action'] == 'new_pass') {
         echo json_encode(change_pass());
-        } else if ($_GET['action'] == 'forgot') {
+    } else if ($_GET['action'] == 'forgot') {
         echo json_encode(forgot());
-        }
-    //}
+    }
+//}
 
 
 ?>

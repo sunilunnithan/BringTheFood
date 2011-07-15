@@ -1,5 +1,6 @@
 <?php
 	include("../config/config.php");
+        include("../config/geocode.php");
 	$role = "";
 	//If user is not signed in refirect
 	if(!$user->signed) {
