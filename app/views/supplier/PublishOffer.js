@@ -54,9 +54,10 @@ bringthefood.views.PublishOffer = Ext.extend(Ext.form.FormPanel,{
         xtype: 'fieldset',
         items: [
         {
-            xtype: 'textfield',
+            xtype: 'textareafield',
             label: 'Description',
-            name: 'desc'
+            name: 'desc',
+            maxLength: 1024
         }, {
             xtype: 'datepickerfield',
             label: 'Date from',
@@ -74,6 +75,11 @@ bringthefood.views.PublishOffer = Ext.extend(Ext.form.FormPanel,{
             label: 'Date until',
             name: 'expdate',
             value: new Date()
+        },
+        {
+            xtype: 'textfield',
+            label: 'Time until',
+            name: 'exptime'
         }
         ]
     },
