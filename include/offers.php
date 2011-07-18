@@ -29,7 +29,7 @@ function get_offers_JSON($my_offers_only = false) {
             $exp_date = mysql_result($offers, $i, 'expire_date');
             $image = mysql_result($offers, $i, 'image');
             $people_served = mysql_result($offers, $i, 'people_served');
-            //$exp_time=mysql_result($offers, $i, 'exp_time');
+            $exp_time=mysql_result($offers, $i, 'expire_time');
             $status = mysql_result($offers, $i, 'status');
             $collector_ID = mysql_result($offers, $i, 'collector_id');
 
@@ -79,10 +79,12 @@ function add_offer() {
     $av_time = $_POST['avtime'];
 
     $exp_date = $_POST['expdate'];
+    $exp_time = $_POST['exptime'];
+
     $image = $_POST['image']; //make a file upload here
     $people = $_POST['peopleserved'];
     $new_address = isset($_POST['newaddress']) ? $_POST['newaddress'] : false;  // Yes/No field to ask if the address is new
-    $insert_offer = mysql_query("INSERT INTO offer (supplier_id, collector_id,description,available_date,available_time,expire_date,status,image,people_served) VALUES ('$supplier_ID','','$description','$av_date','$av_time','$exp_date','available','$image','$people')");
+    $insert_offer = mysql_query("INSERT INTO offer (supplier_id, collector_id,description,available_date,available_time,expire_date,expire_time, status,image,people_served) VALUES ('$supplier_ID','','$description','$av_date','$av_time','$exp_date','$exp_time',available','$image','$people')");
 
     //if address of offer is new, insert the address ensuring that it corresponds to this offer
     if ($new_address) {
@@ -134,6 +136,8 @@ function update_offer() {
     $av_date = $_POST['avdate'];
     $av_time = $_POST['avtime'];
     $exp_date = $_POST['expdate'];
+    $exp_time = $_POST['exptime'];
+
     $status = $_POST['status'];
     $image = $_POST['image']; //make image upload here
     $people = $_POST['peopleserved'];
@@ -144,7 +148,7 @@ function update_offer() {
     $country = $_POST['country'];
     $phone = $_POST['phone'];
 
-    $update_offer = mysql_query("UPDATE offer SET description='$description',available_date='$av_date', available_time ='$av_time', expire_date='$exp_date', status='$status', image='$image', people_served ='$people' WHERE offer_id='$offer_id' ");
+    $update_offer = mysql_query("UPDATE offer SET description='$description',available_date='$av_date', available_time ='$av_time', expire_date='$exp_date',expire_time='$exp_time', status='$status', image='$image', people_served ='$people' WHERE offer_id='$offer_id' ");
 
     //assuming that the offer was registered with new address at the beginning. otherwise, change of address for the supplier is done as part of account update for user.
     $update_offer_address = mysql_query("UPDATE address SET street='$street',city='$city', zip ='$zip', country='$country', phone='$phone' WHERE offer_id='$offer_id'");
