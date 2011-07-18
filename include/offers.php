@@ -176,7 +176,7 @@ function book_offer() {
     $check = mysql_query("SELECT status from offer WHERE offer_ID='$offerId'");
     if ($check) {
         if (mysql_result($check, 0, 'status') == "available") {
-            if (mysql_query("UPDATE offer SET status ='booked' WHERE offer_ID ='$offerId'"))
+            if (mysql_query("UPDATE offer SET status ='booked', collector_id='$collectorId' WHERE offer_ID ='$offerId'") )
                 return 1;
             else
                 return -1;
