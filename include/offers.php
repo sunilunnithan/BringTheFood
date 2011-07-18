@@ -17,7 +17,7 @@ function get_offers_JSON($my_offers_only = false) {
     }
 
     $num_offers = mysql_num_rows($offers);
-    if ($num_offers > 0) {
+    if ($num_offers > 0)  {
         $offer_JSON_Array = array();
         for ($i = 0; $i < $num_offers; $i++) {
             $offer_ID = mysql_result($offers, $i, 'offer_id');
@@ -32,7 +32,12 @@ function get_offers_JSON($my_offers_only = false) {
             $exp_time=mysql_result($offers, $i, 'expire_time');
             $status = mysql_result($offers, $i, 'status');
             $collector_ID = mysql_result($offers, $i, 'collector_id');
-
+            if($collector_ID!=0){
+            $collector_name = mysql_result(mysql_query("SELECT name FROM users WHERE user_id = $collector_ID"), 0, 'name');
+            }
+            else{
+            $collector_name="";
+            }
             //get the address of this offer
             $address_of_offer = mysql_query("SELECT * FROM address WHERE offer_id ='$offer_ID' OR user_id='$supplier_ID'");
             $street = mysql_result($address_of_offer, 0, 'street');
@@ -47,6 +52,8 @@ function get_offers_JSON($my_offers_only = false) {
                 'offer_id' => $offer_ID,
                 'supplier_id' => $supplier_ID,
                 'supplier_name' => $supplier_name,
+                'collector_id'=>$collector_ID,
+                'collector_name'=>$collector_name,
                 'desc' => $description,
                 'status' => $status,
                 'avdate' => $avail_date,
