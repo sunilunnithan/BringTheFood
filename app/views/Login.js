@@ -10,6 +10,10 @@ bringthefood.views.Login = Ext.extend(Ext.form.FormPanel,{
     standardSubmit: false,
     items: [
     {
+        xtype: 'container',
+        html:'<div style="width:100%;"><img src="images/logo.png" align="center"></div>'
+    },
+    {
         xtype: 'fieldset',
         title: 'Please enter your e-mail and password',
         items: [
@@ -51,11 +55,15 @@ bringthefood.views.Login = Ext.extend(Ext.form.FormPanel,{
         }
     },
     {
+        //style: 'margin-top: 1em, margin-bottom: -.5em',
+        html: "<small>Don't have an account yet?</small>"
+    },
+    {
         xtype: 'button',
-        text: 'Register',
+        text: '<small>Register</small>',
         name: 'loginBtn',
-        style: 'margin-top: .5em; padding: .5em',
-        width: '200px',
+        //style: 'margin-top: .5em; padding: .5em',
+        width: '150px',
         ui: 'action',
         handler : function(){
             Ext.dispatch({
