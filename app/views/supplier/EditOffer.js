@@ -117,7 +117,7 @@ bringthefood.views.EditOffer = Ext.extend(Ext.form.FormPanel,{
             label: 'How many people can it serve?',
             labelWidth: '80%',
             name: 'peopleserved',
-            minValue: 0,
+            minValue: 1,
             value: 1
         }
         ]

@@ -103,7 +103,7 @@ bringthefood.views.PublishOffer = Ext.extend(Ext.form.FormPanel,{
             label: 'How many people can it serve?',
             labelWidth: '80%',
             name: 'peopleserved',
-            minValue: 0,
+            minValue: 1,
             value: 1
         }
         ]
@@ -121,14 +121,14 @@ bringthefood.views.PublishOffer = Ext.extend(Ext.form.FormPanel,{
             listeners: {
                 check: function(){
                     var addressfields = bringthefood.views.publishoffer.getComponent('address');
-                    addressfields.enable();
+                    //addressfields.enable();
                     addressfields.show({
                         type: 'fade'
                     });
                 },
                 uncheck: function(){
                     var addressfields = bringthefood.views.publishoffer.getComponent('address');
-                    addressfields.disable();
+                    //addressfields.disable();
                     addressfields.hide({
                         type: 'fade'
                     });
@@ -140,7 +140,7 @@ bringthefood.views.PublishOffer = Ext.extend(Ext.form.FormPanel,{
     {
         xtype: 'fieldset',
         id: 'address',
-        disabled: true,
+        //disabled: true,
         hidden: true,
         defaults: {
             xtype: 'textfield'

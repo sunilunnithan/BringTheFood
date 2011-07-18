@@ -98,7 +98,7 @@ bringthefood.controllers.supplierController = new Ext.Controller({
             url: 'include/rewards.php',
             success: function(resp){
                 var res = Ext.decode(resp.responseText);
-                Ext.Msg.alert('Your Score', 'You have <b>' + res.score + '</b> points!<br />More info on how to spend them coming soon!', Ext.emptyFn);
+                Ext.Msg.alert('Your Score', 'You have <b>' + res.score + '</b> points!<br />You are ranked #' + res.rank, Ext.emptyFn);
             }
         })
     },
