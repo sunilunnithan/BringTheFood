@@ -94,7 +94,7 @@ function add_offer() {
     $people = $_POST['peopleserved'];
     $address_id=mysql_result(mysql_query("SELECT address_id FROM users WHERE user_id = $supplier_ID"), 0, 'address_id'); // supplier's address_id
     $new_address = isset($_POST['newaddress']) ? $_POST['newaddress'] : false;  // Yes/No field to ask if the address is new
-    $insert_offer = mysql_query("INSERT INTO offer (supplier_id,collector_id,description,address_id,available_date,available_time,expire_date,expire_time, status,image,people_served) VALUES ('$supplier_ID','','$description','$address_id','$av_date','$av_time','$exp_date','$exp_time','available','$image','$people')") or die("insert offer:".mysql_error());
+    $insert_offer = mysql_query("INSERT INTO offer (supplier_id,collector_id,description,address_id,available_date,available_time,expire_date,expire_time, status,image,people_served) VALUES ('$supplier_ID','','$description','$address_id','$av_date','$av_time','$exp_date','$exp_time','available','$image','$people')"); //or die("insert offer:".mysql_error());
     $insert_id_of_offer =mysql_insert_id();
 
     //if address of offer is new, insert the address ensuring that it corresponds to this offer
@@ -108,13 +108,13 @@ function add_offer() {
         $latitude_longitude = grapGeocodeInfo($street . ',' . $zip . ',' . $city . ',' . $country);
         $lat = $latitude_longitude['lat'];
         $long = $latitude_longitude['lng'];
-        $insert_offer_address = mysql_query("INSERT INTO address (street,city,zip,country,phone,lat,lng) VALUES('$street','$city','$zip','$country','$phone','$lat','$long')")or die("insert new address:".mysql_error());;
+        $insert_offer_address = mysql_query("INSERT INTO address (street,city,zip,country,phone,lat,lng) VALUES('$street','$city','$zip','$country','$phone','$lat','$long')"); //or die("insert new address:".mysql_error());
         $insert_id_of_address=mysql_insert_id();
         //get the address_id that matches the submitted address
         //$add_id = mysql_query("SELECT address_id AS latest_address_id FROM address WHERE street='$street' AND city='$city' AND zip ='$zip' AND country='$country' AND phone ='$phone'");
         if ($insert_id_of_address) {
             //$latest_address_id = mysql_result($add_id, 0, 'latest_address_id');
-            $update_address_id =mysql_query("UPDATE offer SET address_id ='$insert_id_of_address' WHERE offer_id='$insert_id_of_offer'")or die("link new address id to offer:".mysql_error());;
+            $update_address_id =mysql_query("UPDATE offer SET address_id ='$insert_id_of_address' WHERE offer_id='$insert_id_of_offer'");//or die("link new address id to offer:".mysql_error());;
         }
 
               
@@ -160,10 +160,10 @@ function update_offer() {
     $country = $_POST['country'];
     $phone = $_POST['phone'];
 
-    $update_offer = mysql_query("UPDATE offer SET description='$description',available_date='$av_date', available_time ='$av_time', expire_date='$exp_date',expire_time='$exp_time', status='$status', image='$image', people_served ='$people' WHERE offer_id='$offer_id'") or die ("update offer:".mysql_error());
+    $update_offer = mysql_query("UPDATE offer SET description='$description',available_date='$av_date', available_time ='$av_time', expire_date='$exp_date',expire_time='$exp_time', status='$status', image='$image', people_served ='$people' WHERE offer_id='$offer_id'");// or die ("update offer:".mysql_error());
     $offer_address_id =mysql_result(mysql_query("SELECT address_id FROM offer WHERE offer_id ='$offer_id'"),0,'address_id');
     //assuming that the offer was registered with new address at the beginning. otherwise, change of address for the supplier is done as part of account update for user.
-    $update_offer_address = mysql_query("UPDATE address SET street='$street',city='$city', zip ='$zip', country='$country', phone='$phone' WHERE address_id='$offer_address_id'") or die ("update address:".mysql_error());;
+    $update_offer_address = mysql_query("UPDATE address SET street='$street',city='$city', zip ='$zip', country='$country', phone='$phone' WHERE address_id='$offer_address_id'");// or die ("update address:".mysql_error());;
     if ($update_offer && $update_offer_address)
         return 1;
     else
