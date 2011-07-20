@@ -280,80 +280,101 @@ function update($info) {
 
     //Prepare Info for SQL Insertion
     foreach ($info as $index => $val) {
-        if (!preg_match("/2$/", $index)) {
-        //    if (isset(!$this->check_field($index, $val, "No change to $index value")) {
+            if (!preg_match("/2$/", $index)) {
+                //    if (isset(!$this->check_field($index, $val, "No change to $index value")) {
                 if (strcmp($index, "street") == 0
-                    || strcmp($index, "zip") == 0
-                    || strcmp($index, "city") == 0
-                    || strcmp($index, "country") == 0
-                    || strcmp($index, "phone") == 0) {
+                        || strcmp($index, "zip") == 0
+                        || strcmp($index, "city") == 0
+                        || strcmp($index, "country") == 0
+                        || strcmp($index, "phone") == 0) {
                     $value_tbladdress = "'" . mysql_real_escape_string($val) . "'";
                     $set_tbladdress[] = "{$index}={$value_tbladdress}";
-                   // echo $val;
-                    }
-                    else {
-                        $value_user = "'" . mysql_real_escape_string($val) . "'";
-                        $set_user[] = "{$index}={$value_user}";
-                        //echo $val;
-                    }
-          //  }
+                    // echo $val;
+                } else {
+                    $value_user = "'" . mysql_real_escape_string($val) . "'";
+                    $set_user[] = "{$index}={$value_user}";
+                    //echo $val;
+                }
+                //  }
+            }
         }
-    }
-    
-    $set_user = implode(", ", $set_user);
 
-    //Prepare User Update	Query
-    //echo "checking ... ".$this->id;
-    $sql_user = "UPDATE users SET $set_user WHERE user_id='{$this->id}'";
+        $set_user = implode(", ", $set_user);
 
-    //Prepare Address Update	Query
-    $update = $this->getRow("SELECT * FROM users WHERE user_id='{$this->id}'");
+        //Prepare User Update	Query
+        //echo "checking ... ".$this->id;
+        $sql_user = "UPDATE users SET $set_user WHERE user_id='{$this->id}'";
 
-   //$address_row =  $user->getRow("SELECT * FROM address WHERE user_id='{$user->id}'");
+        //Prepare Address Update	Query
+        $update = $this->getRow("SELECT * FROM users WHERE user_id='{$this->id}'");
 
-    //Now get the geocode.
-    $complete_address = $info["street"] . ", " . $info["city"] . ", " . $info["zip"] . ", " . $info["country"];
-    $geocode_info = grapGeocodeInfo($complete_address);
-    $lat = $geocode_info["lat"];
-    $lng = $geocode_info["lng"];
+        //$address_row =  $user->getRow("SELECT * FROM address WHERE user_id='{$user->id}'");
+        //Now get the geocode.
+        $complete_address = $info["street"] . ", " . $info["city"] . ", " . $info["zip"] . ", " . $info["country"];
+        $geocode_info = grapGeocodeInfo($complete_address);
+        $lat = $geocode_info["lat"];
+        $lng = $geocode_info["lng"];
 
-    
-    //$latlng =  $this->getRow("SELECT *FROM address WHERE user_id='{$user->id}'");
-    if ($this->check_sql_on_update($sql_user)) {
+        $isNewUserAddress = false;
+        $isUserInfoUpdated = false;
+        $isOldUserAddress = false;
+
+        if ($this->check_sql_on_update($sql_user)) {
             $this->report("Information Updated");
             $checkMyOffers = "SELECT offer_id FROM offer WHERE supplier_id = '$this->id'";
             //check if there is an offer before updating user address.
-            if (!$this->check_user_offer($checkMyOffers)) { //if a user isn't offering something.
-                ///Simpley update the address!
-                $set_tbladdress[] = "lat= $lat";
-                $set_tbladdress[] = "lng= $lng";
-                $set_tbladdress = implode(", ", $set_tbladdress);
-                $table_name = "address";
-                $sql_address = "UPDATE {$table_name} SET {$set_tbladdress} WHERE user_id ='{$this->id}'";
+            $_SESSION['mFood']['update'] = true;
+            $update = $this->getRow("SELECT * FROM users WHERE user_id='{$this->id}'");
+            $this->update_session($update);
 
-                //update session info
-                if ($this->check_sql_on_update($sql_address)) {
-                    $this->report("Address Information is also Updated");
-                } else {
-                    $this->error(17);
-                }
-            } else { //if a user is offering something.
-                //Insert a new address for the user. However, this should not change the offer address!
-                $sql_address = "INSERT INTO address (street, city, zip, country, phone, lat,lng)
+            $isUserInfoUpdated = true;
+        } else {
+            $this->report("User Account is not Updated");
+        }
+        $avaliable = "available";
+        $locked = "locked";
+        $checkMyOffers = "SELECT offer_id FROM offer WHERE supplier_id = '$this->id' AND (status = '$avaliable' OR status = '$locked')";
+        //check if there is an offer before updating user address.
+        if (!$this->check_user_offer($checkMyOffers)) { //if a user isn't offering something.
+            ///Simpley update the address!
+            $set_tbladdress[] = "lat= $lat";
+            $set_tbladdress[] = "lng= $lng";
+            $set_tbladdress = implode(", ", $set_tbladdress);
+            $user_address_id = $this->getRow("SELECT address_id FROM users WHERE user_id='{$user->id}'");
+            $sql_address = "UPDATE address SET {$set_tbladdress} WHERE address_id ='{$user_address_id['address_id']}'";
+
+            if ($this->check_sql_on_update($sql_address)) {
+                $this->report("Address Information is Updated");
+                $isOldUserAddress = true;
+            } else {
+                $this->report("Address is not Updated");
+            }
+        } else { //if a user is offering something.
+            //Insert a new address for the user. However, this should not change the offer address!
+            $sql_address = "INSERT INTO address (street, city, zip, country, phone, lat,lng)
 					VALUES({$info['street']},{$info['street']},{$info['city']},{$info['zip']},{$info['country']},$lat,$lng)";
 
-                if ($this->check_sql_on_update($sql_address)) {
-                    $this->report("Address Information is also Updated");
-                    //Thus, get the address_id and update the users info accordingly.
-                    $addressID = "SELECT address_id FROM address WHERE street = '$street' AND city = '$city' AND zip = '$zip' AND country = '$country'";
-                    if ($this->update_user_id($addressID)) {
-                         $this->report("Address ID is also Updated for the user '$this->id'");
-                    }
-                } else {
-                    $this->error(21);
-                }
+            if ($this->check_sql_on_update($sql_address)) {
+                $this->report("Address Information is Updated");
+                $isNewUserAddress = true;
+            } else {
+                $this->report("Address is not Updated");
             }
-            
+        }
+
+        if ($isNewUserAddress) {
+            $addressID = $this->getRow("SELECT address_id FROM address WHERE street = '$street' AND city = '$city' AND zip = '$zip' AND country = '$country'");
+            if ($this->update_user_id($addressID['address_id'])) {
+                $this->report("Address ID is also Updated for the user '$this->id'");
+            } else {
+                $this->report("The new address id is not updated");
+            }
+        }
+
+        //$latlng =  $this->getRow("SELECT *FROM address WHERE user_id='{$user->id}'");
+        //if (!$this->check_sql_on_update($sql_user)) {
+        if ($isUserInfoUpdated OR $isNewUserAddress OR $isOldUserAddress) {
+
             $_SESSION['mFood']['update'] = true;
             $update = $this->getRow("SELECT * FROM users WHERE user_id='{$this->id}'");
             $this->update_session($update);
@@ -363,14 +384,13 @@ function update($info) {
             $this->error(2);
             return false;
         }
-}
+    }
 
 ///////////////////////////////////////////
-function update_user_id ($sql) {
+function update_user_id ($address_id) {
 
-    $address_id = $this->getRow($sql);
-    $query = "UPDATE users SET address_id = {$address_id['address_id']}
-					WHERE email ='{$info['email']}'";
+    //$address_id = $this->getRow($sql);
+    $query = "UPDATE users SET address_id = {$address_id} WHERE email ='{$this->email}'";
     if ($this->check_sql($query)) {
         return true; 
     }else {

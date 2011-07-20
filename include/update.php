@@ -12,14 +12,14 @@ if (count($_POST)) {
     $user->addValidation("name", "0-25", '#^[a-z\s\.]+$#i');
     $user->addValidation("street", "0-50");
     //Update User
-    $user->update($_POST);
+    //$user->update($_POST);
 
     //If there is not error
-    if (!$user->has_error()) { //$user->update($_POST) == true){
+    if (! $user->update($_POST)) { //$user->update($_POST) == true){
         //Update info
         $resp = array('success' => true, 'message' => "Information Updated!");
     } else {
-        $resp = array('success' => false, 'message' => 'Information Not Updated due to Error!');
+        $resp = array('success' => false, 'message' => 'Information Not Updated!');
     }
 } else {
     $resp = array('success' => false, 'message' => "No need to update!");
