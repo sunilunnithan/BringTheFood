@@ -44,7 +44,10 @@ bringthefood.views.CollectorMain = Ext.extend(Ext.Panel, {
         style: 'padding: 1em',
         width: '200px',
         handler: function(){
-        //Coming soon TODO
+            Ext.dispatch({
+                controller: bringthefood.controllers.collectorController,
+                action: 'goCommitments'
+            });
         }
     },
     {

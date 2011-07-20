@@ -19,7 +19,8 @@ bringthefood.views.Viewport = Ext.extend(Ext.Panel, {
             editoffer: new bringthefood.views.EditOffer(),
             offerslist: new bringthefood.views.OffersList(),
             collector_main: new bringthefood.views.CollectorMain(),
-            avoffers: new bringthefood.views.AvailableOffersList()
+            avoffers: new bringthefood.views.AvailableOffersList(),
+            commitments: new bringthefood.views.Commitments()
         });
 
         var items = [
@@ -33,7 +34,8 @@ bringthefood.views.Viewport = Ext.extend(Ext.Panel, {
             bringthefood.views.editoffer,
             bringthefood.views.offerslist,
             bringthefood.views.collector_main,
-            bringthefood.views.avoffers
+            bringthefood.views.avoffers,
+            bringthefood.views.commitments
             ]
 
         // Let's add our view to the Viewport.

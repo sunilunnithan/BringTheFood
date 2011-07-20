@@ -11,7 +11,7 @@
     
     if($user->signed) {
 
-        $myaccount = array("name" => $user->data["name"]); //$user->data;
+        $myaccount = array("user_id" => $user->id, "name" => $user->data["name"]); //$user->data;
 
        /* foreach($user->data as $field=>$val){
             echo $field." :  ".$val."<br />";

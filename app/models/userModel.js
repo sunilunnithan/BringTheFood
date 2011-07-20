@@ -1,5 +1,6 @@
 Ext.regModel("bringthefood.models.userModel",{
     fields:[
+        {name: 'user_id', type:'int'},
         {name: 'name',type:'string'},
         {name: 'street',type:'string'},
         {name: 'zip',type:'string'},

@@ -14,11 +14,6 @@ bringthefood.controllers.supplierController = new Ext.Controller({
                             value: uid,
                             exactMatch: true
                         });
-                        //                        bringthefood.stores.offersStore.filter({
-                        //                            filterFn: function(item){
-                        //                                return item.get('status') != "collected";
-                        //                            }
-                        //                        });
                         bringthefood.views.viewport.setActiveItem(bringthefood.views.myoffers);
                     }
                 });   

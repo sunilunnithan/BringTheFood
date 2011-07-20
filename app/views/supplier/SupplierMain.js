@@ -25,7 +25,13 @@ bringthefood.views.SupplierMain = Ext.extend(Ext.Panel, {
     }],
     items: [
     {
-        html: 'Welcome!'
+        xtype: 'panel',
+        id: 'welcome',
+        tpl: [
+        '<p>Welcome, ',
+        '{name}',
+        '!</p>'
+        ]
     },
     {
         xtype: 'button',

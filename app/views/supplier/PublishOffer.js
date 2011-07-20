@@ -16,7 +16,7 @@ bringthefood.views.PublishOffer = Ext.extend(Ext.form.FormPanel,{
     {
         dock: 'top',
         xtype: 'toolbar',
-        title: 'Publish a New Offer',
+        title: 'New Offer',
         defaults: {
             iconMask: true
         },
@@ -32,20 +32,7 @@ bringthefood.views.PublishOffer = Ext.extend(Ext.form.FormPanel,{
                     action: 'goBack'
                 });
             }
-        },
-        {
-            xtype: 'button',
-            name: 'home',
-            iconCls: 'home',
-            handler: function(){
-                Ext.dispatch({
-                    controller: bringthefood.controllers.supplierController,
-                    action: 'goHome'
-                });
-            }
-        },
-        
-        
+        }       
         ]
     }
     ],
@@ -79,7 +66,8 @@ bringthefood.views.PublishOffer = Ext.extend(Ext.form.FormPanel,{
         {
             xtype: 'textfield',
             label: 'Time until',
-            name: 'exptime'
+            name: 'exptime',
+            value: new Date().getHours() + ':' + new Date().getMinutes()
         }
         ]
     },
@@ -98,11 +86,14 @@ bringthefood.views.PublishOffer = Ext.extend(Ext.form.FormPanel,{
         xtype: 'fieldset',
         id: 'additional_stuff',
         items: [
+//        {
+//            html: 'How many people can it serve?'
+//        },
         {
             xtype: 'numberfield',
-            label: 'How many people can it serve?',
-            labelWidth: '80%',
             name: 'peopleserved',
+            label: 'For how many?',
+            labelWidth: '50%',
             minValue: 1,
             value: 1
         }
@@ -116,53 +107,64 @@ bringthefood.views.PublishOffer = Ext.extend(Ext.form.FormPanel,{
             xtype: 'checkboxfield',
             label: 'New address',
             name: 'newaddress',
-            labelWidth: '80%',
+            labelWidth: '70%',
             value: 'true',
             listeners: {
                 check: function(){
-                    var addressfields = bringthefood.views.publishoffer.getComponent('address');
-                    //addressfields.enable();
-                    addressfields.show({
+                    var dummy = this.up('fieldset').up().getComponent('dummy');
+                    dummy.add({
+                        xtype: 'fieldset',
+                        id: 'address',
+                        defaults: {
+                            xtype: 'textfield'
+                        },
+                        items: [{
+                            name: 'street',
+                            label: 'Street'
+                        }, {
+                            name: 'city',
+                            label: 'City'
+                        }, {
+                            name: 'zip',
+                            label: 'ZIP Code',
+                            vtype: 'zip'
+                        }, {
+                            name: 'country',
+                            label: 'Country'
+                        },{
+                            name: 'phone',
+                            label: 'Phone',
+                            vtype: 'phone'
+                        }]
+                    });
+                    dummy.doComponentLayout();
+                    dummy.doLayout();
+                    
+                    dummy.show({
                         type: 'fade'
                     });
+                //                    var addressfields = bringthefood.views.publishoffer.getComponent('address');
+                //                    addressfields.enable();
+                //                    addressfields.show({
+                //                        type: 'fade'
+                //                    });
                 },
                 uncheck: function(){
-                    var addressfields = bringthefood.views.publishoffer.getComponent('address');
-                    //addressfields.disable();
-                    addressfields.hide({
+                    var dummy = this.up('fieldset').up().getComponent('dummy');
+                    dummy.hide({
                         type: 'fade'
                     });
+                    dummy.removeAll();
+                    dummy.doComponentLayout();
+                    
                 }
             }
         }
         ]
     },
     {
-        xtype: 'fieldset',
-        id: 'address',
-        //disabled: true,
-        hidden: true,
-        defaults: {
-            xtype: 'textfield'
-        },
-        items: [{
-            name: 'street',
-            label: 'Street'
-        }, {
-            name: 'city',
-            label: 'City'
-        }, {
-            name: 'zip',
-            label: 'ZIP Code',
-            vtype: 'zip'
-        }, {
-            name: 'country',
-            label: 'Country'
-        },{
-            name: 'phone',
-            label: 'Phone',
-            vtype: 'phone'
-        }]
+        id: 'dummy',
+        visible: false
     },
     {
         xtype: 'button',

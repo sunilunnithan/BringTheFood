@@ -49,6 +49,7 @@
         <script type="text/javascript" src="app/views/collector/OffersMap.js"></script>
         <script type="text/javascript" src="app/views/collector/OffersList.js"></script>
         <script type="text/javascript" src="app/views/collector/AvailableOffersList.js"></script>
+        <script type="text/javascript" src="app/views/collector/Commitments.js"></script>
 
         <!-- Supplier Views -->
         <script type="text/javascript" src="app/views/supplier/SupplierMain.js"></script>
