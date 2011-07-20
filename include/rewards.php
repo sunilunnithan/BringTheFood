@@ -16,7 +16,7 @@ function get_supplier_score() {
     return $score;
 }
 
-
+//function to get rank of a supplier based on number of people served
 function get_supplier_rank(){
     $supplier_id = $_SESSION['demo']['user_id'];
     $rank = 0;

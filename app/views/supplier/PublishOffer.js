@@ -2,7 +2,7 @@ bringthefood.views.PublishOffer = Ext.extend(Ext.form.FormPanel,{
     title: 'Publish Offer',
     id: 'publishoffer',
     url: 'include/offers.php?action=add',
-    standardSubmit: false,
+    standardSubmit: true,
     fullscreen: 'true',
     layout: {
         type : 'vbox',

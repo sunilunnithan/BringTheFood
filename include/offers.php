@@ -22,6 +22,7 @@ function get_offers_JSON($my_offers_only = false) {
         for ($i = 0; $i < $num_offers; $i++) {
             $offer_ID = mysql_result($offers, $i, 'offer_id');
             $supplier_ID = mysql_result($offers, $i, 'supplier_id');
+            $address_id = mysql_result($offers, $i, 'address_id');
             $supplier_name = mysql_result(mysql_query("SELECT name FROM users WHERE user_id = $supplier_ID"), 0, 'name');
             $description = mysql_result($offers, $i, 'description');
             $avail_date = mysql_result($offers, $i, 'available_date');
@@ -39,7 +40,7 @@ function get_offers_JSON($my_offers_only = false) {
             $collector_name="";
             }
             //get the address of this offer
-            $address_of_offer = mysql_query("SELECT * FROM address WHERE offer_id ='$offer_ID' OR user_id='$supplier_ID'");
+            $address_of_offer = mysql_query("SELECT * FROM address WHERE address_id ='$address_id'");
             $street = mysql_result($address_of_offer, 0, 'street');
             $city = mysql_result($address_of_offer, 0, 'city');
             $zip = mysql_result($address_of_offer, 0, 'zip');
@@ -61,6 +62,7 @@ function get_offers_JSON($my_offers_only = false) {
                 'expdate' => $exp_date,
                 'image' => $image,
                 'peopleserved' => $people_served,
+                'address_id'=>$address_id,
                 'street' => $street,
                 'zip' => $zip,
                 'city' => $city,
@@ -90,18 +92,13 @@ function add_offer() {
 
     $image = $_POST['image']; //make a file upload here
     $people = $_POST['peopleserved'];
+    $address_id=mysql_result(mysql_query("SELECT address_id FROM users WHERE user_id = $supplier_ID"), 0, 'address_id'); // supplier's address_id
     $new_address = isset($_POST['newaddress']) ? $_POST['newaddress'] : false;  // Yes/No field to ask if the address is new
-    $insert_offer = mysql_query("INSERT INTO offer (supplier_id, collector_id,description,available_date,available_time,expire_date,expire_time, status,image,people_served) VALUES ('$supplier_ID','','$description','$av_date','$av_time','$exp_date','$exp_time',available','$image','$people')");
+    $insert_offer = mysql_query("INSERT INTO offer (supplier_id,collector_id,description,address_id,available_date,available_time,expire_date,expire_time, status,image,people_served) VALUES ('$supplier_ID','','$description','$address_id','$av_date','$av_time','$exp_date','$exp_time','available','$image','$people')") or die("insert offer:".mysql_error());
+    $insert_id_of_offer =mysql_insert_id();
 
     //if address of offer is new, insert the address ensuring that it corresponds to this offer
     if ($new_address) {
-        //get the latest offer_id for the current supplier
-        $offer_id = mysql_query("SELECT MAX(offer_id) AS latest_offer_id, supplier_id FROM offer WHERE supplier_id='$supplier_ID'");
-        if ($offer_id) {
-            $latest_offer_id = mysql_result($offer_id, 0, 'latest_offer_id');
-            $supplier_id = mysql_result($offer_id, 0, 'supplier_id');
-        }
-
         $street = $_POST['street'];
         $city = $_POST['city'];
         $zip = $_POST['zip'];
@@ -111,8 +108,16 @@ function add_offer() {
         $latitude_longitude = grapGeocodeInfo($street . ',' . $zip . ',' . $city . ',' . $country);
         $lat = $latitude_longitude['lat'];
         $long = $latitude_longitude['lng'];
-        $insert_offer_address = mysql_query("INSERT INTO address (street,city,zip,country,phone,lat,lng,offer_id) VALUES('$street','$city','$zip','$country','$phone','$lat','$long','$latest_offer_id')");
+        $insert_offer_address = mysql_query("INSERT INTO address (street,city,zip,country,phone,lat,lng) VALUES('$street','$city','$zip','$country','$phone','$lat','$long')")or die("insert new address:".mysql_error());;
+        $insert_id_of_address=mysql_insert_id();
+        //get the address_id that matches the submitted address
+        //$add_id = mysql_query("SELECT address_id AS latest_address_id FROM address WHERE street='$street' AND city='$city' AND zip ='$zip' AND country='$country' AND phone ='$phone'");
+        if ($insert_id_of_address) {
+            //$latest_address_id = mysql_result($add_id, 0, 'latest_address_id');
+            $update_address_id =mysql_query("UPDATE offer SET address_id ='$insert_id_of_address' WHERE offer_id='$insert_id_of_offer'")or die("link new address id to offer:".mysql_error());;
+        }
 
+              
         if ($insert_offer && $insert_offer_address)  // check both offer and address
             return 1;
         else
@@ -156,9 +161,9 @@ function update_offer() {
     $phone = $_POST['phone'];
 
     $update_offer = mysql_query("UPDATE offer SET description='$description',available_date='$av_date', available_time ='$av_time', expire_date='$exp_date',expire_time='$exp_time', status='$status', image='$image', people_served ='$people' WHERE offer_id='$offer_id' ");
-
+    $offer_address_id =mysql_result(mysql_query("SELECT address_id FROM offer WHERE offer_id ='$offer_id'"),0,'address_id');
     //assuming that the offer was registered with new address at the beginning. otherwise, change of address for the supplier is done as part of account update for user.
-    $update_offer_address = mysql_query("UPDATE address SET street='$street',city='$city', zip ='$zip', country='$country', phone='$phone' WHERE offer_id='$offer_id'");
+    $update_offer_address = mysql_query("UPDATE address SET street='$street',city='$city', zip ='$zip', country='$country', phone='$phone' WHERE offer_id='$offer_id' AND address_id='$offer_address_id'");
     if ($update_offer && $update_offer_address)
         return 1;
     else
