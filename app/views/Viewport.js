@@ -56,10 +56,16 @@ bringthefood.views.Viewport = Ext.extend(Ext.Panel, {
                 //this has to be changed. now the login screen is seen for a few seconds COMPLETE THIS!!
                 switch (resp.role){
                     case 'collector':
-                        bringthefood.views.viewport.setActiveItem(bringthefood.views.collector_main,animation);
+                        Ext.dispatch({
+                            controller: bringthefood.controllers.loginController,
+                            action: 'loadCollector'
+                        });
                         break;
                     case 'supplier':
-                        bringthefood.views.viewport.setActiveItem(bringthefood.views.supplier_main,animation);
+                        Ext.dispatch({
+                            controller: bringthefood.controllers.loginController,
+                            action: 'loadSupplier'
+                        });
                         break;
                     default:
                         break;
