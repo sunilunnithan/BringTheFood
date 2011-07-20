@@ -160,10 +160,10 @@ function update_offer() {
     $country = $_POST['country'];
     $phone = $_POST['phone'];
 
-    $update_offer = mysql_query("UPDATE offer SET description='$description',available_date='$av_date', available_time ='$av_time', expire_date='$exp_date',expire_time='$exp_time', status='$status', image='$image', people_served ='$people' WHERE offer_id='$offer_id' ");
+    $update_offer = mysql_query("UPDATE offer SET description='$description',available_date='$av_date', available_time ='$av_time', expire_date='$exp_date',expire_time='$exp_time', status='$status', image='$image', people_served ='$people' WHERE offer_id='$offer_id'") or die ("update offer:".mysql_error());
     $offer_address_id =mysql_result(mysql_query("SELECT address_id FROM offer WHERE offer_id ='$offer_id'"),0,'address_id');
     //assuming that the offer was registered with new address at the beginning. otherwise, change of address for the supplier is done as part of account update for user.
-    $update_offer_address = mysql_query("UPDATE address SET street='$street',city='$city', zip ='$zip', country='$country', phone='$phone' WHERE offer_id='$offer_id' AND address_id='$offer_address_id'");
+    $update_offer_address = mysql_query("UPDATE address SET street='$street',city='$city', zip ='$zip', country='$country', phone='$phone' WHERE address_id='$offer_address_id'") or die ("update address:".mysql_error());;
     if ($update_offer && $update_offer_address)
         return 1;
     else
