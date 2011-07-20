@@ -50,6 +50,7 @@ class uManagement {
         "default_user" => array(
             "name" => "Guest",
             "user_id" => 0,
+            "email" => null,
             "password" => 0,
             "role" => 0,
             "signed" => false

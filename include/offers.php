@@ -233,6 +233,8 @@ function complete_offer() {
 if ($_GET['action'] == 'add') {
     if (add_offer() == 1) {
         echo json_encode(array('success' => true));
+    } else {
+        echo json_encode(array('success' => false));
     }
 } else if ($_GET['action'] == 'remove')
     remove_offer();
