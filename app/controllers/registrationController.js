@@ -50,13 +50,16 @@ bringthefood.controllers.registrationController = new Ext.Controller({
                 message: 'Please wait...'
             },
             success: function(form, result){
-                Ext.Msg.alert('Success!','Your data has been updated',Ext.emptyFn);
+                Ext.Msg.alert('Success!',result.message,Ext.emptyFn);
                 form.reset();
                 animation = {
                     type: 'slide',
                     direction: 'right'
                 };
                 form.up('panel').returnHome();
+            },
+            failure: function(form,result){
+                Ext.Msg.alert('Error!',result.message,Ext.emptyFn);
             }
         });
     },
