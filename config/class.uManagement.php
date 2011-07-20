@@ -32,6 +32,7 @@ class uManagement {
     var $id;        //Signed user ID
     var $sid;       //Current User Session ID
     var $name;  //Signed name
+    var $email; //Signed email
     var $pass;      //Holds the user password hash
     var $signed;    //Boolean, true = user is signed-in
     var $data;      //Holds entire user database row
@@ -57,7 +58,7 @@ class uManagement {
     var $validations = array(//Array for default field validations
         "name" => array(
             "limit" => "3-15",
-            "regEx" => '#^[a-z\s\.]+$#i'//"/^([a-zA-Z0-9_])+$/"
+            "regEx" => '#^[a-z]+[ -][a-z]\'?[a-z]+$#i' //'#^[a-z\s\.]+$#i'
         ),
         "password" => array(
             "limit" => "3-15",
@@ -99,10 +100,11 @@ class uManagement {
         14 => "You need to reset your password to login",
         15 => "New Address Registration Failed",
         16 => "Address Change Could not be made", //Address Database Error while calling update functions
-        17 => "A problem in update address.",
+        17 => "A problem in update address",
         18 => "There are no avaliable offers",
         19 => "Can't load address. Is it a real address? (Or your Internet connection is down)",
-        20 => "Something is wrong in your current password"
+        20 => "Something is wrong in your current password",
+        21 => "A problem in update the address_id in the users table"
     );
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -140,7 +142,7 @@ class uManagement {
                 return false;
 
         //Check for name in database
-        if (isset($info['name']))
+        /*if (isset($info['name']))
             if ($this->check_field('name', "users",$info['name'], "This Name is Already in Use"))
                 return false;
 
@@ -148,6 +150,8 @@ class uManagement {
         if (isset($info['street']))
             if ($this->check_field('street', "address",$info['street'], "This Street Address is Already in Use"))
                 return false;
+         * 
+         */
 
         //Check for errors
         if ($this->has_error())
@@ -189,12 +193,13 @@ class uManagement {
 
         //Prepare New Address	Query
         $table_name = "address";
+        $address_id = "address_id";
+
         $into_tbladdress = implode(", ", $into_tbladdress);
         $values_tbladdress = implode(",", $values_tbladdress);
 
-        $sql_address1 = "INSERT INTO {$table_name} ($into_tbladdress)
-					VALUES($values_tbladdress)";
-        //exit($sql);
+       // $sql_address1 = "INSERT INTO {$table_name} ($into_tbladdress)
+	//				VALUES($values_tbladdress)";
         //Enter New user to Database
         if ($this->check_sql($sql_user)) {
 
@@ -203,24 +208,34 @@ class uManagement {
 
             $user_id = $this->getUserID($info['email']);
 
+            $street = $info['street'];
+            $city = $info['city'];
+            $zip  = $info['zip'];
+            $country = $info['country'];
+            
             //Preparing address to fetch geocode.
             $complete_address = $info["street"] . ", " . $info["city"] . ", " . $info["zip"] . ", " . $info["country"];
             $geocode_info = grapGeocodeInfo($complete_address);
             $lat = $geocode_info["lat"];
             $lng = $geocode_info["lng"];
-            //echo 'lat and lng .. '.$lat." ".$lng;
-            $sql_address = "INSERT INTO {$table_name} ($into_tbladdress,lat,lng,offer_id,user_id)
-					VALUES($values_tbladdress,$lat,$lng,0,$user_id)";
-
-            //Enter New address to Database
+            $sql_address = "INSERT INTO {$table_name} ($into_tbladdress,lat,lng)
+					VALUES($values_tbladdress,$lat,$lng)";
             if ($this->check_sql($sql_address)) {
                 $this->report("New Address for \"{$info['name']}\" has been registered");
+                //insert this address into the users table.
+                $get_address_id_query = "SELECT address_id FROM address WHERE street = '$street' AND city = '$city' AND zip = '$zip' AND country = '$country'";
+                $user_address_id = $this->getRow($get_address_id_query);
+                $updateAddressID= "UPDATE users SET address_id = {$user_address_id['address_id']}
+					WHERE email ='{$info['email']}'";
+                if (!$this->check_sql($updateAddressID)) {
+                    $this->report("Address Id is not registered in users table");
+                }
             } else {
                 //$sql_delete = "DELETE FROM {$this->opt['table_name']} WHERE user_id ='$user_id'";
                 $this->abortTransaction($user_id);
                 $this->error(15);
             }
-
+           // }
             if ($activation) {
                 //Insert Validation Hash
                 $this->make_hash($this->id);
@@ -257,36 +272,7 @@ function update($info) {
     //Validate All Fields
     if (!$this->validateAll())
         return false; //There are validations error
-
-
-       //echo 'name '.$info['name'];
-       if (isset($info['name'])) {
-        if (strcmp($this->data["name"],$info["name"]) != 0) { //only name different from current name.
-            if ($this->check_field('name', "users", $info['name'], "This name is Already in taken.")) {
-                return false;
-            }
-        }
-    }
-
-    //Check for Email in database
-    if (isset($info['email'])) {
-        if (strcmp($this->data["email"], $info["email"]) != 0) { //only the email different from current.
-            if ($this->check_field('email', "users",$info['email'], "This Email is Already in Use")) {
-                return false;
-            }            
-        }
-    }
-
-    //Check for Street Address in database
-//    if (isset($info['street'])) {
-//        if (strcmp($this->data["street"], $info["street"]) != 0) {
-//            if ($this->check_field('street', "users", $info['street'], "This Street Address is Already in Use")) {
-//                return false;
-//            }
-//        }
-//    }
-
-    
+   
     //Check for errors
     if ($this->has_error())
         return false;
@@ -320,49 +306,98 @@ function update($info) {
     $sql_user = "UPDATE users SET $set_user WHERE user_id='{$this->id}'";
 
     //Prepare Address Update	Query
-    $table_name = "address";
     $update = $this->getRow("SELECT * FROM users WHERE user_id='{$this->id}'");
-
-    $complete_address = $info["street"] . ", " . $info["city"] . ", " . $info["zip"] . ", " . $info["country"];
-
 
    //$address_row =  $user->getRow("SELECT * FROM address WHERE user_id='{$user->id}'");
 
     //Now get the geocode.
+    $complete_address = $info["street"] . ", " . $info["city"] . ", " . $info["zip"] . ", " . $info["country"];
     $geocode_info = grapGeocodeInfo($complete_address);
     $lat = $geocode_info["lat"];
     $lng = $geocode_info["lng"];
 
-    $set_tbladdress[] = "lat= $lat";
-    $set_tbladdress[] = "lng= $lng";
-    $set_tbladdress = implode(", ", $set_tbladdress);
-
+    
     //$latlng =  $this->getRow("SELECT *FROM address WHERE user_id='{$user->id}'");
-
-    $sql_address = "UPDATE {$table_name} SET {$set_tbladdress}
-					WHERE user_id ='{$this->id}'";
-    //exit($sql);s
-    //Check for Changes
     if ($this->check_sql_on_update($sql_user)) {
-        $this->report("Information Updated");
-        //update session info
+            $this->report("Information Updated");
+            $checkMyOffers = "SELECT offer_id FROM offer WHERE supplier_id = '$this->id'";
+            //check if there is an offer before updating user address.
+            if (!$this->check_user_offer($checkMyOffers)) { //if a user isn't offering something.
+                ///Simpley update the address!
+                $set_tbladdress[] = "lat= $lat";
+                $set_tbladdress[] = "lng= $lng";
+                $set_tbladdress = implode(", ", $set_tbladdress);
+                $table_name = "address";
+                $sql_address = "UPDATE {$table_name} SET {$set_tbladdress} WHERE user_id ='{$this->id}'";
 
-        if ($this->check_sql_on_update($sql_address)) {
-            $this->report("Address Information is also Updated");
+                //update session info
+                if ($this->check_sql_on_update($sql_address)) {
+                    $this->report("Address Information is also Updated");
+                } else {
+                    $this->error(17);
+                }
+            } else { //if a user is offering something.
+                //Insert a new address for the user. However, this should not change the offer address!
+                $sql_address = "INSERT INTO address (street, city, zip, country, phone, lat,lng)
+					VALUES({$info['street']},{$info['street']},{$info['city']},{$info['zip']},{$info['country']},$lat,$lng)";
+
+                if ($this->check_sql_on_update($sql_address)) {
+                    $this->report("Address Information is also Updated");
+                    //Thus, get the address_id and update the users info accordingly.
+                    $addressID = "SELECT address_id FROM address WHERE street = '$street' AND city = '$city' AND zip = '$zip' AND country = '$country'";
+                    if ($this->update_user_id($addressID)) {
+                         $this->report("Address ID is also Updated for the user '$this->id'");
+                    }
+                } else {
+                    $this->error(21);
+                }
+            }
+            
+            $_SESSION['mFood']['update'] = true;
+            $update = $this->getRow("SELECT * FROM users WHERE user_id='{$this->id}'");
+            $this->update_session($update);
+
+            return true;
         } else {
-            $this->error(17);
+            $this->error(2);
+            return false;
         }
+}
 
-        $_SESSION['mFood']['update'] = true;
-        $update = $this->getRow("SELECT * FROM {$this->opt['table_name']} WHERE user_id='{$this->id}'");
-        $this->update_session($update);
+///////////////////////////////////////////
+function update_user_id ($sql) {
 
-        return true;
-    } else {
-        $this->error(2);
+    $address_id = $this->getRow($sql);
+    $query = "UPDATE users SET address_id = {$address_id['address_id']}
+					WHERE email ='{$info['email']}'";
+    if ($this->check_sql($query)) {
+        return true; 
+    }else {
+        $this->report("address_id is not registered in users table");
         return false;
     }
+
 }
+
+///////////////////////////////////////////
+function check_user_offer ($sql,$debug = false) {
+
+    $this->report("SQL: {$sql}"); //Log the SQL Query
+        if (!mysql_query($sql)) {
+            if (self::debug) {
+                $this->error(mysql_error());
+            }
+            return false;
+        } else {
+            $rows = mysql_affected_rows();
+            if ($rows > 0) {
+                //Good, Rows where affected
+                return true;
+            } else {
+                return false;
+            }
+        }
+    }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 /*
@@ -702,6 +737,7 @@ function new_pass($hash, $newPass) {
         $this->id = $d['user_id'];
         $this->data = $d;
         $this->name = $d['name'];
+        $this->email = $d['email'];
         $this->pass = $d['password'];
         $this->signed = $d['signed'];
         $this->opt['role'] = $d['role'];
@@ -849,6 +885,7 @@ function new_pass($hash, $newPass) {
         $this->data = $result;
         $this->id = $result['user_id'];
         $this->name = $result['name'];
+        $this->email = $result['email'];
         $this->pass = $result['password'];
         
         $this->report("Hash successfully validated");

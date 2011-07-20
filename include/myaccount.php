@@ -6,7 +6,8 @@
     $myaccount = Array();
     $myaddress = Array();
 
-    $address_row =  $user->getRow("SELECT * FROM address WHERE user_id='{$user->id}'");
+    $user_address_id =  $user->getRow("SELECT address_id FROM users WHERE user_id='{$user->id}'");
+    $address_row =  $user->getRow("SELECT * FROM address WHERE address_id='{$user_address_id['address_id']}'");
     
     if($user->signed) {
 

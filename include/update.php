@@ -24,8 +24,8 @@
                 }
 
         }else{
-           $resp = array('success' => false,'message' => $user->error("No need to update!"));
+        $resp = array('success' => false,'message' => $user->error("No need to update!"));
         }
-
+        echo $user->email; //$_POST['name'];
 	echo json_encode($resp);
 ?>
