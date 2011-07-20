@@ -9,13 +9,14 @@ $resp = Array();
 if (count($_POST)) {
 
     //Add validation for custom fields, name, address
-    $user->addValidation("name", "0-25", '#^[a-z\s\.]+$#i');
+    $user->addValidation("name", "0-45", '#^[a-z\s\.]+$#i');
     $user->addValidation("street", "0-50");
     //Update User
-    //$user->update($_POST);
+    $user->update($_POST);
 
     //If there is not error
-    if (! $user->update($_POST)) { //$user->update($_POST) == true){
+    if($user->update($_POST) == true){ //!$user->has_error()) { //
+    //if (! $user->update($_POST)) { //$user->update($_POST) == true){
         //Update info
         $resp = array('success' => true, 'message' => "Information Updated!");
     } else {
