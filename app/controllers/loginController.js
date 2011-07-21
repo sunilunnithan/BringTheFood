@@ -17,11 +17,17 @@ bringthefood.controllers.loginController = new Ext.Controller({
 
                 switch (result.role) {
                     case 'collector':{
-                        this.loadCollector();
+                        Ext.dispatch({
+                            controller: bringthefood.controllers.loginController,
+                            action: 'loadCollector'
+                        });
                     }
                     break;
                     case 'supplier':{
-                        this.loadSupplier();
+                        Ext.dispatch({
+                            controller: bringthefood.controllers.loginController,
+                            action: 'loadSupplier'
+                        });
                     }
                     break;
                     default:
