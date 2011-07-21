@@ -24,11 +24,11 @@ function get_supplier_rank(){
     $n =mysql_num_rows($people_served_sorted);
     for ($i=0;$i<$n;$i++){
         if (mysql_result($people_served_sorted,$i, 'supplier_id')==$supplier_id){
-            $rank=$i;
+            $rank=$i+1;
             break;
         }
     }
-    return $rank+1;
+    return $rank;
 }
 
 

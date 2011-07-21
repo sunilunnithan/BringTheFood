@@ -243,6 +243,7 @@ class uManagement {
                 $this->save_hash();
                 return $this->confirm;
             }
+            $this->send_email();
             return true;
         } else {
             $this->error(1);
@@ -1140,6 +1141,23 @@ function new_pass($hash, $newPass) {
 $n.=$i;}
 		return $n;
 	}
+
+
+       private  function send_email(){
+        $from="Bring the Food Admin";
+        $to=$this->email;
+        $subject="Registration Notification";
+        $user=$this->name;
+        $msg="Dear".$user.",\n"."Thanks for signing up for the Bring the Food service. Your user name is ".$this->email." and your password is what you know.";
+        // this works provided that the real SMTP server is configured on the actual server
+        $header = "From: ".$from."\n";
+        ini_set('sendmail_from', 'admin@bringthefood.org');
+        if ( mail($to, $subject, $msg, $header)==1)
+                return 1;
+        else
+                return -1;
+
+       }
 
 
 }
