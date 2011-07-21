@@ -235,6 +235,33 @@ function complete_offer() {
     }
 }
 
+
+
+//function to populate list of offers awaiting for collection by a collector and time left for pick up
+function my_commitments() {
+
+    $collectorId = $_SESSION['demo']['user_id'];
+    $fetch_commitments=mysql_query("SELECT * FROM offer WHERE collector_id ='$collectorId' AND status='booked' GROUP BY collector_id");
+    if($fetch_commitments){
+        $n=mysql_num_rows($fetch_commitments);
+        $commitments_JSON_Array = array();
+
+        for ($i=0;$i<$n;$i++){
+            $description =mysql_result($fetch_commitments, $i, 'description');
+            $hours_left= number_format(((mysql_result($fetch_commitments, $i, 'expire_date')." ".mysql_result($fetch_commitments, $i, 'expire_time'))-time())/(3600),0);
+            $minutes_left= (time()- (mysql_result($fetch_commitments, $i, 'expire_date')." ".mysql_result($fetch_commitments, $i, 'expire_time')))%(3600);
+            $commitment =array("description"=>$description,"hours_left"=>$hours_left);//,"minutes_left"=>$minutes_left);
+            array_push($commitments_JSON_Array, $commitment);
+        }
+       return  json_encode(array('data'=>$commitments_JSON_Array));
+
+    }
+    else
+        return json_encode(array('data' => array()));
+
+}
+
+
 if ($_GET['action'] == 'add') {
     if (add_offer() == 1) {
         echo json_encode(array('success' => true));
@@ -275,6 +302,10 @@ else if ($_GET['action'] == 'complete') {
     } else {
         echo json_encode(array('success' => false));
     }
+}
+
+else if ($_GET['action'] == 'commitments') {
+ echo my_commitments();
 }
 ?>
 
