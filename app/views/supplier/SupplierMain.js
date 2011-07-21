@@ -25,7 +25,7 @@ bringthefood.views.SupplierMain = Ext.extend(Ext.Panel, {
     }],
     items: [
     {
-        xtype: 'panel',
+        xtype: 'component',
         id: 'welcome',
         tpl: [
         '<div class="welcome">Welcome, ',
