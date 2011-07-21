@@ -363,7 +363,7 @@ class uManagement {
 
             if ($this->check_sql($sql_address)) {
                 $this->report("Address Information is Updated");
-                echo "Echo 5";
+                //echo "Echo 5";
                 $isNewUserAddress = true;
             } else {
                 // echo "Echo 6";
@@ -375,7 +375,7 @@ class uManagement {
             $ln = round($lng);
             //$checkMyNewAddress = "SELECT * FROM address WHERE lat='{$la}' AND lng='{$ln}' ";
             $checkMyNewAddress = "SELECT * FROM address WHERE street='$street' AND city='$city' AND zip='$zip' AND country= '$country'";
-            echo "lat :".$lat. " and lng ".$lng;
+            //echo "lat :".$lat. " and lng ".$lng;
 
             if (!$this->has_same_address($checkMyNewAddress)) {
 
@@ -387,25 +387,25 @@ class uManagement {
                 if ($this->check_sql_on_update($sql_address)) {
                     $this->report("Address Information is Updated");
                     $isOldUserAddress = true;
-                    echo "Echo 3";
+                    //echo "Echo 3";
                 } else {
-                    echo "Echo 4";
+                    //echo "Echo 4";
                     $this->error("Address is not Updated");
                 }
             } else {
-                echo "Echo 30";
+                //echo "Echo 30";
                 $deleteMyAddressEntry = true; //$delete_address = "DELETE FROM address ";
                 //
             }
         }
-            echo "isNewUserAddress " . $isNewUserAddress;
+            //echo "isNewUserAddress " . $isNewUserAddress;
 
         if ($isNewUserAddress OR $deleteMyAddressEntry) {
             echo "Echo 7-1";
             $addressID = $this->getRow("SELECT address_id FROM address WHERE street = '$street' AND city='$city' AND zip='$zip' AND country= '$country'");
             $myAId = $addressID['address_id'];
             if ($this->update_user_address_id($myAId)) {
-                echo "Echo 7";
+                //echo "Echo 7";
                 $this->report("Address ID is also Updated for the user '$this->id'");
                 if ($deleteMyAddressEntry) {
                     mysql_query("DELETE FROM address WHERE address_id ='$myAId'");
@@ -476,10 +476,10 @@ class uManagement {
         } else {
             $rows = mysql_affected_rows();
             if ($rows > 0) {
-                echo "Same Address: Good, Rows where affected";
+               // echo "Same Address: Good, Rows where affected";
                 return true;
             } else {
-                echo "Same Address: Bad, No row is affected";
+                //echo "Same Address: Bad, No row is affected";
                 return false;
             }
         }
