@@ -44,24 +44,37 @@ bringthefood.controllers.registrationController = new Ext.Controller({
     },
 
     update: function(){
-        var form = bringthefood.views.accountMgmt.getComponent('accountform');
-        form.submit({
-            waitMsg: {
-                message: 'Please wait...'
-            },
-            success: function(form, result){
-                Ext.Msg.alert('Success!',result.message,Ext.emptyFn);
-                form.reset();
-                animation = {
-                    type: 'slide',
-                    direction: 'right'
-                };
-                form.up('panel').returnHome();
-            },
-            failure: function(form,result){
-                Ext.Msg.alert('Error!',result.message,Ext.emptyFn);
+
+        Ext.Msg.confirm('Update address', 'Would you like to update also the offers at your default address?',function(res){
+
+            var form = bringthefood.views.accountMgmt.getComponent('accountform');
+
+            if (res == 'yes'){
+                form.url += '?updateoffers=1';
+            } else {
+                form.url += '?updateoffers=0';
             }
-        });
+
+            form.submit({
+                waitMsg: {
+                    message: 'Please wait...'
+                },
+                success: function(form, result){
+                    Ext.Msg.alert('Success!',result.message,Ext.emptyFn);
+                    form.reset();
+                    animation = {
+                        type: 'slide',
+                        direction: 'right'
+                    };
+                    form.up('panel').returnHome();
+                },
+                failure: function(form,result){
+                    Ext.Msg.alert('Error!',result.message,Ext.emptyFn);
+                }
+            });
+
+        })
+
     },
 
     updatePassword: function(){

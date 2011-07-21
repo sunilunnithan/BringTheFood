@@ -25,6 +25,16 @@ bringthefood.views.CollectorMain = Ext.extend(Ext.Panel, {
     }],
     items: [
     {
+        xtype: 'panel',
+        id: 'welcome',
+        tpl: [
+        '<div class="welcome">Welcome, ',
+        '{name}',
+        '!</div>'
+        ],
+        margin: 20
+    },
+    {
         xtype: 'button',
         text: 'Offers List',
         margin: 5,

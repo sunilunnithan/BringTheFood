@@ -1,7 +1,12 @@
 bringthefood.views.LockButton = Ext.extend(Ext.Button, {
     xtype: 'lockbutton',
+    ui: 'confirm',
     text: 'Lock',
     offer_id: '0',
+    margin: '10px',
+    padding: '.5em',
+    height: '50px',
+    width: '100px',
     handler: function(){
         Ext.dispatch({
             controller: bringthefood.controllers.collectorController,

@@ -3,6 +3,8 @@
         <title>Bring the Food!</title>
 
         <link rel="stylesheet" href="lib/touch/resources/css/sencha-touch.css" type="text/css">
+        <link rel="stylesheet" href="style/local.css" type="text/css">
+
         <script type="text/javascript" src="http://dev.sencha.com/deploy/touch/sencha-touch-debug.js"></script>
         <script type="text/javascript">
             //ugly workaround for map markers tap/click

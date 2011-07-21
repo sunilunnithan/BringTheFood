@@ -68,7 +68,12 @@ bringthefood.controllers.loginController = new Ext.Controller({
     },
 
     loadCollector: function(){
-        //var data = bringthefood.stores.offersStore.read();
-        bringthefood.views.viewport.setActiveItem(bringthefood.views.collector_main,animation);
+        bringthefood.stores.userStore.load({
+            callback: function(){
+                var store = bringthefood.stores.userStore;
+                bringthefood.views.collector_main.getComponent('welcome').update(store.getAt(0).data);
+                bringthefood.views.viewport.setActiveItem(bringthefood.views.collector_main,animation);
+            }
+        });
     }
 });

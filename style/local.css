@@ -1,0 +1,45 @@
+/* 
+    Document   : local
+    Created on : Jul 21, 2011, 1:49:59 PM
+    Author     : aaron
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+/* 
+   TODO customize this sample style
+   Syntax recommendation http://www.w3.org/TR/REC-CSS2/
+*/
+
+root { 
+    display: block;
+}
+
+.welcome{
+    text-align: center;
+    font-size: larger
+}
+
+h1.offer{
+    font-size: larger;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 10px;
+    margin-top: 10px
+}
+
+ul.offer{
+    list-style: none
+}
+
+li.offer{
+    text-align: center;
+}
+
+li.offer.location{
+    font-size: small
+}
+
+li.offer.noimage{
+    margin: 10px 30px 10px 30px
+}

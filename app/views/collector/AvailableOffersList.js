@@ -44,14 +44,10 @@ bringthefood.views.AvailableOffersList = Ext.extend(Ext.Panel,{
         
         itemTpl: [
         '<div><b>{desc}</b> for <b>{peopleserved}</b></div>',
-        '<div class="offer datetime">from <b>{avdate}</b> at <b>{avtime}</b></div>',
+        '<div class="offer datetime">from <b>{avdate:date("d/m/Y")}</b> at <b>{avtime}</b></div>',
         '<div class="offer instructions">',
         '</div>'
         ],
-
-        onItemDisclosure: function (record) {
-        //open the card
-        },
 
         listeners: {
             itemtap:function(panel,index){

@@ -191,6 +191,12 @@ bringthefood.controllers.collectorController = new Ext.Controller({
         });
         //}
 
+        this.popup[index].getComponent('offerdesc').update(record.data);
+        this.popup[index].getComponent('offerdesc').doComponentLayout();
+        this.popup[index].getComponent('lockbtn').offer_id = record.get('offer_id');
+
+        this.popup[index].doLayout();
+
         this.popup[index].show('pop');
 
     },

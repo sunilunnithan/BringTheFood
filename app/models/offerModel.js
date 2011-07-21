@@ -17,6 +17,7 @@ Ext.regModel("bringthefood.models.offerModel",{
         {name: 'zip',type:'string'},
         {name: 'city',type:'string'},
         {name: 'country',type:'string'},
+        {name: 'phone',type:'string'},
         {name: 'latitude',type:'number'},
         {name: 'longitude',type:'number'}
     ]

@@ -56,8 +56,8 @@ bringthefood.views.EditOffer = Ext.extend(Ext.form.FormPanel,{
             },
 
             {
-                text: 'locked',
-                value: 'locked'
+                text: 'booked',
+                value: 'booked'
             },
 
             {
