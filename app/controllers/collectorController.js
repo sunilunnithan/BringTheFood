@@ -23,6 +23,24 @@ bringthefood.controllers.collectorController = new Ext.Controller({
         });   
     },
 
+    goCommitments: function(){
+        bringthefood.stores.offersStore.clearFilter(true);
+        bringthefood.stores.offersStore.load({
+            scope: this,
+            callback: function(){
+                bringthefood.stores.offersStore.filter('status','booked');
+                bringthefood.stores.userStore.load({
+                    callback: function(){
+                        var uid = bringthefood.stores.userStore.getAt(0).get('user_id');
+                        bringthefood.stores.offersStore.filter('collector_id',uid);
+                        bringthefood.views.viewport.setActiveItem(bringthefood.views.commitments);
+                    } 
+                });
+
+            }
+        });
+    },
+
     goMap: function(){
         bringthefood.views.viewport.setActiveItem(bringthefood.views.offersmap);
     },
@@ -197,6 +215,32 @@ bringthefood.controllers.collectorController = new Ext.Controller({
                 
             }
         })
+    },
+
+    unlockOffer: function(options){
+        Ext.Msg.confirm('Retract Commitment','Are you sure you want to retract this commitment?',function(ans){
+            if (ans == 'yes'){
+                Ext.Ajax.request({
+                    url: 'include/offers.php?action=unlock&offerId='+options.offer_id,
+                    waitMsg: 'Please wait while I do some stuff',
+                    success: function(response){
+                        var resp = Ext.decode(response.responseText);
+                        if (resp.success != true){
+                            Ext.Msg.alert('Error!', 'You cannot lock this offer!!',Ext.emptyFn);
+                        } else {
+                            bringthefood.stores.offersStore.load({
+                                callback: function(){
+                                    Ext.Msg.alert('Done!', 'You have reserved this offer!!',Ext.emptyFn);
+                                }
+                            })
+
+                        }
+                    }
+                })
+            }
+        });
+
+        
     }
 
 });
