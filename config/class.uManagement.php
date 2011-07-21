@@ -372,7 +372,7 @@ class uManagement {
             //Insert a new address for the user. However, this should not change the offer address!
             $checkMyNewAddress = "SELECT * FROM address WHERE lat='{$lat}' AND lng='{$lng}' ";
 
-            if (!$this->has_same_address($checkMyNewAddress)) {
+           // if (!$this->has_same_address($checkMyNewAddress)) {
 
                 $set_tbladdress[] = "lat= $lat";
                 $set_tbladdress[] = "lng= $lng";
@@ -387,10 +387,10 @@ class uManagement {
                     //echo "Echo 4";
                     $this->error("Address is not Updated");
                 }
-            } else {
-                $deleteMyAddressEntry = true; //$delete_address = "DELETE FROM address ";
+          //  } else {
+             //   $deleteMyAddressEntry = true; //$delete_address = "DELETE FROM address ";
                 //
-            }
+          //  }
 
 
             if ($isNewUserAddress OR $deleteMyAddressEntry) {
@@ -1220,22 +1220,20 @@ class uManagement {
         return $n;
     }
 
-       private  function send_email(){
-        $from="Bring the Food Admin";
-        $to=$this->email;
-        $subject="Registration Notification";
-        $user=$this->name;
-        $msg="Dear".$user.",\n"."Thanks for signing up for the Bring the Food service. Your user name is ".$this->email." and your password is what you know.";
+    private function send_email() {
+        $from = "Bring the Food Admin";
+        $to = $this->email;
+        $subject = "Registration Notification";
+        $user = $this->name;
+        $msg = "Dear" . $user . ",\n" . "Thanks for signing up for the Bring the Food service. Your user name is " . $this->email . " and your password is what you know.";
         // this works provided that the real SMTP server is configured on the actual server
-        $header = "From: ".$from."\n";
+        $header = "From: " . $from . "\n";
         ini_set('sendmail_from', 'admin@bringthefood.org');
-        if ( mail($to, $subject, $msg, $header)==1)
-                return 1;
+        if (mail($to, $subject, $msg, $header) == 1)
+            return 1;
         else
-                return -1;
-
-       }
-
+            return -1;
+    }
 
 }
 
