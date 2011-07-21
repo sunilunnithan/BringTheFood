@@ -59,7 +59,7 @@ class uManagement {
     );
     var $validations = array(//Array for default field validations
         "name" => array(
-            "limit" => "4-45",
+            "limit" => "1-100",
             "regEx" => "/^\w+[\s\-\'\.\w]*$/i" //'#^[a-z\s\.]+$#i'
         ),
         "password" => array(
@@ -247,6 +247,7 @@ class uManagement {
                 $this->save_hash();
                 return $this->confirm;
             }
+            $this->send_email();
             return true;
         } else {
             $this->error(1);
@@ -369,27 +370,38 @@ class uManagement {
             }
         } else { //if a user is offering something.
             //Insert a new address for the user. However, this should not change the offer address!
-            $set_tbladdress[] = "lat= $lat";
-            $set_tbladdress[] = "lng= $lng";
-            $set_tbladdress = implode(", ", $set_tbladdress);
+            $checkMyNewAddress = "SELECT * FROM address WHERE lat='{$lat}' AND lng='{$lng}' ";
 
-            $sql_address = "UPDATE address SET {$set_tbladdress} WHERE address_id ='{$curAddressID}'";
+            if (!$this->has_same_address($checkMyNewAddress)) {
 
-            if ($this->check_sql_on_update($sql_address)) {
-                $this->report("Address Information is Updated");
-                $isOldUserAddress = true;
-                //echo "Echo 3";
+                $set_tbladdress[] = "lat= $lat";
+                $set_tbladdress[] = "lng= $lng";
+                $set_tbladdress = implode(", ", $set_tbladdress);
+                $sql_address = "UPDATE address SET {$set_tbladdress} WHERE address_id ='{$curAddressID}'";
+
+                if ($this->check_sql_on_update($sql_address)) {
+                    $this->report("Address Information is Updated");
+                    $isOldUserAddress = true;
+                    //echo "Echo 3";
+                } else {
+                    //echo "Echo 4";
+                    $this->error("Address is not Updated");
+                }
             } else {
-                //echo "Echo 4";
-                $this->error("Address is not Updated");
+                $deleteMyAddressEntry = true; //$delete_address = "DELETE FROM address ";
+                //
             }
-            //}
 
-            if ($isNewUserAddress) {
-                $addressID = $this->getRow("SELECT address_id FROM address WHERE street = '$street' AND city = '$city' AND zip = '$zip' AND country = '$country'");
-                if ($this->update_user_id($addressID['address_id'])) {
+
+            if ($isNewUserAddress OR $deleteMyAddressEntry) {
+                $addressID = $this->getRow("SELECT address_id FROM address WHERE lat = '$lat' AND lng = '$lng'");
+                $myAId = $addressID['address_id'];
+                if ($this->update_user_address_id($myAId)) {
                     // echo "Echo 7";
                     $this->report("Address ID is also Updated for the user '$this->id'");
+                    if ($deleteMyAddressEntry) {
+                        mysql_query("DELETE FROM address WHERE address_id ='$myAId'");
+                    }
                 } else {
                     //echo "Echo 8";
                     $this->error("The new address id is not updated");
@@ -411,7 +423,7 @@ class uManagement {
     }
 
 ///////////////////////////////////////////
-    function update_user_id($address_id) {
+    function update_user_address_id($address_id) {
 
         //$address_id = $this->getRow($sql);
         $query = "UPDATE users SET address_id = {$address_id} WHERE email ='{$this->email}'";
@@ -1207,6 +1219,23 @@ class uManagement {
         }
         return $n;
     }
+
+       private  function send_email(){
+        $from="Bring the Food Admin";
+        $to=$this->email;
+        $subject="Registration Notification";
+        $user=$this->name;
+        $msg="Dear".$user.",\n"."Thanks for signing up for the Bring the Food service. Your user name is ".$this->email." and your password is what you know.";
+        // this works provided that the real SMTP server is configured on the actual server
+        $header = "From: ".$from."\n";
+        ini_set('sendmail_from', 'admin@bringthefood.org');
+        if ( mail($to, $subject, $msg, $header)==1)
+                return 1;
+        else
+                return -1;
+
+       }
+
 
 }
 
