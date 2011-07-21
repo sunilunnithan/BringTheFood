@@ -55,7 +55,7 @@ bringthefood.views.PublishOffer = Ext.extend(Ext.form.FormPanel,{
             xtype: 'textfield',
             label: 'Time from',
             name: 'avtime',
-            value: new Date().getHours() + ':' + new Date().getMinutes()
+            value: new Date().format("H:m")
         },
         {
             xtype: 'datepickerfield',
@@ -67,7 +67,7 @@ bringthefood.views.PublishOffer = Ext.extend(Ext.form.FormPanel,{
             xtype: 'textfield',
             label: 'Time until',
             name: 'exptime',
-            value: new Date().getHours() + ':' + new Date().getMinutes()
+            value: new Date().format("H:m")
         }
         ]
     },

@@ -1,4 +1,5 @@
 bringthefood.views.SupplierMain = Ext.extend(Ext.Panel, {
+    id: 'supplier_main',
     fullscreen: 'true',
     layout: {
         type : 'vbox',

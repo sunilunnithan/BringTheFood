@@ -43,14 +43,21 @@ bringthefood.views.MyOffersList = Ext.extend(Ext.Panel,{
         fullscreen: true,
         
         itemTpl: [
+        '<div class="offer image">',
+        '<tpl if="image"><img src="{image}" class="offer image"></tpl>',
+        '<tpl if="!image"><img src="images/noimageavailable.jpg" class="offer image"></tpl>',
+        '</div>',
+        '<div class="offer container">',
         '<div><b>{desc}</b> for <b>{peopleserved}</b></div>',
         '<div class="offer datetime">from <b>{avdate:date("d/m/Y")}</b> at <b>{avtime}</b></div>',
         '<div class="offer instructions">',
         '<tpl if="status == \'booked\'">',
-        '<div class="offer collector">Booked by {collector_name}</div>',
+        '<tpl if="collector_name"><div class="offer collector">Booked by <b>{collector_name}</b></div></tpl>',
+        '<tpl if="!collector_name"><div class="offer locked">Locked</div></tpl>',
         'Click to confirm pickup',
         '</tpl>',
         '<tpl if="status == \'available\'">Click to edit</tpl>',
+        '</div>',
         '</div>'
         ],
 

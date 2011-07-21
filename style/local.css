@@ -43,3 +43,25 @@ li.offer.location{
 li.offer.noimage{
     margin: 10px 30px 10px 30px
 }
+
+.offer.image {
+    width: 60px;
+    float: left;
+    margin-right: 10px;
+}
+
+.offer.container {
+    float: left
+}
+
+.offer.datetime{
+    font-size: small
+}
+
+.offer.collector{
+    color: green
+}
+
+.offer.locked{
+    color: red
+}

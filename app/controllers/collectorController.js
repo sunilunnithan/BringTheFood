@@ -193,7 +193,7 @@ bringthefood.controllers.collectorController = new Ext.Controller({
 
         this.popup[index].getComponent('offerdesc').update(record.data);
         this.popup[index].getComponent('offerdesc').doComponentLayout();
-        this.popup[index].getComponent('lockbtn').offer_id = record.get('offer_id');
+        this.popup[index].getComponent('lockbtn').offer = record;
 
         this.popup[index].doLayout();
 
@@ -202,25 +202,35 @@ bringthefood.controllers.collectorController = new Ext.Controller({
     },
 
     lockOffer: function(options){
-        Ext.Ajax.request({
-            url: 'include/offers.php?action=lock&offerId='+options.offer_id,
-            waitMsg: 'Please wait while I do some stuff',
-            success: function(response){
-                var resp = Ext.decode(response.responseText);
-                if (resp.success != true){
-                    Ext.Msg.alert('Error!', 'You cannot lock this offer!!',Ext.emptyFn);
-                } else {
-                    bringthefood.stores.offersStore.load({
-                        callback: function(){
-                            Ext.Msg.alert('Done!', 'You have reserved this offer!!',Ext.emptyFn);
-                        }
-                    })
+        var desc = options.offer.get('desc');
+        var expdate = options.offer.get('expdate').format("d/m/Y");
+        var exptime = options.offer.get('exptime');
+        exptime = exptime.substring(0,exptime.length-3);
+
+        Ext.Msg.confirm('Lock this offer?','You are committing to pick up <b>' + desc + '</b> by <b>' + expdate + ' at ' + exptime + '</b>. Are you sure?',function(res){
+            if (res == 'yes'){
+                Ext.Ajax.request({
+                    url: 'include/offers.php?action=lock&offerId='+options.offer.get('offer_id'),
+                    waitMsg: 'Please wait while I do some stuff',
+                    success: function(response){
+                        var resp = Ext.decode(response.responseText);
+                        if (resp.success != true){
+                            Ext.Msg.alert('Error!', 'You cannot lock this offer!!',Ext.emptyFn);
+                        } else {
+                            bringthefood.stores.offersStore.load({
+                                callback: function(){
+                                    Ext.Msg.alert('Done!', 'You have reserved this offer!!',Ext.emptyFn);
+                                }
+                            })
                     
-                }
+                        }
 
                 
+                    }
+                });
             }
-        })
+        });
+
     },
 
     unlockOffer: function(options){

@@ -61,6 +61,7 @@ function get_offers_JSON($my_offers_only = false) {
                 'avdate' => $avail_date,
                 'avtime' => $avail_time,
                 'expdate' => $exp_date,
+                'exptime' => $exp_time,
                 'image' => $image,
                 'peopleserved' => $people_served,
                 'address_id'=>$address_id,
