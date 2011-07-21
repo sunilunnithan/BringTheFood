@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Jul 20, 2011 at 11:35 AM
+-- Generation Time: Jul 21, 2011 at 05:30 PM
 -- Server version: 5.1.37
 -- PHP Version: 5.2.10
 
@@ -32,17 +32,18 @@ CREATE TABLE `address` (
   `zip` int(11) NOT NULL,
   `country` char(32) NOT NULL,
   `phone` varchar(24) NOT NULL,
-  `lat` float NOT NULL,
-  `lng` float NOT NULL,
-  PRIMARY KEY (`address_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=36 ;
+  `lat` double NOT NULL,
+  `lng` double NOT NULL,
+  PRIMARY KEY (`address_id`),
+  UNIQUE KEY `lat` (`lat`,`lng`)
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=42 ;
 
 --
 -- Dumping data for table `address`
 --
 
-INSERT INTO `address` VALUES(34, 'vis Corso Buonarroti 13', 'Trento', 38123, 'Italy', '3474832631', 46.0222, 11.1184);
-INSERT INTO `address` VALUES(35, 'Piazza Santa Maria Maggiore 21', 'Trento', 38123, 'Italy', '+39.0461.314390', 46.0684, 11.1198);
+INSERT INTO `address` VALUES(41, 'Piazza Santa Maria Maggiore 34', 'Trento', 38123, 'Italy', '8058934232', 46.0684934, 11.1187557);
+INSERT INTO `address` VALUES(40, 'via  sommarive 18', 'trento', 38100, 'itlay', '333333333', 46.0670192, 11.150513);
 
 -- --------------------------------------------------------
 
@@ -91,11 +92,11 @@ CREATE TABLE `users` (
   `reg_date` int(11) NOT NULL,
   `last_login` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`user_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=62 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=69 ;
 
 --
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` VALUES(60, 'Komminist Weldemariam', 'aeed09223d14ac2690d240cf0a4a0af6', 'komminist@gmail.com', 34, 'collector', 1, '', 1311151148, 1311151329);
-INSERT INTO `users` VALUES(61, 'Rosa Doro ', 'aeed09223d14ac2690d240cf0a4a0af6', 'rosa@gmail.com', 35, 'supplier', 1, '', 1311151369, 1311151377);
+INSERT INTO `users` VALUES(67, 'komminist weldemariam', 'aeed09223d14ac2690d240cf0a4a0af6', 'komm@gmail.com', 40, 'Supplier', 1, '', 1311261630, 1311261840);
+INSERT INTO `users` VALUES(68, 'Komminist Weldemariam', 'aeed09223d14ac2690d240cf0a4a0af6', 'komminist@gmail.com', 41, 'sollector', 1, '', 1311262075, 0);

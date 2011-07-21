@@ -223,6 +223,7 @@ class uManagement {
             $geocode_info = grapGeocodeInfo($complete_address);
             $lat = $geocode_info["lat"];
             $lng = $geocode_info["lng"];
+           // echo $lat." ".$lng;
             $sql_address = "INSERT INTO {$table_name} ($into_tbladdress,lat,lng)
 					VALUES($values_tbladdress,$lat,$lng)";
             if ($this->check_sql($sql_address)) {
@@ -362,7 +363,7 @@ class uManagement {
 
             if ($this->check_sql($sql_address)) {
                 $this->report("Address Information is Updated");
-                //echo "Echo 5";
+                echo "Echo 5";
                 $isNewUserAddress = true;
             } else {
                 // echo "Echo 6";
@@ -370,7 +371,11 @@ class uManagement {
             }
         } else { //if a user is offering something.
             //Insert a new address for the user. However, this should not change the offer address!
-            $checkMyNewAddress = "SELECT * FROM address WHERE lat='{$lat}' AND lng='{$lng}' ";
+            $la = round($lat);
+            $ln = round($lng);
+            //$checkMyNewAddress = "SELECT * FROM address WHERE lat='{$la}' AND lng='{$ln}' ";
+            $checkMyNewAddress = "SELECT * FROM address WHERE street='$street' AND city='$city' AND zip='$zip' AND country= '$country'";
+            echo "lat :".$lat. " and lng ".$lng;
 
             if (!$this->has_same_address($checkMyNewAddress)) {
 
@@ -382,32 +387,35 @@ class uManagement {
                 if ($this->check_sql_on_update($sql_address)) {
                     $this->report("Address Information is Updated");
                     $isOldUserAddress = true;
-                    //echo "Echo 3";
+                    echo "Echo 3";
                 } else {
-                    //echo "Echo 4";
+                    echo "Echo 4";
                     $this->error("Address is not Updated");
                 }
             } else {
+                echo "Echo 30";
                 $deleteMyAddressEntry = true; //$delete_address = "DELETE FROM address ";
                 //
             }
+        }
+            echo "isNewUserAddress " . $isNewUserAddress;
 
-
-            if ($isNewUserAddress OR $deleteMyAddressEntry) {
-                $addressID = $this->getRow("SELECT address_id FROM address WHERE lat = '$lat' AND lng = '$lng'");
-                $myAId = $addressID['address_id'];
-                if ($this->update_user_address_id($myAId)) {
-                    // echo "Echo 7";
-                    $this->report("Address ID is also Updated for the user '$this->id'");
-                    if ($deleteMyAddressEntry) {
-                        mysql_query("DELETE FROM address WHERE address_id ='$myAId'");
-                    }
-                } else {
-                    //echo "Echo 8";
-                    $this->error("The new address id is not updated");
+        if ($isNewUserAddress OR $deleteMyAddressEntry) {
+            echo "Echo 7-1";
+            $addressID = $this->getRow("SELECT address_id FROM address WHERE street = '$street' AND city='$city' AND zip='$zip' AND country= '$country'");
+            $myAId = $addressID['address_id'];
+            if ($this->update_user_address_id($myAId)) {
+                echo "Echo 7";
+                $this->report("Address ID is also Updated for the user '$this->id'");
+                if ($deleteMyAddressEntry) {
+                    mysql_query("DELETE FROM address WHERE address_id ='$myAId'");
                 }
+            } else {
+                //echo "Echo 8";
+                $this->error("The new address id is not updated");
             }
         }
+
 
         if ($isUserInfoUpdated OR $isNewUserAddress OR $isOldUserAddress) {
 
@@ -468,10 +476,10 @@ class uManagement {
         } else {
             $rows = mysql_affected_rows();
             if ($rows > 0) {
-                ///echo "Same Address: Good, Rows where affected";
+                echo "Same Address: Good, Rows where affected";
                 return true;
             } else {
-                //echo "Same Address: Bad, No row is affected";
+                echo "Same Address: Bad, No row is affected";
                 return false;
             }
         }
@@ -1220,22 +1228,20 @@ class uManagement {
         return $n;
     }
 
-       private  function send_email(){
-        $from="Bring the Food Admin";
-        $to=$this->email;
-        $subject="Registration Notification";
-        $user=$this->name;
-        $msg="Dear".$user.",\n"."Thanks for signing up for the Bring the Food service. Your user name is ".$this->email." and your password is what you know.";
+    private function send_email() {
+        $from = "Bring the Food Admin";
+        $to = $this->email;
+        $subject = "Registration Notification";
+        $user = $this->name;
+        $msg = "Dear" . $user . ",\n" . "Thanks for signing up for the Bring the Food service. Your user name is " . $this->email . " and your password is what you know.";
         // this works provided that the real SMTP server is configured on the actual server
-        $header = "From: ".$from."\n";
+        $header = "From: " . $from . "\n";
         ini_set('sendmail_from', 'admin@bringthefood.org');
-        if ( mail($to, $subject, $msg, $header)==1)
-                return 1;
+        if (mail($to, $subject, $msg, $header) == 1)
+            return 1;
         else
-                return -1;
-
-       }
-
+            return -1;
+    }
 
 }
 
