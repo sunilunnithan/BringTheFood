@@ -12,7 +12,7 @@ if (count($_POST)) {
 
     //Add validation for custom fields, name, address
     //$user->addValidation("name","0-25","/\w+/");
-    $user->addValidation("name", "0-45", "/^\w+[\s\-\'\.\w]*$/i");
+    $user->addValidation("name", "1-100", "/^\w+[\s\-\'\.\w]*$/i");
     //$user->addValidation("last_name","0-15","/\w+/");
     $user->addValidation("address", "0-50");
 
