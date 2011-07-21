@@ -9,7 +9,7 @@ $resp = Array();
 if (count($_POST)) {
 
     //Add validation for custom fields, name, address
-    $user->addValidation("name", "0-45", '#^[a-z\s\.]+$#i');
+    $user->addValidation("name", "0-45","/^\w+[\s\-\'\.\w]*$/i");
     $user->addValidation("street", "0-50");
     //Update User
     $user->update($_POST);

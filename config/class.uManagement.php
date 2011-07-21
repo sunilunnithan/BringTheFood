@@ -60,7 +60,7 @@ class uManagement {
     var $validations = array(//Array for default field validations
         "name" => array(
             "limit" => "4-45",
-            "regEx" => '#^[a-z]+[ -][a-z]\'?[a-z]+$#i' //'#^[a-z\s\.]+$#i'
+            "regEx" => "/^\w+[\s\-\'\.\w]*$/i" //'#^[a-z\s\.]+$#i'
         ),
         "password" => array(
             "limit" => "3-15",
@@ -134,7 +134,7 @@ class uManagement {
             return false; //There are validations error
             //Built in actions for special fields
             //Hash Password
- if (isset($info['password'])) {
+        if (isset($info['password'])) {
             $this->hash_pass($info['password']);
             $info['password'] = $this->pass;
         }
@@ -275,10 +275,13 @@ class uManagement {
         $this->tmp_data = $info;
 
         //Validate All Fields
-        if (!$this->validateAll())
-            return false; //There are validations error
+        if (!$this->validateAll()) {
+          //echo "Validation failed!";
+          return false; //There are validations error
             //Check for errors
- if ($this->has_error())
+        }
+
+        if ($this->has_error())
             return false;
 
         //Prepare Info for SQL Insertion
@@ -294,7 +297,7 @@ class uManagement {
                     $set_tbladdress[] = "{$index}={$value_tbladdress}";
                     // echo $val;
                 } else {
-                    $value_user = "'" . mysql_real_escape_string($val) . "'";
+                    $value_user = "'" . mysql_real_escape_string(stripslashes($val)) . "'";
                     $set_user[] = "{$index}={$value_user}";
                     //echo $val;
                 }
@@ -1128,6 +1131,7 @@ class uManagement {
         $min = intval($l[0]);
         $max = intval($l[1]);
         $this->report("I am reporting this $name");
+        //echo "I am reporting this $name";
 
         if (!$max and !$min) {
             $this->error("Invalid second paramater for the $name validation");
@@ -1153,8 +1157,13 @@ class uManagement {
             return false;
         }
         if ($regEx) {
+            //echo $regEx."  ".$str."  ".$match."<br />";
+            //$regEx = "/^[[:alpha:]]{2,}[-]?[[:alpha:]]+$|^[[:alpha:]]{2,}[[:space:]]?[[:alpha:]]+$|^[[:alpha:]]{1,1}[']?[[:alpha:]]+$/";
+            //echo $regEx."  ".$str."  ".$match."<br />";
+            //$str = stripslashes($str);
             preg_match_all($regEx, $str, $match);
             if (count($match[0]) != 1) {
+                echo "The $Name \"{$str}\" is not  valid";
                 $this->form_error($name, "The $Name \"{$str}\" is not  valid");
                 return false;
             }
