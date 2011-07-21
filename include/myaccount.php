@@ -24,6 +24,7 @@
             $myaddress = array("street" => $address_row['street'],
                 'city' =>$address_row['city'], 'zip' => $address_row['zip'],
                 'country' => $address_row['country'], 'phone' => $address_row['phone']);
+            echo "Phone :".$address_row['phone'];
         }
 
        // $myaddress = Array ('myaddress' => $myadd);
