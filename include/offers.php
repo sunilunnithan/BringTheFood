@@ -45,6 +45,7 @@ function get_offers_JSON($my_offers_only = false) {
             $city = mysql_result($address_of_offer, 0, 'city');
             $zip = mysql_result($address_of_offer, 0, 'zip');
             $country = mysql_result($address_of_offer, 0, 'country');
+            $phone = mysql_result($address_of_offer, 0, 'phone');
             $lati = mysql_result($address_of_offer, 0, 'lat');
             $long = mysql_result($address_of_offer, 0, 'lng');
 
@@ -67,6 +68,7 @@ function get_offers_JSON($my_offers_only = false) {
                 'zip' => $zip,
                 'city' => $city,
                 'country' => $country,
+                'phone'=>$phone,
                 'latitude' => $lati,
                 'longitude' => $long);
 
@@ -143,6 +145,7 @@ function remove_offer() {
 //function to be invoked when the supplier needs to update an offer
 function update_offer() {
     //Cross-check with the GUI
+    $current_user_id=$_SESSION['demo']['user_id'];
     $offer_id = $_POST['offer_id'];
     $description = $_POST['desc'];
     $av_date = $_POST['avdate'];
@@ -162,12 +165,35 @@ function update_offer() {
 
     $update_offer = mysql_query("UPDATE offer SET description='$description',available_date='$av_date', available_time ='$av_time', expire_date='$exp_date',expire_time='$exp_time', status='$status', image='$image', people_served ='$people' WHERE offer_id='$offer_id'");// or die ("update offer:".mysql_error());
     $offer_address_id =mysql_result(mysql_query("SELECT address_id FROM offer WHERE offer_id ='$offer_id'"),0,'address_id');
-    //assuming that the offer was registered with new address at the beginning. otherwise, change of address for the supplier is done as part of account update for user.
-    $update_offer_address = mysql_query("UPDATE address SET street='$street',city='$city', zip ='$zip', country='$country', phone='$phone' WHERE address_id='$offer_address_id'");// or die ("update address:".mysql_error());;
-    if ($update_offer && $update_offer_address)
-        return 1;
-    else
-        return -1;
+    //check if the adress_id in the user table and offer table is the same for this offer.
+    $address_id_in_user =mysql_result(mysql_query("SELECT address_id FROM users WHERE user_id='$current_user_id'"),0,'address_id');
+    $address_id_in_offer =mysql_result(mysql_query("SELECT address_id FROM offer WHERE supplier_id='$current_user_id'"),0,'address_id');
+
+    if ($address_id_in_offer==$address_id_in_user) { // offer is using default address of supplier, in this case add new address for offer
+        //get the latitude and longitude from google map API
+        $latitude_longitude = grapGeocodeInfo($street . ',' . $zip . ',' . $city . ',' . $country);
+        $lat = $latitude_longitude['lat'];
+        $long = $latitude_longitude['lng'];
+        $insert_new_offer_address = mysql_query("INSERT INTO address (street,city,zip,country,phone,lat,lng) VALUES('$street','$city','$zip','$country','$phone','$lat','$long')"); //or die("insert new address:".mysql_error());
+        $insert_id_of_address=mysql_insert_id();
+        $link_offer_with_new_address=mysql_query("UPDATE offer SET address_id ='$insert_id_of_address' WHERE offer_id='$offer_id'");
+        if ($update_offer && $insert_new_offer_address && $link_offer_with_new_address)
+            return 1;
+        else
+            return -1;
+    }
+    else{ // offer is using different address from supplier address, in this case just update address fields and recalculate latitude and longitude
+        //get the latitude and longitude from google map API
+        $latitude_longitude = grapGeocodeInfo($street . ',' . $zip . ',' . $city . ',' . $country);
+        $lat = $latitude_longitude['lat'];
+        $long = $latitude_longitude['lng'];
+        $update_offer_address = mysql_query("UPDATE address SET street='$street',city='$city', zip ='$zip', country='$country', phone='$phone', lat='$lat', lng='$long' WHERE address_id='$offer_address_id'");// or die ("update address:".mysql_error());;
+        if ($update_offer && $update_offer_address)
+            return 1;
+        else
+            return -1;
+    }
+    
 }
 
 //function to be invoked when the collector books an offer.
