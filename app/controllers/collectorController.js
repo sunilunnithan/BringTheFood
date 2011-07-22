@@ -203,7 +203,7 @@ bringthefood.controllers.collectorController = new Ext.Controller({
 
     lockOffer: function(options){
         var desc = options.offer.get('desc');
-        var expdate = options.offer.get('expdate').format("d/m/Y");
+        var expdate = options.offer.get('expdate');//.format("d/m/Y");
         var exptime = options.offer.get('exptime');
         exptime = exptime.substring(0,exptime.length-3);
 
