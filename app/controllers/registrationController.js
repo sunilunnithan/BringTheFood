@@ -84,7 +84,7 @@ bringthefood.controllers.registrationController = new Ext.Controller({
                 message: 'Please wait...'
             },
             success: function(form, result){
-                Ext.Msg.alert('Success!','Your password has been updated. Please login again.',Ext.emptyFn);
+                Ext.Msg.alert('Success!',result.message,Ext.emptyFn);
                 form.reset();
                 animation = {
                     type: 'slide',
@@ -94,7 +94,10 @@ bringthefood.controllers.registrationController = new Ext.Controller({
                     controller: bringthefood.controllers.loginController,
                     action: 'logout'
                 });
-            }
+            },
+            failure: function(form,result){
+                    Ext.Msg.alert('Error!',result.message,Ext.emptyFn);
+                }
         });
     }
 });

@@ -21,6 +21,7 @@ if (count($_POST)) {
     //If there is not error
     if (!$user->has_error()) {
         $resp = array('success' => true);
+      
     } else {
         $resp = array('success' => false, 'message' => $user->error());
     }

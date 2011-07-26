@@ -106,7 +106,8 @@ class uManagement {
         18 => "There are no avaliable offers",
         19 => "Can't load address. Is it a real address? (Or your Internet connection is down)",
         20 => "Something is wrong in your current password",
-        21 => "A problem in update the address_id in the users table"
+        21 => "A problem in update the address_id in the users table",
+        22 => "Password could not be changed"
     );
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -158,7 +159,7 @@ class uManagement {
 
         //Check for errors
         if ($this->has_error()) {
-            echo "error has occured!";
+            //echo "error has occured!";
             return false;
         }
 
@@ -616,7 +617,7 @@ class uManagement {
 
         $pass = $this->hash_pass($newPass['password']);
 
-        $sql = "UPDATE {$this->opt['table_name']} SET password='{$pass}', confirmation='', activated=1 WHERE confirmation='{$hash}' AND user_id='{$this->id}'";
+        $sql = "UPDATE {$this->opt['table_name']} SET password='{$pass}'WHERE user_id='{$this->id}'";
         if ($this->check_sql($sql)) {
             $this->report("Password has been changed");
             return true;
@@ -627,6 +628,62 @@ class uManagement {
         }
     }
 
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+    /*
+     *  /*
+      Similar to the new–pass method function in structure
+      This method changes a password to the signed user.
+      -Takes two parameters
+      @hash = string (pass_reset method hash)
+      @new = array (an array with indexes 'password' and 'password2')
+      Example:
+      array(
+      [password] => pass123
+      [password2] => pass123
+      )
+     * use ->addValidation('password', ...) to validate password
+      Returns true on a successfull password change
+      Returns false on error
+     */
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+    function change_pass($newPass) {
+        $this->logger("change_pass");
+
+        //$hash  = $this->make_hash($this->id);
+        //$this->save_hash();
+
+        //if (!$this->check_hash($hash)) {
+         //   echo "Check hash error!";
+           // return false;
+        //}
+
+        $this->tmp_data = $newPass;
+        if (!$this->validateAll()) {
+            //echo "Password did not match";
+            return false; //There are validations error
+        }
+
+        $pass = $this->hash_pass($newPass['password']);
+
+        //$sql = "UPDATE {$this->opt['table_name']} SET password='{$pass}', confirmation='', activated=1 WHERE confirmation='{$hash}' AND user_id='{$this->id}'";
+
+        $sql = "UPDATE {$this->opt['table_name']} SET password='{$pass}'WHERE user_id='{$this->id}'";
+        if ($this->check_sql($sql)) {
+            //echo "Password has been changed";
+            $this->report("Password has been changed");
+            //call the logout function if a user successful change Password.
+            $this->logout();
+            return true;
+        } else {
+            //Error
+            //echo "0: Password has NOT been changed";
+            $this->error(22);
+            return false;
+        }
+    }
+    
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
     /* Check the active user is the one who logged-in */
     function validate_pass($c_pass) {
@@ -981,6 +1038,24 @@ class uManagement {
         return true;
     }
 
+
+    //Saves the confirmation hash in the database
+    function save_hash_on_change() {
+        if ($this->confirm and $this->id) {
+            $sql = "UPDATE {$this->opt['table_name']} SET confirmation='{$this->confirm}', activated=0 WHERE user_id='{$this->id}'";
+            if (!$this->check_sql($sql)) {
+                $this->error(13);
+                return false;
+            } else {
+                $this->report("Confirmation hash has been saved");
+            }
+        } else {
+            $this->report("Can't save Confirmation hash");
+            return false;
+        }
+        return true;
+    }
+
     //Saves the confirmation hash in the database
     function save_hash() {
         if ($this->confirm and $this->id) {
@@ -1126,6 +1201,7 @@ class uManagement {
             //Match double fields
             if (isset($info[$field . (2)])) {
                 if ($val != $info[$field . (2)]) {
+                   // echo $field, ucfirst($field) . "s did not matched";
                     $this->form_error($field, ucfirst($field) . "s did not matched");
                     //return false;
                 } else {
@@ -1183,7 +1259,7 @@ class uManagement {
             //$str = stripslashes($str);
             preg_match_all($regEx, $str, $match);
             if (count($match[0]) != 1) {
-                echo "The $Name \"{$str}\" is not  valid";
+                //echo "The $Name \"{$str}\" is not  valid";
                 $this->form_error($name, "The $Name \"{$str}\" is not  valid");
                 return false;
             }
@@ -1233,7 +1309,7 @@ class uManagement {
         $to = $this->email;
         $subject = "Registration Notification";
         $user = $this->name;
-        $msg = "Dear" . $user . ",\n" . "Thanks for signing up for the Bring the Food service. Your user name is " . $this->email . " and your password is what you know.";
+        $msg = "Dear " . $user . ",\n" . "Thanks for signing up for the Bring the Food service. Your user name is " . $this->email . " and your password is what you know.";
         // this works provided that the real SMTP server is configured on the actual server
         $header = "From: " . $from . "\n";
         ini_set('sendmail_from', 'admin@bringthefood.org');
